@@ -23,9 +23,9 @@ modelo <- rpart(
     data = dtrain, # los datos donde voy a entrenar
     xval = 0,
     cp = -0.3, # esto significa no limitar la complejidad de los splits
-    minsplit = 700, # minima cantidad de registros para que se haga el split
-    minbucket = 350, # tamaño minimo de una hoja
-    maxdepth = 4  # profundidad maxima del arbol
+    minsplit = 900, # minima cantidad de registros para que se haga el split
+    minbucket = 450, # tamaño minimo de una hoja
+    maxdepth = 3  # profundidad maxima del arbol
 )
 
 
