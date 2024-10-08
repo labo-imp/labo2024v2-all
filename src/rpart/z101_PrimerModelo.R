@@ -8,7 +8,7 @@ require("rpart")
 require("rpart.plot")
 
 # Aqui se debe poner la carpeta de la materia de SU computadora local
-setwd("~/buckets/b1") # Establezco el Working Directory
+setwd("~/labo2024v2") # Establezco el Working Directory
 
 # cargo el dataset pequeno vivencial del disco local
 dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
