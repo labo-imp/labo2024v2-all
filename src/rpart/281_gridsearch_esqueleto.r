@@ -9,16 +9,17 @@ require("data.table")
 require("rpart")
 require("parallel")
 require("primes")
+require("progress")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 523801
+PARAM$semilla_primigenia <- 100003
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 # elegir SU dataset comentando/ descomentando
-# PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+#PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
 PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 #------------------------------------------------------------------------------
@@ -142,12 +143,25 @@ tb_grid_search_detalle <- data.table(
 
 # itero por los loops anidados para cada hiperparametro
 
-for(vcp in c( -0.5, 0, 0.1 ) ){
+# Calcular el número total de iteraciones
+total_iteraciones <- length(c(-1, -0.75, -0.5, -0.25, 0, 0, 1)) *
+  length(c(4, 6, 8, 10, 12, 14)) *
+  length(c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) *
+  length(c(2, 4, 8, 16, 32, max(c(1000, 800, 600, 400, 200, 100, 50, 20, 10))/4))
+
+# Crear la barra de progreso
+pb <- progress_bar$new(
+  format = "  Progreso [:bar] :percent en :elapsed",
+  total = total_iteraciones, clear = FALSE, width = 60
+)
+
+
+for (vcp in c(-1,-0.75,-0.5,-0.25,0,0,1)){
   for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
     for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-      for(vmin_bucket in c(2, 4, 8, 16, 32, 64 ) ) {
+      for (vmin_bucket in c(2,4,8,16,32,vmin_split/4)) {
         # notar como se agrega
-        
+    
         # vminsplit  minima cantidad de registros en un nodo para hacer el split
         param_basicos <- list(
           "cp" = vcp, # complejidad minima
@@ -155,27 +169,28 @@ for(vcp in c( -0.5, 0, 0.1 ) ){
           "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
           "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
         )
-        
+    
         # Un solo llamado, con la semilla 17
         ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
-        
+    
         # agrego a la tabla
         tb_grid_search_detalle <- rbindlist( 
           list( tb_grid_search_detalle,
                 rbindlist(ganancias) )
         )
-        
+    
+        # Actualizar la barra de progreso
+        pb$tick()
       }
     }
   }
-  
   # grabo cada vez TODA la tabla en el loop mas externo
   fwrite( tb_grid_search_detalle,
           file = "gridsearch_detalle.txt",
           sep = "\t" )
 }
-
 #----------------------------
+
 # genero y grabo el resumen
 tb_grid_search <- tb_grid_search_detalle[,
   list( "ganancia_mean" = mean(ganancia_test),
