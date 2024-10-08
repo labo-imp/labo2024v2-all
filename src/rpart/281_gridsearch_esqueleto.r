@@ -18,8 +18,8 @@ PARAM$qsemillas <- 20
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 # elegir SU dataset comentando/ descomentando
-PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
-# PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
+#PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -141,35 +141,38 @@ tb_grid_search_detalle <- data.table(
 
 
 # itero por los loops anidados para cada hiperparametro
+for (vcp in c(-1,-0.8, -0.6, -0.4, -0.2)) {
+  for (vmax_depth in c(4, 5, 6, 8, 10, 20)) {
+    for (vmin_split in c(500, 300, 200, 100, 70, 50)) {
+      for (vmin_bucket in c(50, 30, 10, 8, 6, 4, 2, round(vmin_split / 2))) {
+         # notar como se agrega
+    
+        # vminsplit  minima cantidad de registros en un nodo para hacer el split
+        param_basicos <- list(
+          "cp" = vcp, # complejidad minima
+          "maxdepth" = vmax_depth, # profundidad máxima del arbol
+          "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
+          "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
+        )
+    
+        # Un solo llamado, con la semilla 17
+        ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
+    
+        # agrego a la tabla
+        tb_grid_search_detalle <- rbindlist( 
+          list( tb_grid_search_detalle,
+                rbindlist(ganancias) )
+        )
 
-for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-    # notar como se agrega
-
-    # vminsplit  minima cantidad de registros en un nodo para hacer el split
-    param_basicos <- list(
-      "cp" = -0.5, # complejidad minima
-      "maxdepth" = vmax_depth, # profundidad máxima del arbol
-      "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-      "minbucket" = 5 # minima cantidad de registros en una hoja
-    )
-
-    # Un solo llamado, con la semilla 17
-    ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
-
-    # agrego a la tabla
-    tb_grid_search_detalle <- rbindlist( 
-      list( tb_grid_search_detalle,
-            rbindlist(ganancias) )
-    )
-
-  }
+        }
+      }
+    }
 
   # grabo cada vez TODA la tabla en el loop mas externo
   fwrite( tb_grid_search_detalle,
-          file = "gridsearch_detalle.txt",
+          file = "gridsearch_detalle_conceptual2.txt",
           sep = "\t" )
-}
+  }
 
 #----------------------------
 
@@ -187,7 +190,7 @@ setorder( tb_grid_search, -ganancia_mean )
 tb_grid_search[, id := .I ]
 
 fwrite( tb_grid_search,
-  file = "gridsearch.txt",
+  file = "gridsearch_conceptual2.txt",
   sep = "\t"
 )
 
