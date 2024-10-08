@@ -144,25 +144,27 @@ tb_grid_search_detalle <- data.table(
 
 for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
   for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-    # notar como se agrega
-
-    # vminsplit  minima cantidad de registros en un nodo para hacer el split
-    param_basicos <- list(
-      "cp" = -0.5, # complejidad minima
-      "maxdepth" = vmax_depth, # profundidad máxima del arbol
-      "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-      "minbucket" = 5 # minima cantidad de registros en una hoja
-    )
-
-    # Un solo llamado, con la semilla 17
-    ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
-
-    # agrego a la tabla
-    tb_grid_search_detalle <- rbindlist( 
-      list( tb_grid_search_detalle,
-            rbindlist(ganancias) )
-    )
-
+    for (cp in c(-0.5, -0.3, -0.1, 0, 0.0005, 0.001, 0.01)) {
+      for (minbucket in c(5, 10, 20, 30, 50, 100, 200)) {
+        # notar como se agrega
+        # vminsplit  minima cantidad de registros en un nodo para hacer el split
+        param_basicos <- list(
+          "cp" = cp, # complejidad minima
+          "maxdepth" = vmax_depth, # profundidad máxima del arbol
+          "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
+          "minbucket" = minbucket # minima cantidad de registros en una hoja
+        )
+        
+        # Un solo llamado, con la semilla 17
+        ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
+        
+        # agrego a la tabla
+        tb_grid_search_detalle <- rbindlist( 
+          list( tb_grid_search_detalle,
+                rbindlist(ganancias) )
+        )
+      }
+    }
   }
 
   # grabo cada vez TODA la tabla en el loop mas externo
