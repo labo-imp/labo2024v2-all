@@ -12,7 +12,7 @@ require("primes")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 892249
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
@@ -142,16 +142,18 @@ tb_grid_search_detalle <- data.table(
 
 # itero por los loops anidados para cada hiperparametro
 
-for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
+for (vmax_depth in c(5, 10, 15, 20, 25)) {
+  for (vmin_split in c(1200, 1000, 800, 600, 400, 200)) {
+    for (vcp in c(-0.8, -0.7, -0.5)) {
+      for (vbucket in c(5, 10, 15, 20)) {
     # notar como se agrega
 
     # vminsplit  minima cantidad de registros en un nodo para hacer el split
     param_basicos <- list(
-      "cp" = -0.5, # complejidad minima
+      "cp" = vcp, # complejidad minima
       "maxdepth" = vmax_depth, # profundidad máxima del arbol
       "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-      "minbucket" = 5 # minima cantidad de registros en una hoja
+      "minbucket" = vbucket # minima cantidad de registros en una hoja
     )
 
     # Un solo llamado, con la semilla 17
@@ -163,11 +165,11 @@ for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
             rbindlist(ganancias) )
     )
 
-  }
+  }}}
 
   # grabo cada vez TODA la tabla en el loop mas externo
   fwrite( tb_grid_search_detalle,
-          file = "gridsearch_detalle.txt",
+          file = "corrida1_gridsearch_detalle.txt",
           sep = "\t" )
 }
 
@@ -187,7 +189,7 @@ setorder( tb_grid_search, -ganancia_mean )
 tb_grid_search[, id := .I ]
 
 fwrite( tb_grid_search,
-  file = "gridsearch.txt",
+  file = "corrida1_gridsearch.txt",
   sep = "\t"
 )
 
