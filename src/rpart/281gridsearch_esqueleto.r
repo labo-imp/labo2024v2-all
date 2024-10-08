@@ -142,7 +142,7 @@ tb_grid_search_detalle <- data.table(
 library(progress)
 
 # Calculo el número total de iteraciones
-total_iterations <- length(c(-0.7, -0.5, -0.1, 0.1)) * 
+total_iterations <- length(c(-1,-0.9,-0.8,-0.7, -0.5, -0.1,0, 0.1)) * 
   length(c(2, 4, 6, 8, 10, 12, 16)) * 
   length(c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) * 
   length(c(2, 4, 8, 16, 32, 64))
@@ -155,7 +155,7 @@ pb <- progress_bar$new(
 
 
 # itero por los loops anidados para cada hiperparametro
-for (vcp in c(-0.7, -0.5, -0.1, 0.1)) {
+for (vcp in c(-1,-0.9,-0.8,-0.7, -0.5, -0.1,0, 0.1)) {
   for (vmax_depth in c(2, 4, 6, 8, 10, 12, 16)) {
     for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
       for (vmin_bucket in c(2, 4, 8, 16, 32, 64)) {
