@@ -1,5 +1,7 @@
 # Script prueba de submit a las dos competencias Kaggle 
 
+semillas <- c(999931, 999947, 999959, 999961, 999979)
+
 # cargo las librerias que necesito
 require("data.table")
 require("rpart")
