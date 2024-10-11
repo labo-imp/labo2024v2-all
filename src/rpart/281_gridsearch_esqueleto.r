@@ -18,8 +18,8 @@ PARAM$qsemillas <- 20
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 # elegir SU dataset comentando/ descomentando
-PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
-# PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
+# PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -142,10 +142,10 @@ tb_grid_search_detalle <- data.table(
 
 # itero por los loops anidados para cada hiperparametro
 
-for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-    for (cp in c(-0.5, -0.3, -0.1, 0, 0.0005, 0.001, 0.01)) {
-      for (minbucket in c(5, 10, 20, 30, 50, 100, 200)) {
+for (vmax_depth in c(4, 6, 8, 10)) {
+  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20)) {
+    for (cp in c(-0.5, 0, 0.01)) {
+      for (minbucket in c(10, 20, 30, 50, 100, 200)) {
         # notar como se agrega
         # vminsplit  minima cantidad de registros en un nodo para hacer el split
         param_basicos <- list(
