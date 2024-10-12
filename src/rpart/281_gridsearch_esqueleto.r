@@ -12,15 +12,15 @@ require("primes")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 185957
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 # elegir SU dataset comentando/ descomentando
-PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 # PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
-
+nrow(PARAM$dataset_nom)
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
 #  que consiste en una particion estratificada segun agrupa
@@ -45,7 +45,7 @@ ArbolEstimarGanancia <- function(semilla, training_pct, param_basicos) {
   particionar(dataset,
     division = c(training_pct, 100L -training_pct), 
     agrupa = "clase_ternaria",
-    seed = semilla # aqui se usa SU semilla
+    seed = 185957 # aqui se usa SU semilla
   )
 
   # genero el modelo
@@ -142,16 +142,19 @@ tb_grid_search_detalle <- data.table(
 
 # itero por los loops anidados para cada hiperparametro
 
-for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
+for (vmax_depth in c(4, 6, 8, 10, 15, 20,30)) {
+  for (vmin_split in c(15000,12000,10000,5000,1000, 400, 200, 100, 50, 20, 10)) {
+    for (vmin_bucket in c(15000,12000,10000,5000,1000, 400, 200, 100, 50, 20, 10)) {
+      for(cp in c(-0.05,-0.5,-1){
+    
     # notar como se agrega
 
     # vminsplit  minima cantidad de registros en un nodo para hacer el split
     param_basicos <- list(
-      "cp" = -0.5, # complejidad minima
+      "cp" = cp, # complejidad minima
       "maxdepth" = vmax_depth, # profundidad máxima del arbol
       "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-      "minbucket" = 5 # minima cantidad de registros en una hoja
+      "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
     )
 
     # Un solo llamado, con la semilla 17
