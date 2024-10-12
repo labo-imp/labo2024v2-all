@@ -4,13 +4,10 @@ gc() # Garbage Collection
 require("data.table")
 require("rpart")
 require("parallel")
-require("primes")
-
 
 PARAM <- list()
 # reemplazar por las propias semillas
-PARAM$semilla_primigenia <- 102191
-PARAM$qsemillas <- 50
+PARAM$semillas <- c(501731, 536651, 553517, 591271, 698437)
 
 # elegir SU dataset comentando/ descomentando
 PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
@@ -100,14 +97,6 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
 
 setwd("~/buckets/b1/") # Establezco el Working Directory
 
-
-# genero numeros primos
-primos <- generate_primes(min = 100000, max = 1000000)
-set.seed(PARAM$semilla_primigenia) # inicializo 
-# me quedo con PARAM$qsemillas   semillas
-PARAM$semillas <- sample(primos, PARAM$qsemillas )
-
-
 # cargo los datos
 dataset <- fread(PARAM$dataset_nom)
 
@@ -131,9 +120,12 @@ salidas
 # paso la lista a vector
 tb_salida <- rbindlist(salidas)
 
+print( tb_salida )
 
-for( i in seq(10, 50, 10) )
-{
-  cat( i, "\t", tb_salida[ 1:i, mean(ganancia_test)], "\n" )
-}
+# finalmente calculo la media (promedio)  de las ganancias
+cat( "ganancia promedio: ", tb_salida[, mean(ganancia_test)], "\n" )
 
+# calculo todos los promedios
+cat(  "ganancia desvio estandar: ", tb_salida[, sd(ganancia_test)], "\n" )
+
+# desvio estandar Distribucion Binomial   sqrt( n * p * (1-p) )
