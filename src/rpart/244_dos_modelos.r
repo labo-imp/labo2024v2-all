@@ -11,7 +11,7 @@ require("ggplot2")
 PARAM <- list()
 # reemplazar por su primer semilla
 PARAM$semilla_primigenia <- 100049
-PARAM$qsemillas <- 20
+PARAM$qsemillas <- 200
 
 # elegir SU dataset comentando/ descomentando
 PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
@@ -29,9 +29,9 @@ PARAM$rpart1 <- list (
 
 PARAM$rpart2 <- list (
   "cp" = -1,
-  "minsplit" = 250,
-  "minbucket" = 125,
-  "maxdepth" = 20
+  "minsplit" = 1900,
+  "minbucket" = 800,
+  "maxdepth" = 3
 )
 
 
@@ -140,8 +140,8 @@ dataset <- fread(PARAM$dataset_nom)
 dataset <- dataset[clase_ternaria != ""]
 
 
-dir.create("~/buckets/b1/exp/EX2410", showWarnings = FALSE)
-setwd("~/buckets/b1/exp/EX2410")
+dir.create("~/buckets/b1/exp/EX2440", showWarnings = FALSE)
+setwd("~/buckets/b1/exp/EX2440")
 
 
 # la funcion mcmapply  llama a la funcion ArbolEstimarGanancia
