@@ -10,14 +10,14 @@ require("ggplot2")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 201661
 PARAM$qsemillas_tope <- 50
 
 # elegir SU dataset comentando/ descomentando
-PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
-# PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
+# PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
-PARAM$training_pct <- 50L  # entre  1L y 99L 
+PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart1 <- list (
   "cp" = -1,
@@ -150,9 +150,16 @@ MejorArbol <- function( qsemillas_tope, training_pct, param_rpart1, param_rpart2
 
     vgan1 <- c( vgan1, res$ganancia1 )
     vgan2 <- c( vgan2, res$ganancia2 )
+    
+    diferencias <- vgan1 - vgan2
+    if (all(diferencias == 0)) {
+      cat("Todas las diferencias son cero, por lo que el valor p es NaN.\n")
+    }
 
     wt <- wilcox.test( vgan1, vgan2, paired=TRUE )
     pvalue <- wt$p.value
+    print("pvalue abajooo")
+    print(pvalue)
 
     cat( isem, res$ganancia1, res$ganancia2, pvalue, "\n" )
     isem <- isem + 1
