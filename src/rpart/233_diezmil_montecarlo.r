@@ -5,20 +5,25 @@ require("data.table")
 require("rpart")
 require("parallel")
 require("primes")
-require("yaml")
+require("ggplot2")
 
 
 PARAM <- list()
 # reemplazar por las propias semillas
-PARAM$qsemillas <- 200L
+PARAM$semilla_primigenia <- 102191
+PARAM$qsemillas <- 10000
+
+# elegir SU dataset comentando/ descomentando
+PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+# PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart <- list (
-  "cp" = -0.25,
-  "minsplit" = 200,
-  "minbucket" = 20,
-  "maxdepth" = 4
+  "cp" = -1, # complejidad minima
+  "minsplit" = 170, # minima cantidad de regs en un nodo para hacer el split
+  "minbucket" = 70, # minima cantidad de regs en una hoja
+  "maxdepth" = 7 # profundidad máxima del arbol
 )
 
 #------------------------------------------------------------------------------
@@ -96,22 +101,22 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
 
 setwd("~/buckets/b1/") # Establezco el Working Directory
 
-#cargo miAmbiente
-miAmbiente <- read_yaml( "~/buckets/b1/miAmbiente.yml" )
-
 
 # genero numeros primos
 primos <- generate_primes(min = 100000, max = 1000000)
-set.seed(miAmbiente$semilla_primigenia) # inicializo 
+set.seed(PARAM$semilla_primigenia) # inicializo 
 # me quedo con PARAM$qsemillas   semillas
 PARAM$semillas <- sample(primos, PARAM$qsemillas )
 
 
-# cargo dataset
-dataset <- fread( miAmbiente$dataset_pequeno )
+# cargo los datos
+dataset <- fread(PARAM$dataset_nom)
 
 # trabajo solo con los datos con clase, es decir 202107
 dataset <- dataset[clase_ternaria != ""]
+
+dir.create("~/buckets/b1/exp/EX2330", showWarnings = FALSE)
+setwd("~/buckets/b1/exp/EX2330")
 
 
 # la funcion mcmapply  llama a la funcion ArbolEstimarGanancia
@@ -123,9 +128,58 @@ salidas <- mcmapply(ArbolEstimarGanancia,
   mc.cores = detectCores()
 )
 
+# muestro la lista de las salidas en testing
+#  para la particion realizada con cada semilla
+salidas
 
 # paso la lista a vector
 tb_salida <- rbindlist(salidas)
 
-cat( "ganancia media :", tb_salida[, mean(ganancia_test)], "\n" )
+fwrite( tb_salida,
+        "tb_salida.txt",
+        sep ="\t" )
 
+
+
+# grafico densidades
+media <- tb_salida[ , mean( ganancia_test) ]
+cuantiles  <-  quantile(  tb_salida[,  ganancia_test ],
+   prob= c(0.05, 0.5, 0.95),
+   na.rm=TRUE )
+
+grafico <- ggplot( tb_salida, aes(x=ganancia_test)) + geom_density(alpha=0.25)  +
+  geom_vline(xintercept=media, linewidth=1, color="red") +
+  geom_vline(xintercept=cuantiles[1], linewidth=0.5, color="blue") +
+  geom_vline(xintercept=cuantiles[2], linewidth=0.5, color="blue") +
+  geom_vline(xintercept=cuantiles[3], linewidth=0.5, color="blue")
+
+pdf("densidad.pdf")
+print(grafico)
+dev.off()
+
+# desvios estandar
+tb_final <- data.table(
+    grupo_size=integer(),
+    grupos=integer(),
+    gan_media=numeric(),
+    gan_sd=numeric()
+)
+
+cant <-  nrow( tb_salida )
+for( q in  c(1,2,4, 8, 16, 32, 64, 128 ) )
+{
+  i <- 1
+  grupos <- 0
+  vgan <- c()
+  while(  i+q-1 <= cant )
+  {
+    gan <- tb_salida[ i:(i+q-1) , mean( ganancia_test) ]
+    vgan <-  c( vgan, gan )
+    i <- i + q
+    grupos <-  grupos + 1
+  }
+  
+  tb_final <- rbindlist( list( tb_final, list( q, grupos, mean(vgan), sd(vgan) ) ) )
+}
+
+print( tb_final )
