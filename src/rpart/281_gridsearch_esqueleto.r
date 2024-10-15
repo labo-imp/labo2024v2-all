@@ -141,12 +141,11 @@ tb_grid_search_detalle <- data.table(
 
 
 # itero por los loops anidados para cada hiperparametro
-
-for (vmax_depth in c(4, 6, 8, 10, 15, 20,30)) {
+for (vmax_depth in c(4, 10, 15, 20,30)) {
   for (vmin_split in c(15000,12000,10000,5000,1000, 400, 200, 100, 50, 20, 10)) {
     for (vmin_bucket in c(15000,12000,10000,5000,1000, 400, 200, 100, 50, 20, 10)) {
-      for(cp in c(-0.05,-0.5,-1){
-    
+      for(cp in c(-0.05,-0.5,-1)) {
+  
     # notar como se agrega
 
     # vminsplit  minima cantidad de registros en un nodo para hacer el split
@@ -165,15 +164,17 @@ for (vmax_depth in c(4, 6, 8, 10, 15, 20,30)) {
       list( tb_grid_search_detalle,
             rbindlist(ganancias) )
     )
-
-  }
-
+      }
+  
   # grabo cada vez TODA la tabla en el loop mas externo
   fwrite( tb_grid_search_detalle,
           file = "gridsearch_detalle.txt",
           sep = "\t" )
+    }
+  }
 }
 
+    
 #----------------------------
 
 # genero y grabo el resumen
