@@ -3,7 +3,7 @@
 require("primes")
 
 # genero numeros primos
-primos <- generate_primes(min = 100000, max = 1000000)
+primos <- generate_primes(min = 100003, max = 1000000)
 
 
 set.seed(102191) # inicializo 
