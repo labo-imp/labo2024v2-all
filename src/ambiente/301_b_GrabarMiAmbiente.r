@@ -7,7 +7,7 @@ require("yaml")
 miAmbiente <- list()
 
 #miAmbiente$modalidad <-  "conceptual"
- miAmbiente$modalidad <-  "vivencial"
+miAmbiente$modalidad <-  "vivencial"
 
 #miAmbiente$dataset_pequeno <- "~/datasets/conceptual_dataset_pequeno.csv"
 miAmbiente$dataset_pequeno <- "~/datasets/vivencial_dataset_pequeno.csv"
@@ -22,7 +22,7 @@ miAmbiente$semilla_primigenia <- 100823L
 
 
 write_yaml( miAmbiente,
-  file="~/buckets/b1/miAmbiente.yml" )
+            file="~/buckets/b1/miAmbiente.yml" )
 
 
 # mantenimiento del ambiente
