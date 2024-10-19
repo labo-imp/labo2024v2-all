@@ -18,8 +18,8 @@ require("ggplot2")
 
 # cambiar aqui los parametros
 PARAM <- list()
-PARAM$minsplit <- 300
-PARAM$minbucket <- 100
+PARAM$minsplit <- 10000
+PARAM$minbucket <- 10000
 PARAM$maxdepth <- 3
 
 #------------------------------------------------------------------------------
