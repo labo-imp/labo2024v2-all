@@ -145,7 +145,7 @@ tb_grid_search_detalle <- data.table(
 for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
   for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
     for (vcp in c(-0.5, 0, 0.1)) {  # Ajuste de cp
-      for (vmin_bucket in c(5, 10, 20)) {  # Ajuste de minbucket
+      for (vmin_bucket in c(5, 10)) {  # Ajuste de minbucket
         
         # Parametrización dinámica basada en los loops
         param_basicos <- list(
