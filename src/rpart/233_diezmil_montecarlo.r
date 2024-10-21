@@ -10,7 +10,7 @@ require("ggplot2")
 
 PARAM <- list()
 # reemplazar por las propias semillas
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 100121
 PARAM$qsemillas <- 10000
 
 # elegir SU dataset comentando/ descomentando
