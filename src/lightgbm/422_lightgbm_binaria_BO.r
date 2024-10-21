@@ -54,6 +54,13 @@ hs <- makeParamSet(
   makeIntegerParam("num_leaves", lower = 8L, upper = 1024L),
   makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
   makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 8000L),
+  makeIntegerParam("lambda_l1", lower = 0L, upper = 100L),
+  makeIntegerParam("lambda_l2", lower = 0L, upper = 100L),
+  makeIntegerParam("min_gain_to_split", lower = 0L, upper = 15L),
+  makeIntegerParam("n_estimators", lower = 9000L, upper = 10000L),
+  makeIntegerParam("bagging_fraction", lower = 0.2, upper = 0.95),
+  makeIntegerParam("max_depth", lower = 3L, upper = 12L),
+  #makeIntegerParam("max_bin", lower = 200L, upper = 300L),
   makeIntegerParam("envios", lower = 5000L, upper = 15000L)
 )
 
@@ -136,6 +143,7 @@ EstimarGanancia_lightgbm <- function(x) {
     first_metric_only = TRUE,
     boost_from_average = TRUE,
     feature_pre_filter = FALSE,
+    #acq = "ei",
     verbosity = -100,
     max_bin = 31, # por ahora, lo dejo fijo
     num_iterations = 9999, # valor grande, lo limita early_stopping_rounds
