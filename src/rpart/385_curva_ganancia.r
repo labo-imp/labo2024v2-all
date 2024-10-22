@@ -19,8 +19,8 @@ require("ggplot2")
 # cambiar aqui los parametros
 PARAM <- list()
 PARAM$minsplit <- 300
-PARAM$minbucket <- 20
-PARAM$maxdepth <- 11
+PARAM$minbucket <- 100
+PARAM$maxdepth <- 3
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -113,13 +113,24 @@ amostrar <- ifelse( miAmbiente$modalidad == "conceptual",
   20000
 )
 
-
+library(grid) 
+# Crear la cadena de texto con las etiquetas y los valores
+texto_hiperparametros <- paste("min_split =", PARAM$minsplit,
+                               "\nmin_bucket =", PARAM$minbucket,
+                               "\nmax_depth =", PARAM$maxdepth)
 gra <- ggplot(
            data = dataset[pos <= amostrar],
            aes( x = pos, y = ganancia_acumulada,
                 color = ifelse(fold == 1, "train", "test") )
              ) + geom_line()
-
+gra <- gra + 
+  annotation_custom(
+    grob = textGrob(texto_hiperparametros, 
+                    x = unit(0.35, "npc"),  # Posición en el gráfico (90% en el eje x)
+                    y = unit(0.15, "npc"), # Posición en el gráfico (5% en el eje y)
+                    just = "right",        # Justificado a la derecha
+                    gp = gpar(col = "blue", fontsize = 10))  # Apariencia)
+  )
 print( gra )
 
 cat( "Train gan max: ", dataset[fold==1, max(ganancia_acumulada)], "\n" )
