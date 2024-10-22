@@ -12,7 +12,7 @@ require("primes")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 523801
+PARAM$semilla_primigenia <- 179107L
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
@@ -21,115 +21,74 @@ PARAM$training_pct <- 70L  # entre  1L y 99L
 # PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
 PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
-#------------------------------------------------------------------------------
-# particionar agrega una columna llamada fold a un dataset
-#  que consiste en una particion estratificada segun agrupa
-# particionar( data=dataset, division=c(70,30), agrupa=clase_ternaria, seed=semilla)
-#   crea una particion 70, 30
-
 particionar <- function(data, division, agrupa = "", campo = "fold", start = 1, seed = NA) {
   if (!is.na(seed)) set.seed(seed)
-
+  
   bloque <- unlist(mapply(function(x, y) {
     rep(y, x)
   }, division, seq(from = start, length.out = length(division))))
-
+  
   data[, (campo) := sample(rep(bloque, ceiling(.N / length(bloque))))[1:.N],
-    by = agrupa
+       by = agrupa
   ]
 }
-#------------------------------------------------------------------------------
 
 ArbolEstimarGanancia <- function(semilla, training_pct, param_basicos) {
-  # particiono estratificadamente el dataset
   particionar(dataset,
-    division = c(training_pct, 100L -training_pct), 
-    agrupa = "clase_ternaria",
-    seed = semilla # aqui se usa SU semilla
+              division = c(training_pct, 100L -training_pct), 
+              agrupa = "clase_ternaria",
+              seed = semilla
   )
-
-  # genero el modelo
-  # predecir clase_ternaria a partir del resto
+  
   modelo <- rpart("clase_ternaria ~ .",
-    data = dataset[fold == 1], # fold==1  es training,  el 70% de los datos
-    xval = 0,
-    control = param_basicos
-  ) # aqui van los parametros del arbol
-
-  # aplico el modelo a los datos de testing
-  prediccion <- predict(modelo, # el modelo que genere recien
-    dataset[fold == 2], # fold==2  es testing, el 30% de los datos
-    type = "prob"
-  ) # type= "prob"  es que devuelva la probabilidad
-
-  # prediccion es una matriz con TRES columnas,
-  #  llamadas "BAJA+1", "BAJA+2"  y "CONTINUA"
-  # cada columna es el vector de probabilidades
-
-
-  # calculo la ganancia en testing  qu es fold==2
+                  data = dataset[fold == 1], 
+                  xval = 0,
+                  control = param_basicos
+  )
+  
+  prediccion <- predict(modelo, dataset[fold == 2], type = "prob")
+  
   ganancia_test <- dataset[
     fold == 2,
     sum(ifelse(prediccion[, "BAJA+2"] > 0.025,
-      ifelse(clase_ternaria == "BAJA+2", 117000, -3000),
-      0
+               ifelse(clase_ternaria == "BAJA+2", 117000, -3000),
+               0
     ))
   ]
-
-  # escalo la ganancia como si fuera todo el dataset
+  
   ganancia_test_normalizada <- ganancia_test / (( 100 - PARAM$training_pct ) / 100 )
-
+  
   return( 
     c( list("semilla" = semilla),
-      param_basicos,
-      list( "ganancia_test" = ganancia_test_normalizada )
-     )
+       param_basicos,
+       list( "ganancia_test" = ganancia_test_normalizada )
+    )
   )
 }
-#------------------------------------------------------------------------------
 
 ArbolesMontecarlo <- function(semillas, param_basicos) {
-
-  # la funcion mcmapply  llama a la funcion ArbolEstimarGanancia
-  #  tantas veces como valores tenga el vector  PARAM$semillas
   salida <- mcmapply(ArbolEstimarGanancia,
-    semillas, # paso el vector de semillas
-    MoreArgs = list(PARAM$training_pct, param_basicos), # aqui paso el segundo parametro
-    SIMPLIFY = FALSE,
-    mc.cores = detectCores()
+                     semillas,
+                     MoreArgs = list(PARAM$training_pct, param_basicos),
+                     SIMPLIFY = FALSE,
+                     mc.cores = detectCores()
   )
-
+  
   return(salida)
 }
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
 
-# Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
-# cargo los datos
+setwd("~/buckets/b1/") 
 
-
-# genero numeros primos
 primos <- generate_primes(min = 100000, max = 1000000)
-set.seed(PARAM$semilla_primigenia) # inicializo 
-# me quedo con PARAM$qsemillas   semillas
+set.seed(PARAM$semilla_primigenia) 
 PARAM$semillas <- sample(primos, PARAM$qsemillas )
 
-
-# cargo los datos
 dataset <- fread(PARAM$dataset_nom)
-# trabajo solo con los datos con clase, es decir 202107
 dataset <- dataset[clase_ternaria != ""]
 
-
-# creo la carpeta donde va el experimento
-# HT  representa  Hiperparameter Tuning
 dir.create("~/buckets/b1/exp/HT2810/", showWarnings = FALSE)
 setwd( "~/buckets/b1/exp/HT2810/" )
 
-
-# genero la data.table donde van los resultados detallados del Grid Search
-# un registro para cada combinacion de < semilla, parametros >
 tb_grid_search_detalle <- data.table(
   semilla = integer(),
   cp = numeric(),
@@ -139,58 +98,60 @@ tb_grid_search_detalle <- data.table(
   ganancia_test = numeric()
 )
 
+# Define hyperparameter values
+cp_values <- c( -0.75, -0.625, -0.5, -0.25, 0, 0.1)
+maxdepth_values <- c(4, 6, 8, 10)
+minsplit_values <- c(1500, 1000, 800, 600, 400)
+minbucket_values <- c(500, 400, 300, 200)
 
-# itero por los loops anidados para cada hiperparametro
+# Total iterations for progress calculation
+total_iterations <- length(cp_values) * length(maxdepth_values) * length(minsplit_values) * length(minbucket_values)
+current_iteration <- 0
 
-for(vcp in c( -0.5, 0, 0.1 ) ){
-  for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-    for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-      for(vmin_bucket in c(2, 4, 8, 16, 32, 64 ) ) {
-        # notar como se agrega
-        
-        # vminsplit  minima cantidad de registros en un nodo para hacer el split
+# Iterate over the hyperparameter values
+for(vcp in cp_values){
+  for (vmax_depth in maxdepth_values) {
+    for (vmin_split in minsplit_values) {
+      for(vmin_bucket in minbucket_values) {
         param_basicos <- list(
-          "cp" = vcp, # complejidad minima
-          "maxdepth" = vmax_depth, # profundidad máxima del arbol
-          "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-          "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
+          "cp" = vcp,
+          "maxdepth" = vmax_depth,
+          "minsplit" = vmin_split,
+          "minbucket" = vmin_bucket
         )
         
-        # Un solo llamado, con la semilla 17
         ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
         
-        # agrego a la tabla
         tb_grid_search_detalle <- rbindlist( 
           list( tb_grid_search_detalle,
                 rbindlist(ganancias) )
         )
         
+        # Progress indicator
+        current_iteration <- current_iteration + 1
+        progress_percent <- (current_iteration / total_iterations) * 100
+        cat(sprintf("Progress: %.2f%%\n", progress_percent))  # Print progress
       }
     }
   }
   
-  # grabo cada vez TODA la tabla en el loop mas externo
-  fwrite( tb_grid_search_detalle,
-          file = "gridsearch_detalle.txt",
-          sep = "\t" )
+  # Save progress at the outer loop level
+  fwrite(tb_grid_search_detalle,
+         file = "gridsearch_detalle.txt",
+         sep = "\t")
 }
 
-#----------------------------
-# genero y grabo el resumen
+# Generate summary
 tb_grid_search <- tb_grid_search_detalle[,
-  list( "ganancia_mean" = mean(ganancia_test),
-    "qty" = .N ),
-  list( cp, maxdepth, minsplit, minbucket )
+                                         list( "ganancia_mean" = mean(ganancia_test),
+                                               "qty" = .N ),
+                                         list( cp, maxdepth, minsplit, minbucket )
 ]
 
-# ordeno descendente por ganancia
 setorder( tb_grid_search, -ganancia_mean )
-
-# genero un id a la tabla
 tb_grid_search[, id := .I ]
 
 fwrite( tb_grid_search,
-  file = "gridsearch.txt",
-  sep = "\t"
+        file = "gridsearch.txt",
+        sep = "\t"
 )
-
