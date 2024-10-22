@@ -1,4 +1,4 @@
-# Optimizacion Bayesiana de hiperparametros de  ranger  (Random Forest)
+no lo vi # Optimizacion Bayesiana de hiperparametros de  ranger  (Random Forest)
 # trabaja con  clase_binaria1   POS = { BAJA+2 }
 # corre en Google Cloud
 

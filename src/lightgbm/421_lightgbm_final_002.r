@@ -10,19 +10,24 @@ require("rlist")
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 PARAM <- list()
-PARAM$experimento <- "KA4210"
+PARAM$experimento <- "KA4210_001"
 
 
 PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 50
-PARAM$finalmodel$learning_rate <- 0.135716462168881
-PARAM$finalmodel$feature_fraction <- 0.648763965283554
-PARAM$finalmodel$min_data_in_leaf <- 3528
-PARAM$finalmodel$num_leaves <- 548
-
+PARAM$finalmodel$num_iterations <- 85
+PARAM$finalmodel$learning_rate <- 0.0747381020963896
+PARAM$finalmodel$feature_fraction <- 0.712646669867502
+PARAM$finalmodel$bagging_fraction <- 0.707608781632608
+PARAM$finalmodel$bagging_freq <- 0
+PARAM$finalmodel$max_depth <- 7
+PARAM$finalmodel$min_sum_hessian_in_leaf <- 7.65454828215428
+PARAM$finalmodel$lambda_l1 <- 8.37244771190187
+PARAM$finalmodel$lambda_l2 <- 0.765650367438517
+PARAM$finalmodel$min_data_in_leaf <- 44
+PARAM$finalmodel$num_leaves <- 52
 PARAM$finalmodel$max_bin <- 31
 
 #------------------------------------------------------------------------------
@@ -107,6 +112,7 @@ dtrain <- lgb.Dataset(
 
 # genero el modelo
 # estos hiperparametros  salieron de una laaarga Optmizacion Bayesiana
+
 modelo <- lgb.train(
   data = dtrain,
   param = list(
@@ -117,6 +123,12 @@ modelo <- lgb.train(
     num_leaves = PARAM$finalmodel$num_leaves,
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     feature_fraction = PARAM$finalmodel$feature_fraction,
+    bagging_fraction = PARAM$finalmodel$bagging_fraction,
+    bagging_freq = PARAM$finalmodel$bagging_freq,
+    max_depth = PARAM$finalmodel$max_depth,
+    min_sum_hessian_in_leaf = PARAM$finalmodel$min_sum_hessian_in_leaf,
+    lambda_l1 = PARAM$finalmodel$lambda_l1,
+    lambda_l2 = PARAM$finalmodel$lambda_l2,
     seed = miAmbiente$semilla_primigenia
   )
 )
@@ -164,8 +176,7 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-#cortes <- seq(9000, 13500, by = 500)
-cortes <- 5000
+cortes <- 1867
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
@@ -179,6 +190,8 @@ for (envios in cortes) {
 
   # subo a Kaggle
   # preparo todo para el submit
+  
+
   comentario <- paste0( "'",
     "envios=", envios,
     " num_iterations=", PARAM$finalmodel$num_iterations,
@@ -186,6 +199,12 @@ for (envios in cortes) {
     " num_leaves=", PARAM$finalmodel$num_leaves,
     " min_data_in_leaf=", PARAM$finalmodel$min_data_in_leaf,
     " feature_fraction=", PARAM$finalmodel$feature_fraction,
+    " bagging_fraction=", PARAM$finalmodel$bagging_fraction,
+    " bagging_freq=", PARAM$finalmodel$bagging_freq,
+    "max_depth" = PARAM$finalmodel$max_depth,
+    "min_sum_hessian_in_leaf" = PARAM$finalmodel$min_sum_hessian_in_leaf,
+    "lambda_l1" = PARAM$finalmodel$lambda_l1,
+    "lambda_l2" = PARAM$finalmodel$lambda_l2,
     "'"
   )
 

@@ -10,20 +10,27 @@ require("rlist")
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 PARAM <- list()
-PARAM$experimento <- "KA4210"
+PARAM$experimento <- "KA4210_001"
 
 
 PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 50
-PARAM$finalmodel$learning_rate <- 0.135716462168881
-PARAM$finalmodel$feature_fraction <- 0.648763965283554
-PARAM$finalmodel$min_data_in_leaf <- 3528
-PARAM$finalmodel$num_leaves <- 548
-
+PARAM$finalmodel$num_iterations <- 87
+PARAM$finalmodel$learning_rate <- 0.0665213330689408
+PARAM$finalmodel$feature_fraction <- 0.642971979518758
+PARAM$finalmodel$bagging_fraction <- 0.68058914074207
+PARAM$finalmodel$bagging_freq <- 0
+PARAM$finalmodel$max_depth <- 6
+PARAM$finalmodel$min_sum_hessian_in_leaf <- 5.56094578339789
+PARAM$finalmodel$lambda_l1 <- 7.78335993605079
+PARAM$finalmodel$lambda_l2 <- 7.20403939341607
+PARAM$finalmodel$min_data_in_leaf <- 34
+PARAM$finalmodel$num_leaves <- 100
 PARAM$finalmodel$max_bin <- 31
+PARAM$finalmodel$min_bin <- 9.99451508476747
+PARAM$finalmodel$min_gain_to_split <- 0.715439292295468
 
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista
@@ -107,6 +114,10 @@ dtrain <- lgb.Dataset(
 
 # genero el modelo
 # estos hiperparametros  salieron de una laaarga Optmizacion Bayesiana
+
+PARAM$finalmodel$min_bin <- 9.99451508476747
+PARAM$finalmodel$min_gain_to_split <- 0.715439292295468
+
 modelo <- lgb.train(
   data = dtrain,
   param = list(
@@ -117,6 +128,14 @@ modelo <- lgb.train(
     num_leaves = PARAM$finalmodel$num_leaves,
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     feature_fraction = PARAM$finalmodel$feature_fraction,
+    bagging_fraction = PARAM$finalmodel$bagging_fraction,
+    bagging_freq = PARAM$finalmodel$bagging_freq,
+    max_depth = PARAM$finalmodel$max_depth,
+    min_sum_hessian_in_leaf = PARAM$finalmodel$min_sum_hessian_in_leaf,
+    lambda_l1 = PARAM$finalmodel$lambda_l1,
+    lambda_l2 = PARAM$finalmodel$lambda_l2,
+    min_bin = PARAM$finalmodel$min_bin,
+    min_gain_to_split = PARAM$finalmodel$min_gain_to_split,
     seed = miAmbiente$semilla_primigenia
   )
 )
@@ -164,8 +183,7 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-#cortes <- seq(9000, 13500, by = 500)
-cortes <- 5000
+cortes <- 2084
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
@@ -179,6 +197,8 @@ for (envios in cortes) {
 
   # subo a Kaggle
   # preparo todo para el submit
+  
+  seed = miAmbiente$semilla_primigenia
   comentario <- paste0( "'",
     "envios=", envios,
     " num_iterations=", PARAM$finalmodel$num_iterations,
@@ -186,6 +206,14 @@ for (envios in cortes) {
     " num_leaves=", PARAM$finalmodel$num_leaves,
     " min_data_in_leaf=", PARAM$finalmodel$min_data_in_leaf,
     " feature_fraction=", PARAM$finalmodel$feature_fraction,
+    " bagging_fraction=", PARAM$finalmodel$bagging_fraction,
+    " bagging_freq=", PARAM$finalmodel$bagging_freq,
+    "max_depth" = PARAM$finalmodel$max_depth,
+    "min_sum_hessian_in_leaf" = PARAM$finalmodel$min_sum_hessian_in_leaf,
+    "lambda_l1" = PARAM$finalmodel$lambda_l1,
+    "lambda_l2" = PARAM$finalmodel$lambda_l2,
+    "min_bin" = PARAM$finalmodel$min_bin,
+    "min_gain_to_split" = PARAM$finalmodel$min_gain_to_split,
     "'"
   )
 
