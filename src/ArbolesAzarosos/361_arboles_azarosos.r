@@ -21,9 +21,9 @@ PARAM$experimento <- 3610
 
 #  cargue aqui los hiperparametros elegidos
 PARAM$rpart <- data.table( 
-  "cp" = -0.8,
-  "minsplit" = 2000,
-  "minbucket" = 900,
+  "cp" = -1,
+  "minsplit" = 100,
+  "minbucket" = 10,
   "maxdepth" = 10
 )
 
