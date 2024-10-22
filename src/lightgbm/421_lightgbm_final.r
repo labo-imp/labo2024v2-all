@@ -10,7 +10,7 @@ require("rlist")
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 PARAM <- list()
-PARAM$experimento <- "HT4220"
+PARAM$experimento <- "KA4210"
 
 
 PARAM$input$training <- c(202107) # meses donde se entrena el modelo
@@ -170,7 +170,7 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-cortes <- seq(4502, 6002, by = 100)
+cortes <- seq(902, 2502, by = 100)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
