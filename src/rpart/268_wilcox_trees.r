@@ -10,7 +10,7 @@ require("ggplot2")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 200003
 PARAM$qsemillas_tope <- 50
 
 # elegir SU dataset comentando/ descomentando
@@ -21,8 +21,8 @@ PARAM$training_pct <- 50L  # entre  1L y 99L
 
 PARAM$rpart1 <- list (
   "cp" = -1,
-  "minsplit" = 800,
-  "minbucket" = 400,
+  "minsplit" = 550,
+  "minbucket" = 250,
   "maxdepth" = 7
 )
 
