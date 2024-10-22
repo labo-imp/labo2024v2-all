@@ -54,7 +54,16 @@ hs <- makeParamSet(
   makeIntegerParam("num_leaves", lower = 8L, upper = 1024L),
   makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
   makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 8000L),
-  makeIntegerParam("envios", lower = 5000L, upper = 15000L)
+  makeIntegerParam("envios", lower = 5000L, upper = 15000L),
+  
+  # Nuevos hiperparámetros sugeridos
+  makeIntegerParam("max_depth", lower = -1L, upper = 15L),  # Controla la profundidad máxima del árbol
+  makeNumericParam("bagging_fraction", lower = 0.5, upper = 1.0),  # Fracción de datos usada en cada iteración
+  makeIntegerParam("bagging_freq", lower = 1L, upper = 10L),  # Frecuencia de bagging en iteraciones
+  makeNumericParam("lambda_l1", lower = 0.0, upper = 10.0),  # Regularización L1
+  makeNumericParam("lambda_l2", lower = 0.0, upper = 10.0),  # Regularización L2
+  makeNumericParam("min_gain_to_split", lower = 0.0, upper = 1.0),  # Ganancia mínima para dividir un nodo
+  makeIntegerParam("max_bin", lower = 64L, upper = 512L)  # Máximo número de bins para discretización
 )
 
 #------------------------------------------------------------------------------
