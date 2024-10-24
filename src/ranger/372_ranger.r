@@ -16,10 +16,10 @@ PARAM$experimento <- 3720
 
 # hiperparámetros de Random Forest
 PARAM$ranger <- list(
-  "num.trees" = 400, # cantidad de arboles
-  "mtry" = 7, # cantidad de atributos que participan en cada split
-  "min.node.size" = 5, # tamaño minimo de las hojas
-  "max.depth" = 15 # 0 significa profundidad infinita
+  "num.trees" = 261, # cantidad de arboles
+  "mtry" = 2, # cantidad de atributos que participan en cada split
+  "min.node.size" = 247, # tamaño minimo de las hojas
+  "max.depth" = 24 # 0 significa profundidad infinita
 )
 
 #------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ entrega <- as.data.table(list(
 
 
 
-nom_arch_kaggle <- "KA3720_001.csv"
+nom_arch_kaggle <- "KA3720_001_V2.csv"
 
 # genero el archivo para Kaggle
 fwrite(entrega,
