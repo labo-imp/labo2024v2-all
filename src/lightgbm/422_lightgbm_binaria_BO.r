@@ -50,18 +50,18 @@ PARAM$hyperparametertuning$NEG_ganancia <- -3000
 
 # Aqui se cargan los bordes de los hiperparametros
 hs <- makeParamSet(
-  makeNumericParam("learning_rate", lower = 0.01, upper = 0.3),
-  makeIntegerParam("num_leaves", lower = 8L, upper = 1024L), # menos de 2^max_depth
+  makeNumericParam("learning_rate", lower = 0.001, upper = 0.5),
+  makeIntegerParam("num_leaves", lower = 8L, upper = 5024L), # menos de 2^max_depth
   makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
   makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 8000L),
-  makeIntegerParam("envios", lower = 0L, upper = 15000L),
-  makeNumericParam("lambda_l1", lower = 0.0, upper = 1.0),
-  makeNumericParam("lambda_l2", lower = 0.0, upper = 1.0),
+  makeIntegerParam("envios", lower = 0L, upper = 10000L),
+  makeNumericParam("lambda_l1", lower = 0.0, upper = 1000),
+  makeNumericParam("lambda_l2", lower = 0.0, upper = 1000),
   makeNumericParam("bagging_fraction", lower = 0.5, upper = 1.0),
   makeIntegerParam("bagging_freq", lower = 1L, upper = 10L),
   makeNumericParam("min_sum_hessian_in_leaf", lower = 0.001, upper = 1.0),
   makeNumericParam("min_gain_to_split", lower = 0.0, upper = 1.0),
-  makeIntegerParam("max_depth", lower = 3L, upper = 16L)
+  makeIntegerParam("max_depth", lower = 3L, upper = 25L)
 )
 
 #------------------------------------------------------------------------------
