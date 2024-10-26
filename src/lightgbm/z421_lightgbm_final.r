@@ -164,7 +164,7 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-cortes <- seq(750, 1200, by = 150)
+cortes <- seq(800, 2000, by = 100)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
