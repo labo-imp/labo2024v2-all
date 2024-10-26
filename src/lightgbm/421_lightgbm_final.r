@@ -25,6 +25,15 @@ PARAM$finalmodel$num_leaves <- 767
 
 PARAM$finalmodel$max_bin <- 368
 
+PARAM$finalmodel$min_gain_to_split <- 0.879194855764924
+PARAM$finalmodel$lambda_l1 <- 0.162771359572108
+PARAM$finalmodel$lambda_l2 <- 1.24131877557008
+PARAM$finalmodel$bagging_freq <- 10
+PARAM$finalmodel$bagging_fraction <- 0.706133328186157
+PARAM$finalmodel$max_depth <- 11
+PARAM$finalmodel$bagging_fraction <- 0.706133328186157
+
+
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista
 # para el primer registro, escribe antes los titulos
@@ -164,7 +173,7 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-cortes <- seq(9000, 13500, by = 500)
+cortes <- seq(800, 2000, by = 100)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
