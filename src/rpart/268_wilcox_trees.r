@@ -10,7 +10,7 @@ require("ggplot2")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 999979
 PARAM$qsemillas_tope <- 50
 
 # elegir SU dataset comentando/ descomentando
