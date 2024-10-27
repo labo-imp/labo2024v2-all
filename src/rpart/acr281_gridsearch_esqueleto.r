@@ -169,7 +169,7 @@ for (vmax_depth in c(5, 10, 15, 20, 25)) {
 
   # grabo cada vez TODA la tabla en el loop mas externo
   fwrite( tb_grid_search_detalle,
-          file = "corrida1_gridsearch_detalle.txt",
+          file = "corrida2_gridsearch_detalle.txt",
           sep = "\t" )
 }
 
