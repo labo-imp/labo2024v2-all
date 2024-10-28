@@ -12,8 +12,10 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
+#envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw-02/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow-02/"
+#envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$arch_ambiente <- "miAmbiente.yml"
@@ -278,14 +280,18 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
-                                        202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
+                                        202001, 202002, 
+                                        #202003, 202004, 
+                                        202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
                                         202101, 202102, 202103, 202104, 202105, 202106, 202107)
   #c(2202107, 202106, 202105, 202104)
   # c(202107, 202106, 202105, 202104, 202103, 202102,202101, 202012, 202011)
 
 
   param_local$train$training <- c(201901, 201902, 201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
-                                  202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
+                                  202001, 202002, 
+                                  #202003, 202004, 
+                                  202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
                                   202101, 202102, 202103, 202104, 202105)
   #c(202105, 202104, 202103, 202102)
   #c(202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009)
@@ -453,7 +459,7 @@ wf_septiembre <- function( pnombrewf )
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
-  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
+  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas= 10 )
   SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()
 
@@ -501,12 +507,14 @@ wf_septiembre()
 #   theme_minimal() +
 #   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ganancia <- read_delim("ganancias_log.txt",
-                         delim = "\t", escape_double = FALSE,
-                         trim_ws = TRUE)
-
-ganancia$semilla %>% unique()
-
-ganancia %>% arrange(desc(ganancia))
+# library(readr)
+# library(tidyverse)
+# ganancia <- read_delim("ganancias_log.txt",
+#                          delim = "\t", escape_double = FALSE,
+#                          trim_ws = TRUE)
+# 
+# ganancia$semilla %>% unique()
+# 
+# ganancia %>% arrange(desc(ganancia))
 
 
