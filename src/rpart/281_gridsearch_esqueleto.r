@@ -12,7 +12,7 @@ require("primes")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 523801
+PARAM$semilla_primigenia <- 100207
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
@@ -142,40 +142,38 @@ tb_grid_search_detalle <- data.table(
 
 # itero por los loops anidados para cada hiperparametro
 
-for(vcp in c( -0.5, 0, 0.1 ) ){
-  for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-    for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-      for(vmin_bucket in c(2, 4, 8, 16, 32, 64 ) ) {
-        # notar como se agrega
+for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
+  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
+    for (vcp in c(-0.5, 0, 0.1)) {  # Ajuste de cp
+      for (vmin_bucket in c(5, 10, 20)) {  # Ajuste de minbucket
         
-        # vminsplit  minima cantidad de registros en un nodo para hacer el split
+        # Parametrización dinámica basada en los loops
         param_basicos <- list(
-          "cp" = vcp, # complejidad minima
-          "maxdepth" = vmax_depth, # profundidad máxima del arbol
-          "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-          "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
+          "cp" = vcp,  # complejidad mínima
+          "maxdepth" = vmax_depth,  # profundidad máxima del árbol
+          "minsplit" = vmin_split,  # tamaño mínimo de nodo para hacer split
+          "minbucket" = vmin_bucket  # mínimo de registros en una hoja
         )
         
-        # Un solo llamado, con la semilla 17
+        # Un solo llamado, con la semilla configurada
         ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
         
-        # agrego a la tabla
+        # Agregar a la tabla el resultado del grid search
         tb_grid_search_detalle <- rbindlist( 
-          list( tb_grid_search_detalle,
-                rbindlist(ganancias) )
+          list(tb_grid_search_detalle, rbindlist(ganancias))
         )
-        
       }
     }
   }
   
-  # grabo cada vez TODA la tabla en el loop mas externo
-  fwrite( tb_grid_search_detalle,
-          file = "gridsearch_detalle.txt",
-          sep = "\t" )
+  # Guardar cada vez toda la tabla en el loop más externo
+  fwrite(tb_grid_search_detalle,
+         file = "gridsearch_detalle.txt",
+         sep = "\t")
 }
 
 #----------------------------
+
 # genero y grabo el resumen
 tb_grid_search <- tb_grid_search_detalle[,
   list( "ganancia_mean" = mean(ganancia_test),
