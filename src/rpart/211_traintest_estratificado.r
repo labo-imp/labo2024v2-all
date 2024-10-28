@@ -5,7 +5,7 @@ require("data.table")
 require("rpart")
 
 PARAM <- list()
-PARAM$semilla <- 102191
+PARAM$semilla <- 123457 #Mi primer numero primo (no se debe modificar nada más en este script)
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart <- list (
