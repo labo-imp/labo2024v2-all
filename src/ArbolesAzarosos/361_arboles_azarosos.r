@@ -15,16 +15,16 @@ require("yaml")
 
 # parametros experimento
 PARAM <- list()
-PARAM$experimento <- 3610
+PARAM$experimento <- 3612
 
 # parametros rpart
 
 #  cargue aqui los hiperparametros elegidos
 PARAM$rpart <- data.table( 
   "cp" = -1,
-  "minsplit" = 1200,
-  "minbucket" = 400,
-  "maxdepth" = 10
+  "minsplit" = 25,
+  "minbucket" = 10,
+  "maxdepth" = 4
 )
 
 # parametros  arbol
@@ -92,8 +92,8 @@ for( icorrida in seq(nrow(PARAM$rpart)) ){
 
   # los parametros que voy a utilizar para rpart
   param_rpart <- PARAM$rpart[ icorrida ]
-
-  set.seed(miAmbiente$semilla_primigenia) # Establezco la semilla aleatoria
+  set.seed(700001)
+  #set.seed(miAmbiente$semilla_primigenia) # Establezco la semilla aleatoria
 
   for (arbolito in seq(PARAM$num_trees_max) ) {
     qty_campos_a_utilizar <- as.integer(length(campos_buenos)
