@@ -64,7 +64,7 @@ hs <- makeParamSet(
   makeIntegerParam("bagging_freq", lower = 1L, upper = 10L),
   makeNumericParam("min_sum_hessian_in_leaf", lower = 1e-5, upper = 10.0)
 )
-
+print("Hola")
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista
 # para el primer registro, escribe antes los titulos
