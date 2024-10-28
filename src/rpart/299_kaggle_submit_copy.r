@@ -7,13 +7,13 @@ require("yaml")
 
 PARAM <- list()
 
-PARAM$modalidad <- "vivencial"  # "conceptual"
+PARAM$modalidad <- "conceptual"
 
 PARAM$rpart <- list (
   "cp" = -0.5,
-  "minsplit" = 600,
-  "minbucket" = 40,
-  "maxdepth" = 4
+  "minsplit" = 800,
+  "minbucket" = 50,
+  "maxdepth" = 200
 )
 
 #------------------------------------------------------------------------------
@@ -114,3 +114,4 @@ if( !file.exists( "contador.yml" ) )
 
 # Genero modelo y submit a Kaggle
 generarmodelo( PARAM$modalidad, PARAM$rpart )
+
