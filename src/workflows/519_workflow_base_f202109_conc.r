@@ -13,8 +13,8 @@ if( !exists("envg") ) envg <- env()  # global environment
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
 #envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw-03/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow-03/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw-05/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow-05/"
 #envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
@@ -281,7 +281,7 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
                                         202001, 202002, 
-                                        #202003, 202004, 
+                                        202003, 202004, 
                                         202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
                                         202101, 202102, 202103, 202104, 202105, 202106, 202107)
   #c(2202107, 202106, 202105, 202104)
@@ -290,7 +290,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$train$training <- c(201901, 201902, 201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
                                   202001, 202002, 
-                                  #202003, 202004, 
+                                  202003, 202004, 
                                   202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
                                   202101, 202102, 202103, 202104, 202105)
   #c(202105, 202104, 202103, 202102)
@@ -459,7 +459,7 @@ wf_septiembre <- function( pnombrewf )
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
-  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas= 10 )
+  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas= 20 )
   SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()
 
