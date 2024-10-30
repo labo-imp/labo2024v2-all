@@ -27,10 +27,10 @@ PARAM$BO_iter <- 100 #cantidad de iteraciones de la Bayesian Optimization
 
 # la letra L al final de 1L significa ENTERO
 PARAM$hs <- makeParamSet(
-    makeNumericParam("cp", lower = -1, upper = 0.1),
-    makeIntegerParam("minsplit", lower = 1L, upper = 8000L),
-    makeIntegerParam("minbucket", lower = 1L, upper = 4000L),
-    makeIntegerParam("maxdepth", lower = 3L, upper = 20L),
+    makeNumericParam("cp", lower = -1, upper = -0.8383),
+    makeIntegerParam("minsplit", lower = 1L, upper = 726L),
+    makeIntegerParam("minbucket", lower = 1L, upper = 363L),
+    makeIntegerParam("maxdepth", lower = 3L, upper = 8L),
     forbidden = quote(minbucket > 0.5 * minsplit)
 )
 # minbuket NO PUEDE ser mayor que la mitad de minsplit
