@@ -196,13 +196,13 @@ FErf_attributes_base <- function( pinputexps,
     num_leaves  = hojas_por_arbol,
     min_data_in_leaf = datos_por_hoja,
     feature_fraction_bynode  = mtry_ratio,
-
+    
     # para que LightGBM emule Random Forest
     boosting = "rf",
     bagging_fraction = ( 1.0 - 1.0/exp(1.0) ),
     bagging_freq = 1.0,
     feature_fraction = 1.0,
-
+    
     # genericos de LightGBM
     max_bin = 31L,
     objective = "binary",
@@ -216,19 +216,18 @@ FErf_attributes_base <- function( pinputexps,
     min_sum_hessian_in_leaf = 0.001,
     lambda_l1 = 0.0,
     lambda_l2 = 0.0,
-
+    
     pos_bagging_fraction = 1.0,
     neg_bagging_fraction = 1.0,
     is_unbalance = FALSE,
     scale_pos_weight = 1.0,
-
+    
     drop_rate = 0.1,
     max_drop = 50,
     skip_drop = 0.5,
-
+    
     extra_trees = FALSE
   )
-
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -319,40 +318,43 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
 
   param_local$lgb_param <- list(
-    boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
+    boosting = "gbdt", # puede ir dart, ni pruebe random_forest
     objective = "binary",
     metric = "custom",
     first_metric_only = TRUE,
     boost_from_average = TRUE,
     feature_pre_filter = FALSE,
     force_row_wise = TRUE, # para reducir warnings
-    verbosity = -100,
-    max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
-    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
-    min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 0.0, # lambda_l1 >= 0.0
-    lambda_l2 = 0.0, # lambda_l2 >= 0.0
-    max_bin = 31L, # lo debo dejar fijo, no participa de la BO
-    num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
-
-    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
-    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
-    is_unbalance = FALSE, #
-    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
-
-    drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
-    max_drop = 50, # <=0 means no limit
-    skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
-
-    extra_trees = FALSE,
-    # Parte variable
-    learning_rate = c( 0.02, 0.3 ),
-    feature_fraction = c( 0.5, 0.9 ),
-    num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 20L, 2000L, "integer" )
+    
+    # Hiperparámetros optimizables
+    max_depth = c(5L, 20L, "integer"), # Profundidad máxima del árbol
+    min_gain_to_split = c(0.0, 1.0), # Mínimo valor de ganancia para realizar un split
+    lambda_l1 = c(0.0, 1000.0), # Regularización L1
+    lambda_l2 = c(0.0, 1000.0), # Regularización L2
+    num_leaves = c(20L, 100L, "integer"), # Número máximo de hojas en cada árbol
+    learning_rate = c(0.01, 0.3), # Tasa de aprendizaje optimizable
+    min_data_in_leaf = c(1L, 50L, "integer"), # Mínimo de datos requeridos en una hoja
+    
+    # Hiperparámetros fijos
+    max_bin = 31L,
+    num_iterations = 9999, # Gran valor limitado por early_stopping_rounds
+    
+    bagging_fraction = c(0.5, 1.0), # Fracción de datos a seleccionar para cada iteración
+    pos_bagging_fraction = 1.0, # Fracción de datos positivos en bagging
+    neg_bagging_fraction = 1.0, # Fracción de datos negativos en bagging
+    is_unbalance = FALSE, # Establece si el dataset está balanceado o no
+    scale_pos_weight = 1.0, # Peso de la clase positiva
+    
+    drop_rate = c(0.1, 0.3), # Probabilidad de dropout en boosting
+    max_drop = 30L, # Máximo número de dropouts permitidos
+    skip_drop = 0.5, # Fracción de datos a saltar durante dropout
+    
+    extra_trees = FALSE, # Si se usan árboles extra o no
+    
+    # Configuración de parámetros de aprendizaje y features
+    feature_fraction = c(0.5, 1.0) # Fracción de features a usar en cada iteración
   )
-
+  
 
   # una Bayesian humilde, pero no descabellada
   param_local$bo_iteraciones <- bo_iteraciones # iteraciones de la Optimizacion Bayesiana
@@ -413,8 +415,8 @@ KA_evaluate_kaggle <- function( pinputexps )
   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
   param_local$envios_desde <-  1600L
-  param_local$envios_hasta <-  2000L
-  param_local$envios_salto <-   100L
+  param_local$envios_hasta <-  2400L
+  param_local$envios_salto <-   200L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
 
   return( exp_correr_script( param_local ) ) # linea fija
