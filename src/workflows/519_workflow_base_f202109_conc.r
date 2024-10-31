@@ -328,17 +328,17 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     force_row_wise = TRUE, # para reducir warnings
     
     # Hiperparámetros optimizables
-    max_depth = c(5L, 20L, "integer"), # Profundidad máxima del árbol
+    max_depth = 6, # Profundidad máxima del árbol
     min_gain_to_split = c(0.0, 1.0), # Mínimo valor de ganancia para realizar un split
     lambda_l1 = c(0.0, 1000.0), # Regularización L1
     lambda_l2 = c(0.0, 1000.0), # Regularización L2
     num_leaves = c(20L, 100L, "integer"), # Número máximo de hojas en cada árbol
     learning_rate = c(0.01, 0.3), # Tasa de aprendizaje optimizable
-    min_data_in_leaf = c(1L, 50L, "integer"), # Mínimo de datos requeridos en una hoja
+    min_data_in_leaf = c(1L, 2000L, "integer"), # Mínimo de datos requeridos en una hoja
     
     # Hiperparámetros fijos
     max_bin = 31L,
-    num_iterations = 9999, # Gran valor limitado por early_stopping_rounds
+    num_iterations = 9999, # Gran valor limitado por early_stopping_rounds // Q arbolitos lightGBM
     
     bagging_fraction = c(0.5, 1.0), # Fracción de datos a seleccionar para cada iteración
     pos_bagging_fraction = 1.0, # Fracción de datos positivos en bagging
