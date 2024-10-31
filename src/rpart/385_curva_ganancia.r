@@ -18,9 +18,9 @@ require("ggplot2")
 
 # cambiar aqui los parametros
 PARAM <- list()
-PARAM$minsplit <- 300
-PARAM$minbucket <- 20
-PARAM$maxdepth <- 11
+PARAM$minsplit <- 600
+PARAM$minbucket <- 300
+PARAM$maxdepth <- 3
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -118,8 +118,14 @@ gra <- ggplot(
            data = dataset[pos <= amostrar],
            aes( x = pos, y = ganancia_acumulada,
                 color = ifelse(fold == 1, "train", "test") )
-             ) + geom_line()
-
+             ) + geom_line() + 
+  labs(title = paste0("minsplit: ", PARAM$minsplit, ", minbucket: ", 
+                      PARAM$minbucket, ", maxdepth: ", 
+                      PARAM$maxdepth, "\n",
+                      "Train gan max: ", dataset[fold==1, max(ganancia_acumulada)], "\n",
+                      "Test  gan max: ", dataset[fold==2, max(ganancia_acumulada)]), color = "Grupo") +
+  theme(legend.position = "bottom")
+  
 print( gra )
 
 cat( "Train gan max: ", dataset[fold==1, max(ganancia_acumulada)], "\n" )

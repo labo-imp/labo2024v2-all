@@ -278,5 +278,19 @@ system( "~/install/repobrutalcopy.sh" )
 
 # apago la virtual machine  para que no facture Google Cloud
 # Give them nothing, but take from them everything.
-system( "sudo shutdown" )
+system( "~/install/apagar-vm.sh" )
+
+
+library(readr)
+library(tidyverse)
+gridsearch <- read_delim("HT348.txt", 
+                         delim = "\t", escape_double = FALSE, 
+                         trim_ws = TRUE)
+gridsearch
+
+gridsearch %>% arrange(desc(ganancia))
+
+gridsearch %>% head(1)
+gridsearch %>% tail(1)
+
 
