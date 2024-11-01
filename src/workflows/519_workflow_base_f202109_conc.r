@@ -328,26 +328,27 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     force_row_wise = TRUE, # para reducir warnings
     
     # Hiperparámetros optimizables
-    max_depth = 6, # Profundidad máxima del árbol
+    max_depth = -1L, # Profundidad máxima del árbol
     min_gain_to_split = c(0.0, 1.0), # Mínimo valor de ganancia para realizar un split
-    lambda_l1 = c(0.0, 1000.0), # Regularización L1
-    lambda_l2 = c(0.0, 1000.0), # Regularización L2
-    num_leaves = c(20L, 100L, "integer"), # Número máximo de hojas en cada árbol
-    learning_rate = c(0.01, 0.3), # Tasa de aprendizaje optimizable
+    lambda_l1 = c(0.0, 10000.0), # Regularización L1
+    lambda_l2 = c(0.0, 10000.0), # Regularización L2
+    num_leaves = c(20L, 2000L, "integer"), # Número máximo de hojas en cada árbol
+    learning_rate = c(0.001, 0.4), # Tasa de aprendizaje optimizable
     min_data_in_leaf = c(1L, 2000L, "integer"), # Mínimo de datos requeridos en una hoja
     
     # Hiperparámetros fijos
     max_bin = 31L,
     num_iterations = 9999, # Gran valor limitado por early_stopping_rounds // Q arbolitos lightGBM
     
-    bagging_fraction = c(0.5, 1.0), # Fracción de datos a seleccionar para cada iteración
+    bagging_freq = 5,
+    bagging_fraction = c(0.4, 1.0), # Fracción de datos a seleccionar para cada iteración
     pos_bagging_fraction = 1.0, # Fracción de datos positivos en bagging
     neg_bagging_fraction = 1.0, # Fracción de datos negativos en bagging
     is_unbalance = FALSE, # Establece si el dataset está balanceado o no
-    scale_pos_weight = 1.0, # Peso de la clase positiva
+    scale_pos_weight = c(1L, 160L, "integer"), # Peso de la clase positiva
     
     drop_rate = c(0.1, 0.3), # Probabilidad de dropout en boosting
-    max_drop = 30L, # Máximo número de dropouts permitidos
+    max_drop = 50L, # Máximo número de dropouts permitidos
     skip_drop = 0.5, # Fracción de datos a saltar durante dropout
     
     extra_trees = FALSE, # Si se usan árboles extra o no
@@ -448,7 +449,7 @@ wf_septiembre <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 1000 )  # iteraciones inteligentes
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
