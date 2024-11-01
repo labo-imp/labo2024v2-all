@@ -1,16 +1,5 @@
 #!/usr/bin/env Rscript
-cat( "ETAPA  1311_FE_rfatributes_smart_GINI_001.r  INIT\n")
-
-# Workflow  Feature Engineering intrames hojas de Random Forest
-
-# inputs
-#  * dataset
-#  * parametros del Random Forest
-# output  
-#   muy gran dataset :
-#     misma cantidad de registros
-#     nuevos atributos derivados de las hojas de un Random Forest
-
+cat( "ETAPA  1311_FE_rfatributes_Smart_GINI.r  INIT\n")
 
 
 # limpio la memoria
@@ -18,23 +7,41 @@ rm(list = ls(all.names = TRUE)) # remove all objects
 gc(full = TRUE, verbose= FALSE) # garbage collection
 
 require("data.table", quietly=TRUE)
-require("yaml", quietly=TRUE)
+require("yaml")
 require("primes", quietly=TRUE)
 
 require("lightgbm", quietly=TRUE)
+require("rlang")
 
 
 #cargo la libreria
-# args <- c( "~/labo2024ba" )
+#args <- c( "~/labo2024ba" )
 args <- commandArgs(trailingOnly=TRUE)
-source( paste0( args[1] , "/src/lib/action_lib.r" ) )
+#source( paste0( args[1] , "/src/lib/action_lib.r" ) )
+
+
+
+#---------
+#Definicion de entorno env
+if( !exists("envg") ) envg <- env()  # global environment 
+
+setwd("~/buckets/b1")
+
+envg$EXPENV <- list()
+envg$EXPENV$miAmbiente <- read_yaml( "miAmbiente.yml" )
+envg$PARAM <- list()
+
+setwd("~/buckets/b1/expw/FErf-0001")
+envg$PARAM <- read_yaml( "parametros.yml" )
+envg$PARAM$lgb_param$seed <- envg$PARAM$semilla
+
+
+envg$OUTPUT<- list()
 
 #------------------------------------------------------------------------------
-
 AgregaVarRandomForest <- function() {
 
   cat( "inicio AgregaVarRandomForest()\n")
-  cat( "Version Smart_Gini con umbral de Split_Gain de 100\n")
   gc(verbose= FALSE)
   dataset[, clase01 := 0L ]
   dataset[ get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase01_valor1, 
@@ -63,7 +70,6 @@ AgregaVarRandomForest <- function() {
   cat( "Fin construccion RandomForest\n" )
   # grabo el modelo, achivo .model
   lgb.save(modelo, file="modelo.model" )
-
   qarbolitos <- copy(envg$PARAM$lgb_param$num_iterations)
   
   #------------split_nodes-----------------------
@@ -86,6 +92,8 @@ AgregaVarRandomForest <- function() {
     gini_nodes[[arbolito + 1]] <- gini_tree  # Almacenar en gini_nodes, +1 porque R indexa desde 1
   }
   
+  #-----------------------------------
+  
   
 
   periodos <- dataset[ , unique( get(envg$PARAM$dataset_metadata$periodo) ) ]
@@ -103,6 +111,7 @@ AgregaVarRandomForest <- function() {
     )
     cat( "Fin prediccion\n" )
 
+
     for( arbolito in 1:qarbolitos )
     {
        cat( arbolito, " " )
@@ -111,7 +120,6 @@ AgregaVarRandomForest <- function() {
        for (pos in 1:length(hojas_arbol)) {
          # el numero de nodo de la hoja, estan salteados
          nodo_id <- hojas_arbol[pos]
-         #modificacion
          split_gain  = gini_nodes[[arbolito]][nodo_id][1]
          if (!is.na(split_gain) && split_gain > 100){
            #Crea la variable solo si la hoja cumple el criterio
@@ -120,12 +128,13 @@ AgregaVarRandomForest <- function() {
              "_", sprintf("%03d", nodo_id)
            ) :=  as.integer( nodo_id == prediccion[ , arbolito]) ]
          }
-   
+         
+
        }
 
        rm( hojas_arbol )
     }
-    cat( "Modifiacion exitosa\n" )
+    cat( "\n" )
 
     rm( prediccion )
     rm( datamatrix )
@@ -141,25 +150,12 @@ AgregaVarRandomForest <- function() {
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-cat( "ETAPA  z1311_FE_rfatributes.r  START\n")
-action_inicializar() 
+cat( "ETAPA  1311_FE_rfatributes?Smart_GINI.r  START\n")
 
-envg$PARAM$lgb_param$seed <- envg$PARAM$semilla
-
-# cargo el dataset donde voy a entrenar
-# esta en la carpeta del exp_input y siempre se llama  dataset.csv.gz
-# cargo el dataset
-envg$PARAM$dataset <- paste0( "./", envg$PARAM$input, "/dataset.csv.gz" )
-envg$PARAM$dataset_metadata <- read_yaml( paste0( "./", envg$PARAM$input, "/dataset_metadata.yml" ) )
-
-cat( "lectura dataset\n")
-action_verificar_archivo( envg$PARAM$dataset )
-cat( "Iniciando lectura del dataset\n" )
+envg$PARAM$exp <- "/home/joaquindebrida/buckets/b1/expw/"
+envg$PARAM$dataset_metadata <- read_yaml( paste0( envg$PARAM$exp, envg$PARAM$input, "/dataset_metadata.yml" ) )
+envg$PARAM$dataset <- paste0(envg$PARAM$exp, envg$PARAM$input, "/dataset.csv.gz" )
 dataset <- fread(envg$PARAM$dataset)
-cat( "Finalizada lectura del dataset\n" )
-
-GrabarOutput()
-
 #--------------------------------------
 # ordeno el dataset por primary key
 #  es MUY  importante esta linea
@@ -233,4 +229,4 @@ GrabarOutput()
 #  archivos tiene a los files que debo verificar existen para no abortar
 
 action_finalizar( archivos = c("dataset.csv.gz","dataset_metadata.yml")) 
-cat( "ETAPA  1311_FE_rfatributes_smart_GINI_001.r   END\n")
+cat( "ETAPA  1311_FE_rfatributes_Smart_GINI.r  END\n")
