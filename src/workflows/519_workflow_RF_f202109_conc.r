@@ -439,7 +439,7 @@ wf_septiembre <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
 
-  #llamado a la version _smart_GINI
+  #llamado a la version _smart_GINI /// originalmente 20 arbolitos
   FErf_attributes_smart_GINI( arbolitos= 20,
     hojas_por_arbol= 16,
     datos_por_hoja= 1000,
@@ -450,7 +450,7 @@ wf_septiembre <- function( pnombrewf )
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
-  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
+  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=10 ) #aqui, semillas =20!
   SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()
 

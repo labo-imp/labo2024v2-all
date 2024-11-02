@@ -34,7 +34,7 @@ source( paste0( args[1] , "/src/lib/action_lib.r" ) )
 AgregaVarRandomForest <- function() {
 
   cat( "inicio AgregaVarRandomForest()\n")
-  cat( "Version Smart_Gini con umbral de Split_Gain de 100\n")
+  cat( "Version Smart_Gini con umbral de Split_Gain de 500\n")
   gc(verbose= FALSE)
   dataset[, clase01 := 0L ]
   dataset[ get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase01_valor1, 
@@ -113,7 +113,7 @@ AgregaVarRandomForest <- function() {
          nodo_id <- hojas_arbol[pos]
          #modificacion
          split_gain  = gini_nodes[[arbolito]][nodo_id][1]
-         if (!is.na(split_gain) && split_gain > 100){
+         if (!is.na(split_gain) && split_gain > 500){
            #Crea la variable solo si la hoja cumple el criterio
            dataset[ get(envg$PARAM$dataset_metadata$periodo)== periodo, paste0(
              "rf_", sprintf("%03d", arbolito),
