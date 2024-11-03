@@ -305,4 +305,15 @@ system( "~/install/repobrutalcopy.sh" )
 # Give them nothing, but take from them everything.
 system( "sudo shutdown" )
 
+library(readr)
+library(tidyverse)
+getwd()
+gridsearch <- read_delim("HT3740.txt", 
+                         delim = "\t", escape_double = FALSE, 
+                         trim_ws = TRUE)
+gridsearch
 
+gridsearch %>% arrange(desc(ganancia))
+
+gridsearch %>% head(1)
+gridsearch %>% tail(1)

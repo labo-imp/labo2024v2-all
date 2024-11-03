@@ -55,30 +55,24 @@ ganancia_3 %>% group_by(semilla) %>% count()
 ganancia_3 %>% arrange(desc(ganancia))
 
 
+## Sin meses pico
 
-### Sin Meses MAYO y JUNIO
-
-path = '~/buckets/b1/expw-00/expw_KA-0012_ganancias_log.txt'
+path = '~/buckets/b1/flow-07/wf_septiembre-002/011-KA_evaluate_kaggle/ganancias_log.txt'
 ganancia_4 <- read_delim(path,
                          delim = "\t", escape_double = FALSE,
                          trim_ws = TRUE)
 
-ganancia_4 = ganancia_4 %>% filter(semilla != -1) %>% tail(100)
+ganancia_4 = ganancia_2 %>% filter(semilla != -1)
 
 ganancia_4 %>% group_by(semilla) %>% count()
 
 ganancia_4 %>% arrange(desc(ganancia))
 
 
-
-
 ##TESTS 
 
 #EXP1 
 wilcox.test(ganancia$ganancia,ganancia_1$ganancia, paired = TRUE)
-
-#EXP1 BIS
-wilcox.test(ganancia$ganancia,ganancia_4$ganancia, paired = TRUE)
 
 #EXP2 
 wilcox.test(ganancia_1$ganancia,ganancia_2$ganancia, paired = TRUE)
@@ -196,34 +190,5 @@ ganancia_3 %>%
            color = "red", vjust = -0.5, fontface = "bold") + # Etiqueta para el promedio
   scale_x_continuous(breaks = seq(1400, 2600, by = 200)) +
   labs(x = "Corte", y = "Ganancia", title = "Ganancia por Corte - MESES RECIENTES") +
-  theme_minimal()
-
-
-
-# Assuming df is your data frame name
-df_summary_4 <- ganancia_4 %>%
-  group_by(corte) %>%
-  summarize(
-    min_ganancia = min(ganancia),
-    med_ganancia = median(ganancia),
-    max_ganancia = max(ganancia)
-  )
-
-df_summary_4
-
-# Calcular el promedio de ganancia
-promedio_ganancia_4<- mean(ganancia_4$ganancia, na.rm = TRUE)
-
-ganancia_4 %>%
-  left_join(df_summary_4, by = "corte") %>% 
-  ggplot(aes(x = corte, y = ganancia)) +
-  geom_jitter(color = "grey", alpha = 0.6) + # Puntos individuales
-  geom_point(aes(y = med_ganancia), color = "black", size = 3) +  # Punto para la mediana
-  geom_errorbar(aes(ymin = min_ganancia, ymax = max_ganancia), color = "black") + # Barras de error
-  geom_hline(yintercept = promedio_ganancia_4, color = "red", linetype = "dashed") + # Línea de promedio
-  annotate("text", x = 2000, y = promedio_ganancia_4, label = paste("Promedio:", round(promedio_ganancia_4, 2)), 
-           color = "red", vjust = -0.5, fontface = "bold") + # Etiqueta para el promedio
-  scale_x_continuous(breaks = seq(1400, 2600, by = 200)) +
-  labs(x = "Corte", y = "Ganancia", title = "Ganancia por Corte - MESES PANDEMIA LAG+2") +
   theme_minimal()
 
