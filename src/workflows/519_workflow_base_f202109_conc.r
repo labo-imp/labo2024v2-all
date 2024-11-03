@@ -12,8 +12,8 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw-11/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow-11/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw-12/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow-12/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$arch_ambiente <- "miAmbiente.yml"
@@ -282,7 +282,10 @@ TS_strategy_base9 <- function( pinputexps )
                                         202003, 202004, 
                                         202005, 202006, 202007, 
                                         202008, 202009, 202010, 
-                                        202011,202012,202101 )
+                                        202011,
+                                        202012,
+                                        202101,
+                                        202102, 202103, 202104, 202105,202106, 202107 )
     
     #201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
     #202001, 202002, 
@@ -301,14 +304,14 @@ TS_strategy_base9 <- function( pinputexps )
                                   202003, 202004, 
                                   202005, 202006, 202007, 
                                   202008, 202009, 202010, 
-                                  202011)
-                                  #202012,
-                                  #202101) 
-                                  #202102, 202103, 202104, 202105
+                                  202011,
+                                  202012,
+                                  202101,
+                                  202102, 202103, 202104, 202105)
   #c(202105, 202104, 202103, 202102)
   #c(202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009)
-  param_local$train$validation <- c(202012)
-  param_local$train$testing <- c(202101)
+  param_local$train$validation <- c(202106)
+  param_local$train$testing <- c(202107)
   
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -371,10 +374,10 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.02, 0.3 ),
+    learning_rate = c( 0.02, 0.6 ),
     feature_fraction = c( 0.5, 0.9 ),
-    num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 20L, 2000L, "integer" )
+    num_leaves = c( 1000L, 4096L,  "integer" ),#c( 8L, 2048L,  "integer" ),
+    min_data_in_leaf = c( 1000L, 4000L, "integer" )#c( 20L, 2000L, "integer" )
   )
   
   
