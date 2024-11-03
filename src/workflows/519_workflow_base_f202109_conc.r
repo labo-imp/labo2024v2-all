@@ -141,7 +141,8 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  #param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -150,7 +151,8 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$tendencia <- TRUE
   param_local$Tendencias1$minimo <- FALSE
   param_local$Tendencias1$maximo <- FALSE
-  param_local$Tendencias1$promedio <- FALSE
+  #param_local$Tendencias1$promedio <- FALSE
+  param_local$Tendencias1$promedio <- TRUE
   param_local$Tendencias1$ratioavg <- FALSE
   param_local$Tendencias1$ratiomax <- FALSE
 
@@ -412,8 +414,10 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
+  #param_local$envios_desde <-  1600L
+  #param_local$envios_hasta <-  2400L
   param_local$envios_desde <-  1600L
-  param_local$envios_hasta <-  2400L
+  param_local$envios_hasta <-  2200L
   param_local$envios_salto <-   200L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
 
@@ -434,7 +438,8 @@ wf_septiembre <- function( pnombrewf )
   DT_incorporar_dataset_competencia2024()
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  #DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="deflacion")
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 20,
