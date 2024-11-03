@@ -329,19 +329,19 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     
     # Hiperparámetros optimizables
     max_depth = -1L, # Profundidad máxima del árbol
-    min_gain_to_split = c(0.0, 1.0), # Mínimo valor de ganancia para realizar un split
-    lambda_l1 = c(0.0, 10000.0), # Regularización L1
-    lambda_l2 = c(0.0, 10000.0), # Regularización L2
-    num_leaves = c(20L, 2000L, "integer"), # Número máximo de hojas en cada árbol
+    min_gain_to_split = c(0.0, 15.0), # Mínimo valor de ganancia para realizar un split
+    lambda_l1 = c(0.0, 100.0), # Regularización L1
+    lambda_l2 = c(0.0, 100.0), # Regularización L2
+    num_leaves = c(20L, 4000L, "integer"), # Número máximo de hojas en cada árbol
     learning_rate = c(0.001, 0.4), # Tasa de aprendizaje optimizable
-    min_data_in_leaf = c(1L, 2000L, "integer"), # Mínimo de datos requeridos en una hoja
+    min_data_in_leaf = c(1L, 1000L, "integer"), # Mínimo de datos requeridos en una hoja
     
     # Hiperparámetros fijos
     max_bin = 31L,
     num_iterations = 9999, # Gran valor limitado por early_stopping_rounds // Q arbolitos lightGBM
     
-    bagging_freq = 5,
-    bagging_fraction = c(0.4, 1.0), # Fracción de datos a seleccionar para cada iteración
+    bagging_freq = 3,
+    bagging_fraction = c(0.5, 1.0), # Fracción de datos a seleccionar para cada iteración
     pos_bagging_fraction = 1.0, # Fracción de datos positivos en bagging
     neg_bagging_fraction = 1.0, # Fracción de datos negativos en bagging
     is_unbalance = FALSE, # Establece si el dataset está balanceado o no
@@ -449,7 +449,7 @@ wf_septiembre <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 100 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
