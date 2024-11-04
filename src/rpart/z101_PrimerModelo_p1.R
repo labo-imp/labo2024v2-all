@@ -11,21 +11,32 @@ require("rpart.plot")
 setwd("~/buckets/b1") # Establezco el Working Directory
 
 # cargo el dataset pequeno vivencial del disco local
-dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
+#dataset <- fread("~/datasets/conceptual_dataset_pequeno.csv")
 
-dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
-dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
+dataset <- fread("~/buckets/b1/exp/HT2810/gridsearch_conceptual2.txt")
+library(dplyr)
+dataset <- dataset %>%
+  select(-qty, -id, -cp)
+
+
+set.seed(100151)
+indice <- sample(nrow(dataset), size = nrow(dataset)*0.7)
+dtrain <- dataset[indice,]
+dapply <- dataset[-indice,]
+
+#dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
+#dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
 
 # genero el modelo,  aqui se construye el arbol
 # quiero predecir clase_ternaria a partir de el resto de las variables
 modelo <- rpart(
-    formula = "clase_ternaria ~ .",
-    data = dtrain, # los datos donde voy a entrenar
+    formula = "ganancia_mean ~ .",
+    data = dataset, # los datos donde voy a entrenar
     xval = 0,
     cp = -0.3, # esto significa no limitar la complejidad de los splits
-    minsplit = 0, # minima cantidad de registros para que se haga el split
-    minbucket = 1, # tamaño minimo de una hoja
-    maxdepth = 3  # profundidad maxima del arbol
+    minsplit = 100, # minima cantidad de registros para que se haga el split
+    minbucket = 2, # tamaño minimo de una hoja
+    maxdepth = 4  # profundidad maxima del arbol
 )
 
 
@@ -48,19 +59,19 @@ prediccion <- predict(
 # cada columna es el vector de probabilidades
 
 # agrego a dapply una columna nueva que es la probabilidad de BAJA+2
-dapply[, prob_baja2 := prediccion[, "BAJA+2"]]
+#dapply[, prob_baja2 := prediccion[, "BAJA+2"]]
 
 # solo le envio estimulo a los registros
 #  con probabilidad de BAJA+2 mayor  a  1/40
-dapply[, Predicted := as.numeric(prob_baja2 > 1 / 40)]
+#dapply[, Predicted := as.numeric(prob_baja2 > 1 / 40)]
 
 # genero el archivo para Kaggle
 # primero creo la carpeta donde va el experimento
-dir.create("./exp/")
-dir.create("./exp/KA2001")
+#dir.create("./exp/")
+#dir.create("./exp/KA2001")
 
 # solo los campos para Kaggle
-fwrite(dapply[, list(numero_de_cliente, Predicted)],
-        file = "./exp/KA2001/K101_001_viv.csv",
-        sep = ","
-)
+#fwrite(dapply[, list(numero_de_cliente, Predicted)],
+#        file = "./exp/KA2001/K101_007_conc.csv",
+#        sep = ","
+#)
