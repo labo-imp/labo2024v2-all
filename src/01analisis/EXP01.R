@@ -1,5 +1,6 @@
 library(readr)
 library(tidyverse)
+system('~/install/reposync.sh')
 
 ## Con Meses de Pandemia ##
 path = '~/buckets/b1/flow-05/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt'
@@ -82,6 +83,21 @@ ganancia_4 %>% group_by(semilla) %>% count()
 ganancia_4 %>% arrange(desc(ganancia))
 
 
+## Sin 2019
+
+path = '~/buckets/b1/flow-13/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt'
+system('cp ~/buckets/b1/flow-13/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt ~/labo2024v2/src/01analisis/data/ganancias_log_5.txt')
+
+ganancia_5 <- read_delim(path,
+                         delim = "\t", escape_double = FALSE,
+                         trim_ws = TRUE)
+
+ganancia_5 = ganancia_5 %>% filter(semilla != -1)
+
+ganancia_5 %>% group_by(semilla) %>% count()
+
+ganancia_5 %>% arrange(desc(ganancia))
+
 ##TESTS 
 
 #EXP1 
@@ -95,6 +111,9 @@ wilcox.test(ganancia$ganancia,ganancia_3$ganancia, paired = TRUE)
 
 #EXP4
 wilcox.test(ganancia$ganancia,ganancia_4$ganancia, paired = TRUE)
+
+#EXP5
+wilcox.test(ganancia$ganancia,ganancia_5$ganancia, paired = TRUE)
 
 
 # Assuming df is your data frame name
@@ -236,5 +255,33 @@ ganancia_4 %>%
   scale_x_continuous(breaks = seq(1400, 2600, by = 200)) +
   labs(x = "Corte", y = "Ganancia", title = "Ganancia por Corte - SIN MESES Pico") +
   theme_minimal()
+
+# Assuming df is your data frame name
+df_summary_5 <- ganancia_5 %>%
+  group_by(corte) %>%
+  summarize(
+    min_ganancia = min(ganancia),
+    med_ganancia = median(ganancia),
+    max_ganancia = max(ganancia)
+  )
+
+df_summary_5
+
+# Calcular el promedio de ganancia
+promedio_ganancia_5<- mean(ganancia_5$ganancia, na.rm = TRUE)
+
+ganancia_5 %>%
+  left_join(df_summary_5, by = "corte") %>% 
+  ggplot(aes(x = corte, y = ganancia)) +
+  geom_jitter(color = "grey", alpha = 0.6) + # Puntos individuales
+  geom_point(aes(y = med_ganancia), color = "black", size = 3) +  # Punto para la mediana
+  geom_errorbar(aes(ymin = min_ganancia, ymax = max_ganancia), color = "black") + # Barras de error
+  geom_hline(yintercept = promedio_ganancia_5, color = "red", linetype = "dashed") + # Línea de promedio
+  annotate("text", x = 2000, y = promedio_ganancia_5, label = paste("Promedio:", round(promedio_ganancia_5, 2)), 
+           color = "red", vjust = -0.5, fontface = "bold") + # Etiqueta para el promedio
+  scale_x_continuous(breaks = seq(1400, 2600, by = 200)) +
+  labs(x = "Corte", y = "Ganancia", title = "Ganancia por Corte - SIN 2019") +
+  theme_minimal()
+
 
 
