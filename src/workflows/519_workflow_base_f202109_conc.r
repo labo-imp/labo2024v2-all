@@ -141,18 +141,19 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  #param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
-  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
+  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  #param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
-  param_local$Tendencias1$ventana <- 6
+  #param_local$Tendencias1$ventana <- 6
+  param_local$Tendencias1$ventana <- 12
   param_local$Tendencias1$tendencia <- TRUE
   param_local$Tendencias1$minimo <- FALSE
   param_local$Tendencias1$maximo <- FALSE
-  #param_local$Tendencias1$promedio <- FALSE
-  param_local$Tendencias1$promedio <- TRUE
+  param_local$Tendencias1$promedio <- FALSE
+  #param_local$Tendencias1$promedio <- TRUE
   param_local$Tendencias1$ratioavg <- FALSE
   param_local$Tendencias1$ratiomax <- FALSE
 
@@ -280,11 +281,11 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
-    202101, 202012, 202011)
+    202101, 202012, 202011, 202010,202009,202008)
 
 
   param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,
-    202012, 202011, 202010, 202009)
+    202012, 202011, 202010, 202009,202008,202007,202006)
   param_local$train$validation <- c(202106)
   param_local$train$testing <- c(202107)
 
@@ -416,7 +417,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   #param_local$envios_desde <-  1600L
   #param_local$envios_hasta <-  2400L
-  param_local$envios_desde <-  1600L
+  param_local$envios_desde <-  1400L
   param_local$envios_hasta <-  2200L
   param_local$envios_salto <-   200L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
@@ -442,15 +443,19 @@ wf_septiembre <- function( pnombrewf )
   DR_drifting_base(metodo="deflacion")
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
-    mtry_ratio= 0.2
+  #FErf_attributes_base( arbolitos= 20,
+    #hojas_por_arbol= 16,
+    #datos_por_hoja= 1000,
+    #mtry_ratio= 0.2
+  FErf_attributes_base( arbolitos= 24,
+    hojas_por_arbol= 20,
+    datos_por_hoja= 1200,
+    mtry_ratio= 0.2  
   )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 60 )  # iteraciones inteligentes
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
