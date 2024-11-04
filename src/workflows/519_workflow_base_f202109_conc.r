@@ -330,11 +330,11 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     # Hiperparámetros optimizables
     max_depth = -1L, # Profundidad máxima del árbol
     min_gain_to_split = c(0.0, 15.0), # Mínimo valor de ganancia para realizar un split
-    lambda_l1 = c(0.0, 100.0), # Regularización L1
-    lambda_l2 = c(0.0, 100.0), # Regularización L2
-    num_leaves = c(20L, 4000L, "integer"), # Número máximo de hojas en cada árbol
-    learning_rate = c(0.001, 0.4), # Tasa de aprendizaje optimizable
-    min_data_in_leaf = c(1L, 1000L, "integer"), # Mínimo de datos requeridos en una hoja
+    lambda_l1 = c(0.0, 1000.0), # Regularización L1
+    lambda_l2 = c(0.0, 1000.0), # Regularización L2
+    num_leaves = c(20L, 2000L, "integer"), # Número máximo de hojas en cada árbol
+    learning_rate = c(0.01, 0.4), # Tasa de aprendizaje optimizable
+    min_data_in_leaf = c(1L, 1500L, "integer"), # Mínimo de datos requeridos en una hoja
     
     # Hiperparámetros fijos
     max_bin = 31L,
