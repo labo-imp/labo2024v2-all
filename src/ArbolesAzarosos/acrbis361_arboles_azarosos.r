@@ -15,7 +15,7 @@ require("yaml")
 
 # parametros experimento
 PARAM <- list()
-PARAM$experimento <- 3610
+PARAM$experimento <- 3611
 
 # parametros rpart
 
