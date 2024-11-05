@@ -22,6 +22,7 @@ conceptual %>%
        title = "Cantidad de Observaciones por Mes y Clase Temaria") +
   theme_minimal()
 
+
 ## Con Meses de Pandemia ##
 path = '~/buckets/b1/flow-05/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt'
 system('cp ~/buckets/b1/flow-05/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt ~/labo2024v2/src/01analisis/data/ganancias_log.txt')
@@ -51,6 +52,25 @@ ganancia_1 = ganancia_1 %>% filter(semilla != -1)
 ganancia_1 %>% group_by(semilla) %>% count()
 
 ganancia_1 %>% arrange(desc(ganancia))
+
+
+## Sin Meses de Pandemia (abril y mayo 2020)
+
+path = '~/buckets/b1/expw-00/expw_KA-0012_ganancias_log.txt'
+system('cp ~/buckets/b1/expw-00/expw_KA-0012_ganancias_log.txt ~/labo2024v2/src/01analisis/data/ganancias_log_1_bis.txt')
+
+ganancia_1_bis <- read_delim(path,
+                         delim = "\t", escape_double = FALSE,
+                         trim_ws = TRUE)
+
+
+ganancia_1_bis = ganancia_1_bis %>% filter(semilla != -1) %>% head(100)
+
+ganancia_1_bis %>% group_by(semilla) %>% count()
+
+ganancia_1_bis %>% arrange(desc(ganancia))
+
+ganancia_1_bis %>% group_by(semilla) %>% count()
 
 
 ### Sin Meses de Pandemia Extendido (abajo del p25, marzo, abril, agosto, septiembre, octubre 2020)
@@ -123,6 +143,9 @@ ganancia_5 %>% arrange(desc(ganancia))
 #EXP1 
 wilcox.test(ganancia$ganancia,ganancia_1$ganancia, paired = TRUE)
 
+#EXP01 bis
+wilcox.test(ganancia$ganancia, 
+            ganancia_1_bis$ganancia, paired = TRUE)
 #EXP2 
 wilcox.test(ganancia_1$ganancia,ganancia_2$ganancia, paired = TRUE)
 
@@ -302,6 +325,35 @@ ganancia_5 %>%
   scale_x_continuous(breaks = seq(1400, 2600, by = 200)) +
   labs(x = "Corte", y = "Ganancia", title = "Ganancia por Corte - SIN 2019") +
   theme_minimal()
+
+# Assuming df is your data frame name
+df_summary_bis <- ganancia_1_bis %>%
+  group_by(corte) %>%
+  summarize(
+    min_ganancia = min(ganancia),
+    med_ganancia = median(ganancia),
+    max_ganancia = max(ganancia)
+  )
+
+df_summary_bis
+
+# Calcular el promedio de ganancia
+promedio_ganancia_bis<- mean(ganancia_1_bis$ganancia, na.rm = TRUE)
+
+ganancia_1_bis %>%
+  left_join(df_summary_bis, by = "corte") %>% 
+  ggplot(aes(x = corte, y = ganancia)) +
+  geom_jitter(color = "grey", alpha = 0.6) + # Puntos individuales
+  geom_point(aes(y = med_ganancia), color = "black", size = 3) +  # Punto para la mediana
+  geom_errorbar(aes(ymin = min_ganancia, ymax = max_ganancia), color = "black") + # Barras de error
+  geom_hline(yintercept = promedio_ganancia_bis, color = "red", linetype = "dashed") + # Línea de promedio
+  annotate("text", x = 2000, y = promedio_ganancia_bis, label = paste("Promedio:", round(promedio_ganancia_bis, 2)), 
+           color = "red", vjust = -0.5, fontface = "bold") + # Etiqueta para el promedio
+  scale_x_continuous(breaks = seq(1400, 2600, by = 200)) +
+  labs(x = "Corte", y = "Ganancia", title = "Ganancia por Corte - SIN 2019") +
+  theme_minimal()
+
+
 
 
 
