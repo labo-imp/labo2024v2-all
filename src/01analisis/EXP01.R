@@ -1,6 +1,26 @@
 library(readr)
 library(tidyverse)
+
 system('~/install/reposync.sh')
+
+#frecuencias con clase ternaria
+conceptual <- read_csv("~/buckets/b1/datasets/conceptual_competencia_2024.csv.gz")
+
+conceptual %>% 
+  group_by(foto_mes , clase_ternaria) %>% 
+  count() %>% 
+  group_by(foto_mes) %>% 
+  mutate(total = sum(n),
+         prop = n/total * 100) %>% 
+  select(foto_mes, clase_ternaria, prop) %>% 
+  filter(clase_ternaria != "CONTINUA") %>% 
+  mutate(foto_mes = ymd(paste0(foto_mes, "01"))) %>% 
+  ggplot(aes(x = foto_mes, y = prop, fill = clase_ternaria)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black") +
+  facet_wrap(~ clase_ternaria) +
+  labs(x = "Mes y Año", y = "Cantidad de Observaciones",
+       title = "Cantidad de Observaciones por Mes y Clase Temaria") +
+  theme_minimal()
 
 ## Con Meses de Pandemia ##
 path = '~/buckets/b1/flow-05/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt'
