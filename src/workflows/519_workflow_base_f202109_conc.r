@@ -319,42 +319,33 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
 
   param_local$lgb_param <- list(
-    boosting = "gbdt", # puede ir dart, ni pruebe random_forest
+    boosting = "gbdt",
     objective = "binary",
     metric = "custom",
     first_metric_only = TRUE,
     boost_from_average = TRUE,
     feature_pre_filter = FALSE,
-    force_row_wise = TRUE, # para reducir warnings
+    force_row_wise = TRUE,
     
-    # Hiperparámetros optimizables
-    max_depth = -1L, # Profundidad máxima del árbol
-    min_gain_to_split = c(0.0, 15.0), # Mínimo valor de ganancia para realizar un split
-    lambda_l1 = c(0.0, 1000.0), # Regularización L1
-    lambda_l2 = c(0.0, 1000.0), # Regularización L2
-    num_leaves = c(20L, 2000L, "integer"), # Número máximo de hojas en cada árbol
-    learning_rate = c(0.01, 0.4), # Tasa de aprendizaje optimizable
-    min_data_in_leaf = c(1L, 1500L, "integer"), # Mínimo de datos requeridos en una hoja
-    
-    # Hiperparámetros fijos
-    max_bin = 31L,
-    num_iterations = 9999, # Gran valor limitado por early_stopping_rounds // Q arbolitos lightGBM
-    
-    bagging_freq = 3,
-    bagging_fraction = c(0.5, 1.0), # Fracción de datos a seleccionar para cada iteración
-    pos_bagging_fraction = 1.0, # Fracción de datos positivos en bagging
-    neg_bagging_fraction = 1.0, # Fracción de datos negativos en bagging
-    is_unbalance = FALSE, # Establece si el dataset está balanceado o no
-    scale_pos_weight = c(1L, 160L, "integer"), # Peso de la clase positiva
-    
-    drop_rate = c(0.1, 0.3), # Probabilidad de dropout en boosting
-    max_drop = 50L, # Máximo número de dropouts permitidos
-    skip_drop = 0.5, # Fracción de datos a saltar durante dropout
-    
-    extra_trees = FALSE, # Si se usan árboles extra o no
-    
-    # Configuración de parámetros de aprendizaje y features
-    feature_fraction = c(0.5, 1.0) # Fracción de features a usar en cada iteración
+    # Hiperparámetros optimizables (20 en total)
+    max_depth = -1L,
+    min_gain_to_split = c(0.0, 15.0),
+    lambda_l1 = c(0.0, 1000.0),
+    lambda_l2 = c(0.0, 1000.0),
+    num_leaves = c(20L, 2512L, "integer"),
+    learning_rate = c(0.001, 0.4),
+    min_data_in_leaf = c(20L, 1000L, "integer"),
+    bagging_fraction = c(0.5, 0.9),
+    scale_pos_weight = c(50L, 165L, "integer"),
+    feature_fraction = c(0.4, 0.9),
+    max_bin = c(31L, 255L, "integer"),
+    bagging_freq = c(1L, 5L, "integer"),
+    pos_bagging_fraction = c(0.7, 1.0),
+    neg_bagging_fraction = c(0.5, 1.0),
+    extra_trees = c(FALSE, TRUE),
+    min_sum_hessian_in_leaf = c(0.001, 5.0),
+    path_smooth = c(0.0, 0.5),
+    min_child_weight = c(1.0, 10.0) # Controla el peso mínimo de la hessiana en una hoja
   )
 
 
