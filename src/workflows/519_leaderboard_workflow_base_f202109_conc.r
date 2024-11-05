@@ -1,4 +1,5 @@
-# Corrida general del Workflow RF (random forest)
+# Corrida general del Workflow Baseline
+#519_leaderboard_workflow_base_f202109_conc.r
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
@@ -172,7 +173,6 @@ FEhist_base <- function( pinputexps)
 #  Agregado de variables de Random Forest, corrido desde LightGBM
 #  atencion, parmetros para generar variables, NO para buen modelo
 #  azaroso, utiliza semilla
-#  version _smart_GINI la version base se encuentra en prefijo z
 
 FErf_attributes_base <- function( pinputexps,
   arbolitos,
@@ -183,8 +183,7 @@ FErf_attributes_base <- function( pinputexps,
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  # version _smart_GINI_001
-  #param_local$meta$script <- "/src/wf-etapas/1311_FE_rfatributes_smart_GINI_001.r"
+
   param_local$meta$script <- "/src/wf-etapas/z1311_FE_rfatributes.r"
 
   # Parametros de un LightGBM que se genera para estimar la column importance
@@ -201,7 +200,7 @@ FErf_attributes_base <- function( pinputexps,
 
     # para que LightGBM emule Random Forest
     boosting = "rf",
-    bagging_fraction = ( 1.0 - 1.0/exp(1.0) ),
+    bagging_fraction = 0.8,#( 1.0 - 1.0/exp(1.0) ),
     bagging_freq = 1.0,
     feature_fraction = 1.0,
 
@@ -425,8 +424,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 #------------------------------------------------------------------------------
 # A partir de ahora comienza la seccion de Workflows Completos
 #------------------------------------------------------------------------------
-# Este es el  Workflow RF que tiene selecciona hojas inteligentemente
-# de acuerdo a su pureza GINI
+# Este es el  Workflow Baseline
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
@@ -440,10 +438,9 @@ wf_septiembre <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
 
-  #llamado a la version _smart_GINI /// originalmente 20 arbolitos
-  FErf_attributes_base( arbolitos= 10,
-    hojas_por_arbol= 500,
-    datos_por_hoja= 1,
+  FErf_attributes_base( arbolitos= 20,
+    hojas_por_arbol= 1000,
+    datos_por_hoja= 20,
     mtry_ratio= 0.2
   )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
@@ -451,7 +448,7 @@ wf_septiembre <- function( pnombrewf )
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
-  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 ) #aqui, semillas =20!
+  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )#20
   SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()
 
@@ -462,5 +459,6 @@ wf_septiembre <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202109
+cat("\n RUNNING Leaderboard WF \n")
 wf_septiembre()
 
