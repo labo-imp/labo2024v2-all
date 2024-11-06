@@ -329,23 +329,23 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     
     # Hiperparámetros optimizables (20 en total)
     max_depth = -1L,
-    min_gain_to_split = c(0.0, 15.0),
-    lambda_l1 = c(0.0, 1000.0),
+    min_gain_to_split = c(0.0, 1.0),
+    lambda_l1 = c(0.0, 100.0),
     lambda_l2 = c(0.0, 1000.0),
-    num_leaves = c(20L, 2512L, "integer"),
-    learning_rate = c(0.001, 0.4),
-    min_data_in_leaf = c(20L, 1000L, "integer"),
-    bagging_fraction = c(0.5, 0.9),
-    scale_pos_weight = c(50L, 165L, "integer"),
-    feature_fraction = c(0.4, 0.9),
-    max_bin = c(31L, 255L, "integer"),
-    bagging_freq = c(1L, 5L, "integer"),
+    num_leaves = c(20L, 1512L, "integer"),
+    learning_rate = c(0.01, 0.3),
+    min_data_in_leaf = c(20L, 500L, "integer"),
+    bagging_fraction = c(0.6, 0.9),
+    scale_pos_weight = c(70L, 165L, "integer"),
+    feature_fraction = c(0.5, 0.9),
+    max_bin = c(31L, 63L, "integer"),
+    bagging_freq = c(1L, 3L, "integer"),
     pos_bagging_fraction = c(0.7, 1.0),
-    neg_bagging_fraction = c(0.5, 1.0),
+    neg_bagging_fraction = c(0.7, 1.0),
     extra_trees = c(FALSE, TRUE),
-    min_sum_hessian_in_leaf = c(0.001, 5.0),
-    path_smooth = c(0.0, 0.5),
-    min_child_weight = c(1.0, 10.0) # Controla el peso mínimo de la hessiana en una hoja
+    min_sum_hessian_in_leaf = c(0.1, 5.0),
+    path_smooth = c(0.0, 1.0),
+    min_child_weight = c(1.0, 20.0) # Controla el peso mínimo de la hessiana en una hoja
   )
 
 
