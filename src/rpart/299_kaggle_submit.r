@@ -7,13 +7,13 @@ require("yaml")
 
 PARAM <- list()
 
-PARAM$modalidad <- "conceptual"  # "conceptual"
+PARAM$modalidad <-  "conceptual" #"vivencial"  
 
 PARAM$rpart <- list (
-  "cp" = -0.5,
-  "minsplit" = 1000,
-  "minbucket" = 4,
-  "maxdepth" = 6
+  "cp" = -1,
+  "minsplit" = 780,
+  "minbucket" = 280,
+  "maxdepth" = 22
 )
 
 #------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ generarmodelo <- function( pmodalidad, param )
 
   ganancia <- system( comando, intern=TRUE )
   cat( paste0( ganancia, "\t", archivo_submit, "\n"),
-      file="tb_ganancias.txt",
+      file="tb_ganancias01.txt",
       append=TRUE
   )
 
