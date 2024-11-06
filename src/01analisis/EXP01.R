@@ -354,6 +354,13 @@ ganancia_1_bis %>%
   theme_minimal()
 
 
+#### SEMILLERIO #######
 
 
+tb_future_prediccion <- read_delim("~/buckets/b1/flow-13/wf_septiembre-001/010-SC_scoring/tb_future_prediccion.txt", 
+                                   delim = "\t", escape_double = FALSE, 
+                                   trim_ws = TRUE)
+
+tb_future_prediccion
+cols(tb_future_prediccion)
 
