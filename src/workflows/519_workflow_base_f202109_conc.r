@@ -141,9 +141,9 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
-  #param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+  #param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
+  param_local$lag3 <- TRUE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
@@ -155,7 +155,7 @@ FEhist_base <- function( pinputexps)
   #param_local$Tendencias1$ratioavg <- FALSE
   #param_local$Tendencias1$ratiomax <- FALSE
   
-  param_local$Tendencias1$ventana <- 9
+  param_local$Tendencias1$ventana <- 10
   param_local$Tendencias1$tendencia <- TRUE
   param_local$Tendencias1$minimo <- TRUE
   param_local$Tendencias1$maximo <- TRUE
@@ -288,12 +288,12 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 202011)
-  #, 202010,202009,202008,202007,202006,202005,202004,202003,202002)
+  param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010)
+  #,202009,202008,202007,202006,202005,202004,202003,202002)
 
 
-  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,202012, 202011, 202010, 202009)
-  #,202008,202007,202006,202005,202004,202003,202002,202001,201912)
+  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,202012, 202011, 202010, 202009,202008)
+  #,202007,202006,202005,202004,202003,202002,202001,201912)
   param_local$train$validation <- c(202106)
   param_local$train$testing <- c(202107)
 
@@ -448,7 +448,8 @@ wf_septiembre <- function( pnombrewf )
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
   #DR_drifting_base(metodo="rank_cero_fijo")
-  DR_drifting_base(metodo="deflacion")
+  DR_drifting_base(metodo="rank_simple")
+  #DR_drifting_base(metodo="deflacion")
   FEhist_base()
 
   #FErf_attributes_base( arbolitos= 20,
@@ -463,7 +464,7 @@ wf_septiembre <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 60 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 55 )  # iteraciones inteligentes
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
