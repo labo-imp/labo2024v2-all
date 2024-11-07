@@ -338,14 +338,8 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     bagging_fraction = c(0.6, 0.9),
     scale_pos_weight = c(70L, 165L, "integer"),
     feature_fraction = c(0.5, 0.9),
-    max_bin = c(31L, 63L, "integer"),
-    bagging_freq = c(1L, 3L, "integer"),
-    pos_bagging_fraction = c(0.7, 1.0),
-    neg_bagging_fraction = c(0.7, 1.0),
     extra_trees = c(FALSE, TRUE),
     min_sum_hessian_in_leaf = c(0.1, 5.0),
-    path_smooth = c(0.0, 1.0),
-    min_child_weight = c(1.0, 20.0) # Controla el peso mínimo de la hessiana en una hoja
   )
 
 
