@@ -465,6 +465,6 @@ wf_julio <- function( pnombrewf, cata)
 # llamo al workflow con future = 202107
 for(cata in c("MachineLearning", "EstadisticaClasica", "MICE"))
 {
-  wf_julio(cata)
+  wf_julio(cata = cata) 
 }
 
