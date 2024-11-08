@@ -33,7 +33,7 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "LGBM2"
+PARAM$experimento <- "LGBM4"
 
 PARAM$input$training <- c(202107) # los meses en los que vamos a entrenar
 
@@ -41,7 +41,7 @@ PARAM$input$training <- c(202107) # los meses en los que vamos a entrenar
 # undersampling de 1.0  implica tomar TODOS los datos
 PARAM$trainingstrategy$undersampling <- 1.0
 
-PARAM$hyperparametertuning$iteraciones <- 100
+PARAM$hyperparametertuning$iteraciones <- 150
 PARAM$hyperparametertuning$xval_folds <- 5
 PARAM$hyperparametertuning$POS_ganancia <- 117000
 PARAM$hyperparametertuning$NEG_ganancia <- -3000
@@ -49,13 +49,19 @@ PARAM$hyperparametertuning$NEG_ganancia <- -3000
 #------------------------------------------------------------------------------
 
 # Aqui se cargan los bordes de los hiperparametros
+
 hs <- makeParamSet(
   makeNumericParam("learning_rate", lower = 0.01, upper = 0.3),
   makeIntegerParam("num_leaves", lower = 8L, upper = 2048L),
   makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
-  makeIntegerParam("min_data_in_leaf", lower = 2000L, upper = 8000L),
-  makeIntegerParam("envios", lower = 1000L, upper = 4000L)
+  makeIntegerParam("min_data_in_leaf", lower = 100L, upper = 8000L),
+  makeIntegerParam("envios", lower = 1000L, upper = 4000L),
+  # Nuevos hiperparámetros
+  makeIntegerParam("max_depth", lower = 3L, upper = 20L),
+  makeNumericParam("lambda_l1", lower = 0, upper = 1),
+  makeNumericParam("lambda_l2", lower = 0, upper = 1)
 )
+
 
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista
