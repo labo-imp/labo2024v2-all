@@ -202,7 +202,7 @@ drift_estandarizar <- function(campos_drift) {
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
-cat( "ETAPA  z1401_DR_corregir_drifting.r  START\n")
+cat( "ETAPA  1401_DR_corregir_drifting.r  START\n")
 action_inicializar() 
 
 # cargo el dataset donde voy a entrenar
