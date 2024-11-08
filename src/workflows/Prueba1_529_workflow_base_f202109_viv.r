@@ -248,7 +248,7 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
   param_local$train$positivos <- c( "BAJA+2")
   param_local$train$training <- c( 202101, 202102, 202103)
   param_local$train$validation <- c( 202105 )
-  param_local$train$undersampling <- 0.1
+  param_local$train$undersampling <- 0.2
   param_local$train$gan1 <- 117000
   param_local$train$gan0 <-  -3000
 
@@ -274,7 +274,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 1.0
+  param_local$final_train$undersampling <- 0.2 # modifico para que haya undersampling
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
@@ -350,7 +350,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     lambda_l1 = 0.0, # lambda_l1 >= 0.0
     lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
-    num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
+    num_iterations = 1250, # cambio tercer cuartil 20 mejores modelos mios.  
 
     bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
@@ -462,7 +462,7 @@ wf_septiembre <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 40)  # iteraciones inteligentes baje diez de la original
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
