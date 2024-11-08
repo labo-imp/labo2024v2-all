@@ -326,9 +326,16 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     boost_from_average = TRUE,
     feature_pre_filter = FALSE,
     force_row_wise = TRUE,
+    verbosity = -100,
+    max_bin = 31L,
+    num_iterations = 9999,
+    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
+    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    is_unbalance = FALSE, #
+    extra_trees = FALSE,
+    max_depth = -1L,
     
     # Hiperparámetros optimizables (10 en total)
-    max_depth = -1L,
     min_gain_to_split = c(0.0, 1.0),
     lambda_l1 = c(0.0, 100.0),
     lambda_l2 = c(0.0, 1000.0),
@@ -336,7 +343,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     learning_rate = c(0.01, 0.3),
     min_data_in_leaf = c(20L, 500L, "integer"),
     bagging_fraction = c(0.6, 0.9),
-    scale_pos_weight = c(70L, 165L, "integer"),
+    scale_pos_weight = c(1L, 165L, "integer"),
     feature_fraction = c(0.5, 0.9),
     min_sum_hessian_in_leaf = c(0.1, 5.0)
   )
