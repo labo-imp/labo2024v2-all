@@ -18,8 +18,8 @@ PARAM$qsemillas <- 20
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 # elegir SU dataset comentando/ descomentando
-PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
-# PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
+# PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -141,7 +141,7 @@ tb_grid_search_detalle <- data.table(
 
 
 # itero por los loops anidados para cada hiperparametro
-for (min_bucket_split in c(5, 10, 20)) {
+for (min_bucket_split in c(5, 10, 20, 200, 300)) {
   for (complexity in c(-0.8, -0.6, -0.5, -0.1)) {
     for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
       for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
@@ -189,7 +189,7 @@ setorder( tb_grid_search, -ganancia_mean )
 tb_grid_search[, id := .I ]
 
 fwrite( tb_grid_search,
-        file = "gridsearch44.txt",
+        file = "gridsearch55.txt",
         sep = "\t"
 )
 

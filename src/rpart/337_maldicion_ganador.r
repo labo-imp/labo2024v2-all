@@ -15,10 +15,10 @@ PARAM$qsemillas <- 200L
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart <- list (
-  "cp" = -0.5,
-  "minsplit" = 400,
-  "minbucket" = 250,
-  "maxdepth" = 6
+  "cp" = -0.25,
+  "minsplit" = 200,
+  "minbucket" = 20,
+  "maxdepth" = 4
 )
 
 #------------------------------------------------------------------------------
