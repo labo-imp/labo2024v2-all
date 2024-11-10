@@ -276,23 +276,21 @@ TS_strategy_base7 <- function( pinputexps )
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
 
-  param_local$future <- c(202107)
+  param_local$future <- c(202105)
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202105, 202104, 202103, 202102, 
-                                        202101, 202012, 202011, 202010, 
-                                        202009, 202008, 202007, 202006,
-                                        202005, 202004, 202003, 202002,
-                                        202001, 201912)
+  param_local$final_train$training <- c(202103, 202102, 202101, 202012, 
+                                        202011, 202010, 202009, 202008, 
+                                        202007, 202006, 202005, 202004,
+                                        202003, 202002, 202001)
 
-  param_local$train$training <- c(202103, 202102, 202101, 202012, 
-                                  202011, 202010, 202009, 202008, 
-                                  202007, 202006, 202005, 202004,
-                                  202003, 202002, 202001, 201012,
-                                  201911, 201910)
-  param_local$train$validation <- c(202104)
-  param_local$train$testing <- c(202105)
+  param_local$train$training <- c(202101, 202012, 202011, 202010, 
+                                  202009, 202008, 202007, 202006, 
+                                  202005, 202004, 202003, 202002,
+                                  202001, 201912, 201911)
+  param_local$train$validation <- c(202102)
+  param_local$train$testing <- c(202103)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -437,7 +435,7 @@ EV_evaluate_conclase_gan <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_julio_18m <- function( pnombrewf )
+wf_mayo_15m <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
@@ -468,5 +466,5 @@ wf_julio_18m <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202107
-wf_julio_18m()
+wf_mayo_15m()
 
