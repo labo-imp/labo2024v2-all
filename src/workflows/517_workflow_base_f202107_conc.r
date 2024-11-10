@@ -75,6 +75,10 @@ DT_incorporar_dataset_competencia2024 <- function()
   param_local$clase <- c("clase_ternaria" )
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
+  
+  # Forzar campos a nulos
+  param_local$numero_de_cliente <- NA
+  param_local$foto_mes <- NA
 
   return( exp_correr_script( param_local ) ) # linea fija}
 }
