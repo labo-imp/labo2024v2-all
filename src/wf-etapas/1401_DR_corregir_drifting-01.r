@@ -38,18 +38,19 @@ vfoto_mes <- c(
 # los valores que siguen fueron calculados por alumnos
 
 # momento 1.0  31-dic-2020 a las 23:59
+
 vIPC <- c(
-  1.9903030878, 1.9174403544, 1.8296186587,
-  1.7728862972, 1.7212488323, 1.6776304408,
-  1.6431248196, 1.5814483345, 1.4947526791,
-  1.4484037589, 1.3913580777, 1.3404220402,
-  1.3154288912, 1.2921698342, 1.2472681797,
-  1.2300475145, 1.2118694724, 1.1881073259,
-  1.1693969743, 1.1375456949, 1.1065619600,
-  1.0681100000, 1.0370000000, 1.0000000000,
-  0.9680542110, 0.9344152616, 0.8882274350,
-  0.8532444140, 0.8251880213, 0.8003763543,
-  0.7763107219, 0.7566381305, 0.7289384687
+  2.0351373687, 1.9612828659, 1.8736066880,
+  1.8112157753, 1.7574540316, 1.7109503097,
+  1.6741546418, 1.6104766249, 1.5209581641,
+  1.4724628634, 1.4123729301, 1.3614058781,
+  1.3314105964, 1.3051301130, 1.2629052713,
+  1.2442836630, 1.2253792925, 1.1984906846,
+  1.1757494027, 1.1448375260, 1.1132705000,
+  1.0729183639, 1.0400556734, 1.0000000000,
+  0.9610853706, 0.9279157985, 0.8853245392,
+  0.8506168738, 0.8232601205, 0.7979294668,
+  0.7747111165, 0.7560481683, 0.7301512516
 )
 
 vdolar_blue <- c(
@@ -78,6 +79,20 @@ vdolar_oficial <- c(
    91.474000,  93.997778,  96.635909,
    98.526000,  99.613158, 100.619048,
   101.619048, 102.569048, 103.781818
+)
+
+vdolar_financiero <- c(
+  37.494348,  38.511500,  41.506667,
+  43.210455,  44.983478,  43.760500,
+  42.580435,  53.329545,  65.735714,
+  72.805957,  72.042609,  72.247224,
+  79.699585,  81.910469,  85.725896,
+  101.550171, 114.356195, 106.900455,
+  112.323913, 124.476190, 126.791818,
+  148.395909, 143.805714, 140.861304,
+  145.474286, 145.859500, 143.780435,
+  145.930455, 155.768810, 160.723636,
+  166.385455, 169.919455, 172.547727
 )
   
 vUVA <- c(
@@ -135,6 +150,19 @@ drift_dolar_blue <- function(campos_monetarios) {
 }
 #------------------------------------------------------------------------------
 
+# drift_dolar_financiero <- function(campos_monetarios) {
+#   cat( "inicio drift_dolar_financiero()\n")
+#   
+#   dataset[tb_indices,
+#           on = c(envg$PARAM$dataset_metadata$periodo),
+#           (campos_monetarios) := .SD / i.dolar_financiero,
+#           .SDcols = campos_monetarios
+#   ]
+#   
+#   cat( "fin drift_dolar_financiero()\n")
+# }
+#------------------------------------------------------------------------------
+
 drift_deflacion <- function(campos_monetarios) {
   cat( "inicio drift_deflacion()\n")
 
@@ -184,7 +212,24 @@ drift_rank_cero_fijo <- function(campos_drift) {
   cat( "fin drift_rank_cero_fijo()\n")
 }
 #------------------------------------------------------------------------------
-
+# Se rankean por su percentil (de 1 a 100)
+# drift_rank_percentiles <- function(campos_drift) {
+#   
+#   cat("inicio drift_rank_percentiles()\n")
+#   for (campo in campos_drift) {
+#     cat(campo, " ")
+#     
+#     # Calcula el percentil de cada valor dentro del periodo especificado
+#     dataset[, paste0(campo, "_percentil") := 
+#               ntile(get(campo), 100),  # Dividir en 100 grupos para percentiles
+#             by = eval(envg$PARAM$dataset_metadata$periodo)]
+#     
+#     # Opcionalmente, elimina la columna original para evitar redundancias
+#     dataset[, (campo) := NULL]
+#   }
+#   cat("fin drift_rank_percentiles()\n")
+# }
+#------------------------------------------------------------------------------
 drift_estandarizar <- function(campos_drift) {
 
   cat( "inicio drift_estandarizar()\n")
@@ -200,9 +245,29 @@ drift_estandarizar <- function(campos_drift) {
   cat( "fin drift_estandarizar()\n")
 }
 #------------------------------------------------------------------------------
+# drift_normalizar_min_max <- function(campos_drift) {
+#   
+#   cat("inicio drift_normalizar_min_max()\n")
+#   for (campo in campos_drift) {
+#     cat(campo, " ")
+#     
+#     # Calcular el mínimo y el rango (máximo - mínimo) por periodo y normalizar a [0,1]
+#     dataset[, paste0(campo, "_normalizado") := 
+#               (get(campo) - min(get(campo), na.rm = TRUE)) /
+#               (max(get(campo), na.rm = TRUE) - min(get(campo), na.rm = TRUE)),
+#             by = eval(envg$PARAM$dataset_metadata$periodo)]
+#     
+#     # Opcionalmente, elimina la columna original
+#     dataset[, (campo) := NULL]
+#   }
+#   cat("fin drift_normalizar_min_max()\n")
+# }
+
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
-cat( "ETAPA  z1401_DR_corregir_drifting.r  START\n")
+cat( "ETAPA  1401_DR_corregir_drifting.r  START\n")
 action_inicializar() 
 
 # cargo el dataset donde voy a entrenar
@@ -249,7 +314,10 @@ switch(envg$PARAM$metodo,
   "dolar_blue"     = drift_dolarblue(campos_monetarios),
   "dolar_oficial"  = drift_dolaroficial(campos_monetarios),
   "UVA"            = drift_UVA(campos_monetarios),
-  "estandarizar"   = drift_estandarizar(campos_monetarios)
+  "estandarizar"   = drift_estandarizar(campos_monetarios)#,
+  #"rank_percentiles" = drift_rank_percentiles(campos_monetarios),
+  #"normalizar" = drift_normalizar_min_max(campos_monetarios),
+  #"dolar_financiero"   = drift_dolar_financiero(campos_monetarios)
 )
 
 
