@@ -15,12 +15,12 @@ require("rpart")
 require("yaml")
 require("ggplot2")
 
-
+options(scipen = 999)
 # cambiar aqui los parametros
 PARAM <- list()
-PARAM$minsplit <- 300
-PARAM$minbucket <- 20
-PARAM$maxdepth <- 11
+PARAM$minsplit <- 600
+PARAM$minbucket <- 100
+PARAM$maxdepth <-3
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -30,21 +30,21 @@ PARAM$maxdepth <- 11
 
 particionar <- function(data, division, agrupa = "", campo = "fold",
                         start = 1, seed = NA) {
-       if (!is.na(seed)) set.seed(seed)
-
-       bloque <- unlist(mapply(
-              function(x, y) {
-                     rep(y, x)
-              },
-              division, seq(from = start, length.out = length(division))
-       ))
-
-       data[, (campo) := sample(rep(
-              bloque,
-              ceiling(.N / length(bloque))
-       ))[1:.N],
-       by = agrupa
-       ]
+  if (!is.na(seed)) set.seed(seed)
+  
+  bloque <- unlist(mapply(
+    function(x, y) {
+      rep(y, x)
+    },
+    division, seq(from = start, length.out = length(division))
+  ))
+  
+  data[, (campo) := sample(rep(
+    bloque,
+    ceiling(.N / length(bloque))
+  ))[1:.N],
+  by = agrupa
+  ]
 }
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
@@ -66,22 +66,22 @@ dataset <- dataset[foto_mes == 202107] # defino donde voy a entrenar
 # La division training/testing es 50%, 50%
 #  que sea 50/50 se indica con el c(1,1)
 particionar(dataset,
-  division = c(1, 1),
-  agrupa = "clase_ternaria",
-  seed = miAmbiente$semilla_primigenia
+            division = c(1, 1),
+            agrupa = "clase_ternaria",
+            seed = miAmbiente$semilla_primigenia
 )
 
 # Entreno el modelo
 # los datos donde voy a entrenar
 # aqui es donde se deben probar distintos hiperparametros
 modelo <- rpart(
-       formula = "clase_ternaria ~ . -fold",
-       data = dataset[fold == 1, ],
-       xval = 0,
-       cp = -1,
-       minsplit = PARAM$minsplit,
-       minbucket = PARAM$minbucket,
-       maxdepth = PARAM$maxdepth
+  formula = "clase_ternaria ~ . -fold",
+  data = dataset[fold == 1, ],
+  xval = 0,
+  cp = -1,
+  minsplit = PARAM$minsplit,
+  minbucket = PARAM$minbucket,
+  maxdepth = PARAM$maxdepth
 )
 
 
@@ -109,19 +109,45 @@ dataset[, pos := sequence(.N), by = fold]
 
 # defino hasta donde muestra el grafico
 amostrar <- ifelse( miAmbiente$modalidad == "conceptual",
-  5000,
-  20000
+                    5000,
+                    20000
 )
 
 
 gra <- ggplot(
-           data = dataset[pos <= amostrar],
-           aes( x = pos, y = ganancia_acumulada,
-                color = ifelse(fold == 1, "train", "test") )
-             ) + geom_line()
+  data = dataset[pos <= amostrar],
+  aes( x = pos, y = ganancia_acumulada,
+       color = ifelse(fold == 1, "train", "test") )
+) + geom_line()
 
 print( gra )
 
 cat( "Train gan max: ", dataset[fold==1, max(ganancia_acumulada)], "\n" )
 cat( "Test  gan max: ", dataset[fold==2, max(ganancia_acumulada)], "\n" )
+
+
+
+
+gra <- ggplot(
+  data = dataset[pos <= amostrar],
+  aes(x = pos, y = ganancia_acumulada,
+      color = ifelse(fold == 1, "train", "test"))
+) + 
+  geom_line() +
+  
+  # **Agregamos los parámetros en el subtítulo o título secundario**
+  labs(
+    title = "Curva de Ganancia Acumulada",
+    subtitle = paste("minsplit =", PARAM$minsplit, 
+                     "| minbucket =", PARAM$minbucket, 
+                     "| maxdepth =", PARAM$maxdepth)
+  ) +
+  
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14),   # Centra el título principal
+    plot.subtitle = element_text(hjust = 0.5, size = 10), # Centra el subtítulo
+    legend.position = "top"                              # Mueve la leyenda hacia arriba
+  )
+
+print(gra)
 
