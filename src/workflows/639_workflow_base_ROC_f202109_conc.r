@@ -12,8 +12,8 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw0/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow0/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw13/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow13/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$arch_ambiente <- "miAmbiente.yml"
@@ -294,16 +294,16 @@ TS_strategy_base9 <- function( pinputexps )
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
-# Hyperparamteter Tuning Baseline
+# Hyperparamteter Tuning Baseline por AUCROC
 #  donde la Bayuesian Optimization solo considera 4 hiperparámetros
 #  azaroso, utiliza semilla
 #  puede llegar a recibir  bypass, que por default esta en false
 
-HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
+HT_tuning_AUCROC_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 {
   if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
 
-  param_local$meta$script <- "/src/wf-etapas/z2201_HT_lightgbm_gan.r"
+  param_local$meta$script <- "/src/wf-etapas/z2202_HT_lightgbm_AUCROC.r"
 
   # En caso que se haga cross validation, se usa esta cantidad de folds
   param_local$lgb_crossvalidation_folds <- 5
@@ -412,8 +412,8 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <-  1600L
-  param_local$envios_hasta <-  2400L
+  param_local$envios_desde <-  600L
+  param_local$envios_hasta <-  1400L
   param_local$envios_salto <-   200L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
 
@@ -427,7 +427,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_septiembre <- function( pnombrewf )
+wf_septiembre_AUC <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
@@ -445,9 +445,14 @@ wf_septiembre <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
+  ht <- HT_tuning_AUCROC_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
-  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
+  fm <- FM_final_models_lightgbm( 
+    c(ht, ts9),  # inputs del experimento
+    ranks=c(1), # las posiciones de la Bayesian Optimization
+    qsemillas=20  # la cantidad de modelos que genero con identicos hiperparam cambiando solo la semilla
+  )
+  
   SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()
 
@@ -458,5 +463,5 @@ wf_septiembre <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202109
-wf_septiembre()
+wf_septiembre_AUC()
 
