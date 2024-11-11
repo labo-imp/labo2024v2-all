@@ -414,7 +414,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$envios_desde <-  0L
   param_local$envios_hasta <-  5000L
-  param_local$envios_salto <-   200L
+  param_local$envios_salto <-   1000L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
 
   return( exp_correr_script( param_local ) ) # linea fija
