@@ -94,6 +94,19 @@ vUVA <- c(
   0.7666323845128089, 0.7428976357662823, 0.721615762047849
 )
 
+vdolar_financiero <- c(
+  37.494348,  38.511500,  41.506667,
+  43.210455,  44.983478,  43.760500,
+  42.580435,  53.329545,  65.735714,
+  72.805957,  72.042609,  72.247224,
+  79.699585,  81.910469,  85.725896,
+  101.550171, 114.356195, 106.900455,
+  112.323913, 124.476190, 126.791818,
+  148.395909, 143.805714, 140.861304,
+  145.474286, 145.859500, 143.780435,
+  145.930455, 155.768810, 160.723636,
+  166.385455, 169.919455, 172.547727
+)
 #------------------------------------------------------------------------------
 
 drift_UVA <- function(campos_monetarios) {
@@ -200,6 +213,19 @@ drift_estandarizar <- function(campos_drift) {
   cat( "fin drift_estandarizar()\n")
 }
 #------------------------------------------------------------------------------
+
+drift_dolar_financiero <- function(campos_monetarios) {
+  cat( "inicio drift_dolar_financiero()\n")
+  
+  dataset[tb_indices,
+          on = c(envg$PARAM$dataset_metadata$periodo),
+          (campos_monetarios) := .SD / i.dolar_financiero,
+          .SDcols = campos_monetarios
+  ]
+  
+  cat( "fin drift_dolar_financiero()\n")
+}
+#------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 cat( "ETAPA  z1401_DR_corregir_drifting.r  START\n")
@@ -216,7 +242,8 @@ tb_indices <- as.data.table( list(
   "IPC" = vIPC,
   "dolar_blue" = vdolar_blue,
   "dolar_oficial" = vdolar_oficial,
-  "UVA" = vUVA
+  "UVA" = vUVA,
+  "dolar_financiero" = vdolar_financiero
   )
 )
 tb_indices[[ envg$PARAM$dataset_metadata$periodo ]] <- vfoto_mes
@@ -249,7 +276,8 @@ switch(envg$PARAM$metodo,
   "dolar_blue"     = drift_dolar_blue(campos_monetarios),
   "dolar_oficial"  = drift_dolar_oficial(campos_monetarios),
   "UVA"            = drift_UVA(campos_monetarios),
-  "estandarizar"   = drift_estandarizar(campos_monetarios)
+  "estandarizar"   = drift_estandarizar(campos_monetarios),
+  "dolar_financiero"  = drift_dolar_financiero(campos_monetarios)
 )
 
 
