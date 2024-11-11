@@ -363,4 +363,34 @@ tb_future_prediccion <- read_delim("~/buckets/b1/flow-13/wf_septiembre-001/010-S
 
 tb_future_prediccion
 cols(tb_future_prediccion)
+tb_future_prediccion[,4:23] %>% rowMeans()
+
+
+semillerio = cbind('numero_de_cliente' = tb_future_prediccion[,1], 'Predicted' = tb_future_prediccion[,4:23] %>% rowMeans())
+
+semillerio = semillerio %>% arrange(desc(Predicted))
+
+# Definir los puntos de corte
+cortes <- seq(1600, 2400, 200)
+
+# Iterar sobre cada corte y crear un archivo de predicción
+for (corte in cortes) {
+  # Crear una copia del dataframe original
+  prediccion <- semillerio
+  
+  # Asignar 1 a las filas desde la 1 hasta el corte
+  prediccion$Predicted[1:corte] <- 1
+  prediccion$Predicted[(corte + 1):nrow(prediccion)] <- 0
+  
+  # Generar el nombre de archivo con el número del corte
+  nombre_archivo <- paste0("KA-", corte, "-semi.csv")
+  
+  # Guardar el archivo de predicción
+  write.csv(prediccion, file = paste0('~/buckets/b1/ctalamilla_semillero/', nombre_archivo), row.names = FALSE)
+  
+  # Mensaje de confirmación
+  cat("Archivo de predicción guardado:", nombre_archivo, "\n")
+}
+
+
 
