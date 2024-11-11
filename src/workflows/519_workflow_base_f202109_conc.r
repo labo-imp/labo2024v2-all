@@ -339,11 +339,11 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     min_gain_to_split = c(0.0, 1.0),
     lambda_l1 = c(0.0, 100.0),
     lambda_l2 = c(0.0, 1000.0),
-    num_leaves = c(20L, 512L, "integer"),
+    num_leaves = c(20L, 312L, "integer"),
     learning_rate = c(0.01, 0.1),
-    min_data_in_leaf = c(20L, 2000L, "integer"),
+    min_data_in_leaf = c(200L, 2000L, "integer"),
     bagging_fraction = c(0.6, 0.9),
-    scale_pos_weight = c(1L, 165L, "integer"),
+    scale_pos_weight = c(75L, 165L, "integer"),
     feature_fraction = c(0.5, 0.9),
     min_sum_hessian_in_leaf = c(0.001, 5.0)
   )
