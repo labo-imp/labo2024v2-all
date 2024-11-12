@@ -95,7 +95,7 @@ loguear <- function(
 
 particionar <- function(
     data, division, agrupa = "",
-    campo = "fold", start = 1, seed = NA) {
+    campo = "fold", start = 1, seed = 100069) {
   if (!is.na(seed)) set.seed(seed)
 
   bloque <- unlist(mapply(function(x, y) {
