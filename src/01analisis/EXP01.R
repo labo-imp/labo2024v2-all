@@ -357,13 +357,13 @@ ganancia_1_bis %>%
 #### SEMILLERIO #######
 
 
-tb_future_prediccion <- read_delim("~/buckets/b1/flow-13/wf_septiembre-001/010-SC_scoring/tb_future_prediccion.txt", 
+tb_future_prediccion <- read_delim("~/buckets/b1/flow-10/wf_septiembre-001/010-SC_scoring/tb_future_prediccion.txt", 
                                    delim = "\t", escape_double = FALSE, 
                                    trim_ws = TRUE)
 
-tb_future_prediccion
-cols(tb_future_prediccion)
-tb_future_prediccion[,4:23] %>% rowMeans()
+#tb_future_prediccion
+#cols(tb_future_prediccion)
+#tb_future_prediccion[,4:23] %>% rowMeans()
 
 
 semillerio = cbind('numero_de_cliente' = tb_future_prediccion[,1], 'Predicted' = tb_future_prediccion[,4:23] %>% rowMeans())
@@ -392,5 +392,75 @@ for (corte in cortes) {
   cat("Archivo de predicción guardado:", nombre_archivo, "\n")
 }
 
+# Vector de rutas de archivos
+rutas <- c(
+  "/home/ctalamilla_ia/buckets/b1/expw/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw/SC-0002/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw/SC-0003/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw/SC-0004/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-01/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-02/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-03/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-03/SC-0002/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-04/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-05/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-06/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-07/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-07/SC-0002/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-08/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-09/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-10/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-11/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-12/SC-0001/tb_future_prediccion.txt",
+  "/home/ctalamilla_ia/buckets/b1/expw-13/SC-0001/tb_future_prediccion.txt"
+)
+
+# Función para procesar cada archivo
+procesar_archivo <- function(input_path) {
+  # Extraer el nombre reducido y reemplazar "/" con "-"
+  nombre_reducido <- str_extract(input_path, "(?<=b1/)[^/]+/[^/]+") %>% str_replace_all("/", "-")
+  output_folder <- file.path("~/buckets/b1/ctalamilla_semillero", nombre_reducido)
+  
+  # Crear la carpeta de salida si no existe
+  if (!dir.exists(output_folder)) {
+    dir.create(output_folder, recursive = TRUE)
+  }
+  
+  # Leer el archivo de predicción
+  tb_future_prediccion <- read_delim(input_path, delim = "\t", escape_double = FALSE, trim_ws = TRUE)
+  
+  # Crear el dataframe semillerio
+  semillerio <- cbind('numero_de_cliente' = tb_future_prediccion[, 1], 
+                      'Predicted' = rowMeans(tb_future_prediccion[, 4:ncol(tb_future_prediccion)]))
+  
+  # Ordenar por el valor de Predicted de manera descendente
+  semillerio <- semillerio %>% arrange(desc(Predicted))
+  
+  # Definir los puntos de corte
+  cortes <- seq(1600, 2400, 200)
+  
+  # Iterar sobre cada corte y crear un archivo de predicción
+  for (corte in cortes) {
+    # Crear una copia del dataframe original
+    prediccion <- semillerio
+    
+    # Asignar 1 a las filas desde la 1 hasta el corte
+    prediccion$Predicted[1:corte] <- 1
+    prediccion$Predicted[(corte + 1):nrow(prediccion)] <- 0
+    
+    # Generar el nombre de archivo con el número del corte y nombre reducido
+    nombre_archivo <- paste0(nombre_reducido, "-KA-", corte, "-semi.csv")
+    
+    # Guardar el archivo de predicción en la carpeta de salida
+    write.csv(prediccion, file = file.path(output_folder, nombre_archivo), row.names = FALSE)
+    
+    # Mensaje de confirmación
+    cat("Archivo de predicción guardado en:", file.path(output_folder, nombre_archivo), "\n")
+  }
+}
+
+
+# Aplicar la función a cada ruta en el vector
+lapply(rutas, procesar_archivo)
 
 
