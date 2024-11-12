@@ -352,7 +352,10 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
-    is_unbalance = FALSE,
+    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
+    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
@@ -360,15 +363,11 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     extra_trees = FALSE,
     
     # Parte variable
+    is_unbalance = TRUE,
     learning_rate = c( 0.02, 0.3 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 100L, 10000L, "integer" ),
-    
-    bagging_fraction = 0.85, # 0.0 < bagging_fraction <= 1.0
-    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 0.8, # 0.0 < neg_bagging_fraction <= 1.0
-    scale_pos_weight = 40.0, # scale_pos_weight > 0.0
+    min_data_in_leaf = c( 100L, 10000L, "integer" )
   )
 
 
