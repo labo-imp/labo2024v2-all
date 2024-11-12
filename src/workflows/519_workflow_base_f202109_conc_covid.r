@@ -266,6 +266,7 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 #   y solo incluyo en el dataset al 20% de los CONTINUA
 #  azaroso, utiliza semilla
 
+#CORRIDA QUITANDO MESES POR ENCIMA DE PERCENTIL 75
 TS_strategy_base9 <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
@@ -277,16 +278,22 @@ TS_strategy_base9 <- function( pinputexps )
   
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(201901, 201902, 201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
-                                        202001, 202002, 202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
-                                        202101, 202102, 202103, 202104, 202105, 202106, 202107)
+  param_local$final_train$training <- c(#201903, 
+                                      201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
+                                      202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 
+                                      202010, 202011, 202012, 202101, 
+                                      #202102, 202103, 202104, 202105, 
+                                      202106, 202107)
   #c(2202107, 202106, 202105, 202104)
   # c(202107, 202106, 202105, 202104, 202103, 202102,202101, 202012, 202011)
-  
-  
-  param_local$train$training <- c(201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
-                                  202001, 202002,  202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
-                                  202101, 202102, 202103, 202104, 202105)
+
+  param_local$train$training <- c(201901, 201902, 
+                                  #201903, 
+                                  201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
+                                  202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 
+                                  202010, 202011, 202012, 202101 
+                                  #202102, 202103, 202104, 202105
+                                  )
   #c(202105, 202104, 202103, 202102)
   #c(202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009)
   param_local$train$validation <- c(202106)
@@ -299,6 +306,80 @@ TS_strategy_base9 <- function( pinputexps )
   
   return( exp_correr_script( param_local ) ) # linea fija
 }
+
+#CORRIDA QUITANDO MAYO Y JUNIO
+# TS_strategy_base9 <- function( pinputexps )
+# {
+#   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+# 
+#   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
+# 
+# 
+#   param_local$future <- c(202109)
+# 
+#   param_local$final_train$undersampling <- 1.0
+#   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+#   param_local$final_train$training <- c(201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
+#                                         202001, 202002,202003, 202004,
+#                                         #202005, 202006, 
+#                                         202007, 202008, 202009, 202010, 202011, 202012,
+#                                         202101, 202102, 202103, 202104, 202105, 202106, 202107)
+#   #c(2202107, 202106, 202105, 202104)
+#   # c(202107, 202106, 202105, 202104, 202103, 202102,202101, 202012, 202011)
+# 
+#   param_local$train$training <- c(201901, 201902, 201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
+#                                   202001, 202002, 202003, 202004,
+#                                   #202005, 202006, 
+#                                   202007, 202008, 202009, 202010, 202011, 202012,
+#                                   202101, 202102, 202103, 202104, 202105)
+#   #c(202105, 202104, 202103, 202102)
+#   #c(202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009)
+#   param_local$train$validation <- c(202106)
+#   param_local$train$testing <- c(202107)
+# 
+#   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
+#   # 1.0 significa NO undersampling
+#   param_local$train$undersampling <- 0.2
+#   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+# 
+#   return( exp_correr_script( param_local ) ) # linea fija
+# }
+
+#CORRIDA BASE
+# TS_strategy_base9 <- function( pinputexps )
+# {
+#   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+#   
+#   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
+#   
+#   
+#   param_local$future <- c(202109)
+#   
+#   param_local$final_train$undersampling <- 1.0
+#   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+#   param_local$final_train$training <- c(#202003, 202004, 
+#                                         202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
+#                                         202101, 202102, 202103, 202104, 202105, 202106, 202107)
+#   #c(2202107, 202106, 202105, 202104)
+#   # c(202107, 202106, 202105, 202104, 202103, 202102,202101, 202012, 202011)
+#   
+#   
+#   param_local$train$training <- c(202001, 202002, 
+#                                   #202003, 202004, 
+#                                   202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
+#                                   202101, 202102, 202103, 202104, 202105)
+#   #c(202105, 202104, 202103, 202102)
+#   #c(202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009)
+#   param_local$train$validation <- c(202106)
+#   param_local$train$testing <- c(202107)
+#   
+#   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
+#   # 1.0 significa NO undersampling
+#   param_local$train$undersampling <- 0.2
+#   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+#   
+#   return( exp_correr_script( param_local ) ) # linea fija
+# }
 #------------------------------------------------------------------------------
 # Hyperparamteter Tuning Baseline
 #  donde la Bayuesian Optimization solo considera 4 hiperparámetros
