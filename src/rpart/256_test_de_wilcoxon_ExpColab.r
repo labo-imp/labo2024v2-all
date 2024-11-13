@@ -1,344 +1,94 @@
-# Listado de las tablas de entrada como data.frames en una lista
+# Cargar los datos
+library(readr)
+datos <- read_delim("/home/afirpomaster/buckets/b1/datasets/Tabla_Ganancias_v2.csv", delim = ",", 
+                    col_names = TRUE, 
+                    show_col_types = FALSE)
 
-# Tabla 1
-tabla1 <- data.frame(
-  envios = c(1600, 1800, 2000, 2200, 2400),
-  m1 = c(5.379, 5.239, 5.529, 5.779, 5.219),
-  m2 = c(6.629, 6.459, 5.819, 6.379, 6.199),
-  m3 = c(5.769, 5.589, 5.899, 5.359, 5.919),
-  m4 = c(5.369, 5.599, 5.469, 5.249, 5.079),
-  m5 = c(5.469, 5.689, 5.959, 5.809, 6.019),
-  m6 = c(6.189, 6.359, 5.769, 6.019, 6.269),
-  m7 = c(5.319, 5.919, 5.849, 5.699, 5.949),
-  m8 = c(5.009, 4.779, 5.309, 4.689, 4.929),
-  m9 = c(5.749, 5.569, 5.789, 5.279, 5.019),
-  m10 = c(4.649, 4.839, 5.379, 4.759, 4.939),
-  m11 = c(6.109, 5.999, 5.809, 5.699, 5.929),
-  m12 = c(5.309, 5.149, 5.009, 4.489, 5.359),
-  m13 = c(5.749, 5.519, 5.039, 5.629, 5.089),
-  m14 = c(5.319, 5.589, 5.759, 5.579, 5.069),
-  m15 = c(6.629, 6.059, 5.499, 4.839, 4.609),
-  m16 = c(5.419, 5.609, 5.459, 5.659, 5.139),
-  m17 = c(6.119, 5.559, 4.979, 4.829, 5.519),
-  m18 = c(4.629, 5.229, 5.789, 5.619, 6.189),
-  m19 = c(4.989, 4.819, 5.409, 4.899, 5.019),
-  m20 = c(5.369, 5.209, 5.069, 4.779, 5.079)
-)
+# Verifica los nombres de columnas para asegurarte de que se han cargado correctamente
+print(names(datos))
 
-# Tabla 2
-tabla2 <- data.frame(
-  envios = c(1600, 1800, 2000, 2200, 2400),
-  m1 = c(6.549, 5.909, 6.149, 5.459, 5.349),
-  m2 = c(5.879, 5.349, 5.149, 4.779, 4.139),
-  m3 = c(6.089, 5.529, 5.689, 6.009, 6.669),
-  m4 = c(6.599, 6.069, 5.869, 5.239, 5.109),
-  m5 = c(6.139, 6.029, 5.519, 5.189, 5.389),
-  m6 = c(4.499, 5.489, 5.289, 5.489, 5.749),
-  m7 = c(6.109, 5.869, 5.359, 5.549, 4.939),
-  m8 = c(7.019, 7.149, 6.619, 6.039, 5.829),
-  m9 = c(6.179, 6.039, 5.929, 5.399, 5.119),
-  m10 = c(5.849, 5.689, 5.079, 5.249, 4.589),
-  m11 = c(6.679, 6.419, 6.639, 6.079, 5.529),
-  m12 = c(5.139, 5.429, 5.519, 5.749, 5.119),
-  m13 = c(7.019, 7.119, 6.589, 5.989, 5.789),
-  m14 = c(5.799, 5.619, 6.239, 6.139, 5.539),
-  m15 = c(5.409, 5.249, 4.759, 5.039, 4.919),
-  m16 = c(4.979, 4.779, 4.209, 4.369, 4.599),
-  m17 = c(7.259, 7.119, 6.479, 5.879, 5.319),
-  m18 = c(6.909, 7.139, 7.049, 7.259, 6.739),
-  m19 = c(6.899, 6.809, 6.619, 6.519, 5.809),
-  m20 = c(4.689, 4.539, 4.359, 5.869, 6.539)
-)
+# Filtrar experimentos válidos (aquellos que tienen valores en las semillas)
+experimentos <- subset(datos, !is.na(m1)) # Ajusta el filtro según las columnas de semillas
 
-# Tabla 3
-tabla3 <- data.frame(
-  envios = c(1600, 1800, 2000, 2200, 2400),
-  m1 = c(6.949, 6.719, 6.929, 6.739, 6.639),
-  m2 = c(6.589, 7.179, 6.919, 6.789, 6.539),
-  m3 = c(6.959, 6.729, 6.919, 6.759, 6.579),
-  m4 = c(6.569, 6.749, 6.969, 6.709, 6.919),
-  m5 = c(6.599, 6.779, 6.529, 6.739, 6.589),
-  m6 = c(6.569, 6.739, 6.529, 6.729, 6.579),
-  m7 = c(6.959, 7.129, 6.899, 6.719, 6.579),
-  m8 = c(7.339, 6.759, 6.949, 6.729, 6.569),
-  m9 = c(6.959, 6.369, 6.559, 6.739, 6.599),
-  m10 = c(6.559, 6.789, 7.329, 6.729, 6.619),
-  m11 = c(6.579, 6.719, 6.549, 6.689, 6.579),
-  m12 = c(6.599, 6.739, 6.929, 6.719, 6.569),
-  m13 = c(6.539, 7.179, 6.929, 6.739, 6.629),
-  m14 = c(6.569, 6.759, 6.519, 6.699, 6.589),
-  m15 = c(6.559, 6.789, 6.919, 6.749, 6.549),
-  m16 = c(6.979, 6.779, 6.899, 6.749, 6.249),
-  m17 = c(6.579, 6.759, 6.939, 6.749, 6.599),
-  m18 = c(6.959, 7.539, 6.919, 6.719, 6.279),
-  m19 = c(6.539, 6.739, 7.329, 6.729, 6.589),
-  m20 = c(6.559, 7.179, 6.529, 6.729, 6.609)
-)
+# Obtener la lista de nombres de experimentos y las columnas de semillas
+nombres_experimentos <- experimentos$Experimento
+semillas <- experimentos[, grep("^m[0-9]+$", names(experimentos))]
 
-# Tabla 4
-tabla4 <- data.frame(
-  envios = c(1600, 1800, 2000, 2200, 2400),
-  m1 = c(6.689, 6.499, 7.059, 6.869, 6.969),
-  m2 = c(6.599, 6.099, 6.639, 6.819, 7.369),
-  m3 = c(6.619, 6.509, 6.249, 7.609, 7.409),
-  m4 = c(6.649, 6.119, 7.009, 7.599, 7.009),
-  m5 = c(6.649, 6.509, 6.639, 7.189, 7.419),
-  m6 = c(6.629, 6.109, 6.999, 7.239, 7.379),
-  m7 = c(6.619, 6.539, 6.999, 7.559, 7.459),
-  m8 = c(6.609, 6.069, 7.019, 7.229, 7.439),
-  m9 = c(6.629, 6.139, 7.009, 7.219, 7.439),
-  m10 = c(6.639, 6.119, 7.049, 7.649, 7.349),
-  m11 = c(6.669, 6.469, 7.449, 7.249, 7.449),
-  m12 = c(6.629, 6.499, 7.449, 7.239, 7.399),
-  m13 = c(6.589, 6.109, 7.409, 6.769, 7.359),
-  m14 = c(6.609, 6.439, 7.409, 7.129, 7.009),
-  m15 = c(6.639, 6.099, 6.639, 7.649, 7.409),
-  m16 = c(6.619, 6.529, 7.039, 6.849, 7.419),
-  m17 = c(6.629, 6.529, 7.039, 7.219, 7.459),
-  m18 = c(6.579, 6.129, 7.439, 6.849, 7.449),
-  m19 = c(6.619, 6.129, 7.389, 7.219, 7.369),
-  m20 = c(6.619, 6.479, 6.659, 7.189, 7.409)
-)
+# Crear combinaciones de experimentos
+combinaciones <- combn(1:nrow(semillas), 2, simplify = FALSE)
 
-# Tabla 5
-tabla5 <- data.frame(
-  envios = c(1600, 1800, 2000, 2200, 2400),
-  m1 = c(6.139, 5.939, 5.689, 5.119, 4.459),
-  m2 = c(6.089, 5.509, 6.039, 5.879, 5.709),
-  m3 = c(6.219, 5.599, 6.169, 6.359, 5.779),
-  m4 = c(6.489, 5.879, 5.609, 5.429, 5.609),
-  m5 = c(5.619, 5.039, 4.459, 4.309, 4.849),
-  m6 = c(6.159, 5.929, 6.079, 5.449, 5.129),
-  m7 = c(5.769, 5.439, 6.059, 6.649, 6.869),
-  m8 = c(5.679, 5.439, 5.649, 6.149, 5.529),
-  m9 = c(5.329, 5.159, 5.749, 5.489, 5.699),
-  m10 = c(6.049, 5.449, 4.919, 5.079, 5.609),
-  m11 = c(5.679, 5.549, 5.629, 5.869, 5.969),
-  m12 = c(5.829, 5.989, 5.699, 5.489, 5.289),
-  m13 = c(6.169, 5.599, 4.999, 4.689, 4.819),
-  m14 = c(6.859, 6.719, 6.119, 6.279, 5.719),
-  m15 = c(5.689, 6.269, 6.039, 5.699, 5.569),
-  m16 = c(5.749, 5.539, 5.699, 5.459, 6.069),
-  m17 = c(5.799, 5.859, 5.249, 4.999, 4.919),
-  m18 = c(6.119, 5.519, 5.689, 5.859, 5.239),
-  m19 = c(6.109, 5.929, 5.719, 5.879, 6.099),
-  m20 = c(6.579, 5.999, 5.269, 5.519, 5.019)
-)
+# Realizar el test de Wilcoxon para cada par de experimentos
+resultados <- lapply(combinaciones, function(par) {
+  exp1 <- semillas[par[1], ]
+  exp2 <- semillas[par[2], ]
+  
+  test <- wilcox.test(as.numeric(exp1), as.numeric(exp2), paired = TRUE)
+  data.frame(
+    Experimento1 = nombres_experimentos[par[1]],
+    Experimento2 = nombres_experimentos[par[2]],
+    P.valor = test$p.value,
+    Estadístico = test$statistic
+  )
+})
 
-# Tabla 6
-tabla6 <- data.frame(
-  envios = c(1600, 1800, 2000, 2200, 2400),
-  m1 = c(6.779, 6.669, 6.499, 6.289, 6.589),
-  m2 = c(5.729, 5.459, 4.929, 5.499, 4.899),
-  m3 = c(6.489, 5.939, 5.309, 5.549, 4.969),
-  m4 = c(5.829, 6.039, 5.839, 6.049, 6.169),
-  m5 = c(5.689, 5.909, 6.169, 5.959, 6.179),
-  m6 = c(6.069, 6.299, 6.699, 6.129, 5.579),
-  m7 = c(5.699, 6.679, 6.159, 6.379, 6.199),
-  m8 = c(5.759, 6.319, 6.539, 6.319, 6.109),
-  m9 = c(6.519, 6.669, 6.489, 6.399, 5.889),
-  m10 = c(5.359, 5.599, 6.149, 6.379, 6.969),
-  m11 = c(5.839, 5.969, 6.949, 7.569, 6.979),
-  m12 = c(6.109, 6.759, 6.119, 6.329, 6.149),
-  m13 = c(6.459, 5.889, 7.009, 6.779, 6.639),
-  m14 = c(6.259, 6.009, 5.769, 5.119, 5.269),
-  m15 = c(6.439, 6.229, 6.769, 6.599, 6.099),
-  m16 = c(5.699, 5.509, 6.029, 6.319, 6.159),
-  m17 = c(6.559, 6.739, 6.299, 6.369, 5.699),
-  m18 = c(6.089, 6.319, 6.129, 5.479, 5.379),
-  m19 = c(6.519, 6.759, 6.099, 6.339, 5.709),
-  m20 = c(6.189, 7.159, 6.919, 6.779, 6.959)
-)
+# Combinar resultados en un data frame
+resultados_df <- do.call(rbind, resultados)
 
-# Tabla 7
-tabla7 <- data.frame(
-  envios = c(1600, 1800, 2000, 2200, 2400),
-  m1 = c(6.459, 6.729, 6.219, 5.639, 6.229),
-  m2 = c(6.459, 5.849, 6.059, 7.529, 7.279),
-  m3 = c(6.599, 6.689, 6.119, 5.979, 5.839),
-  m4 = c(6.669, 6.319, 6.099, 5.949, 5.419),
-  m5 = c(6.609, 6.049, 5.829, 5.609, 5.779),
-  m6 = c(5.659, 5.879, 6.119, 5.929, 6.059),
-  m7 = c(6.459, 5.939, 5.439, 5.289, 5.839),
-  m8 = c(6.179, 5.929, 6.199, 5.639, 5.469),
-  m9 = c(6.479, 6.449, 6.249, 5.579, 5.369),
-  m10 = c(6.609, 6.369, 6.499, 6.689, 6.419),
-  m11 = c(6.489, 5.939, 5.319, 5.549, 5.269),
-  m12 = c(6.079, 5.929, 6.159, 5.469, 4.869),
-  m13 = c(6.499, 5.969, 6.489, 5.989, 6.199),
-  m14 = c(7.009, 6.469, 6.669, 6.869, 6.589),
-  m15 = c(6.899, 6.789, 6.189, 6.009, 6.139),
-  m16 = c(5.809, 6.039, 6.149, 6.259, 5.689),
-  m17 = c(6.949, 6.659, 6.529, 6.019, 5.719),
-  m18 = c(6.929, 6.689, 6.469, 6.399, 5.869),
-  m19 = c(6.139, 6.379, 5.829, 6.799, 6.279),
-  m20 = c(6.099, 6.719, 6.189, 5.949, 6.209)
-)
+# Mostrar resultados
+print(resultados_df)
 
-# Tabla 8
-tabla8 <- data.frame(
-  envios = c(1600, 1800, 2000, 2200, 2400),
-  m1 = c(5.259, 5.929, 6.239, 6.009, 5.869),
-  m2 = c(4.549, 5.589, 4.999, 4.789, 4.679),
-  m3 = c(6.109, 5.959, 6.529, 5.989, 5.849),
-  m4 = c(6.249, 5.679, 5.359, 5.529, 6.629),
-  m5 = c(3.859, 3.629, 3.409, 3.609, 3.829),
-  m6 = c(4.979, 4.769, 4.589, 4.419, 4.949),
-  m7 = c(4.209, 4.429, 5.079, 4.479, 5.409),
-  m8 = c(5.389, 4.749, 5.059, 4.459, 4.309),
-  m9 = c(4.699, 4.189, 3.569, 3.369, 3.209),
-  m10 = c(5.899, 6.039, 6.229, 6.129, 6.349),
-  m11 = c(3.709, 3.259, 3.129, 3.409, 3.619),
-  m12 = c(5.889, 5.649, 5.889, 5.999, 5.699),
-  m13 = c(5.359, 5.549, 5.299, 5.129, 5.219),
-  m14 = c(4.579, 4.829, 4.669, 4.019, 4.679),
-  m15 = c(5.349, 4.729, 4.929, 5.169, 5.329),
-  m16 = c(4.129, 3.929, 5.349, 4.729, 4.949),
-  m17 = c(4.979, 4.819, 5.509, 5.439, 5.219),
-  m18 = c(4.439, 4.679, 4.849, 6.489, 6.339),
-  m19 = c(4.619, 4.899, 4.269, 4.399, 5.069),
-  m20 = c(5.109, 4.869, 4.719, 4.509, 5.549)
-)
+# Especifica la ruta donde quieres guardar el archivo CSV
+ruta_resultado <- "/home/afirpomaster/buckets/b1/datasets/resultados_wilcoxon.csv"
 
-# Tabla 9
-tabla9 <- data.frame(
-  envios = c(1600, 1800, 2000, 2200, 2400),
-  m1 = c(5.259, 5.929, 6.239, 6.009, 5.869),
-  m2 = c(4.549, 5.589, 4.999, 4.789, 4.679),
-  m3 = c(6.109, 5.959, 6.529, 5.989, 5.849),
-  m4 = c(6.249, 5.679, 5.359, 5.529, 6.629),
-  m5 = c(3.859, 3.629, 3.409, 3.609, 3.829),
-  m6 = c(4.979, 4.769, 4.589, 4.419, 4.949),
-  m7 = c(4.209, 4.429, 5.079, 4.479, 5.409),
-  m8 = c(5.389, 4.749, 5.059, 4.459, 4.309),
-  m9 = c(4.699, 4.189, 3.569, 3.369, 3.209),
-  m10 = c(5.899, 6.039, 6.229, 6.129, 6.349),
-  m11 = c(3.709, 3.259, 3.129, 3.409, 3.619),
-  m12 = c(5.889, 5.649, 5.889, 5.999, 5.699),
-  m13 = c(5.359, 5.549, 5.299, 5.129, 5.219),
-  m14 = c(4.579, 4.829, 4.669, 4.019, 4.679),
-  m15 = c(5.349, 4.729, 4.929, 5.169, 5.329),
-  m16 = c(4.129, 3.929, 5.349, 4.729, 4.949),
-  m17 = c(4.979, 4.819, 5.509, 5.439, 5.219),
-  m18 = c(4.439, 4.679, 4.849, 6.489, 6.339),
-  m19 = c(4.619, 4.899, 4.269, 4.399, 5.069),
-  m20 = c(5.109, 4.869, 4.719, 4.509, 5.549)
-)
+# Guardar el data frame en un archivo CSV
+write.csv(resultados_df, ruta_resultado, row.names = FALSE)
 
-# Tabla 10
-tabla10 <- data.frame(
-  envios = c(1600, 1800, 2000, 2200, 2400),
-  m1 = c(5.599, 5.799, 6.099, 5.509, 5.349),
-  m2 = c(5.319, 5.899, 6.519, 6.259, 5.739),
-  m3 = c(6.549, 6.719, 6.109, 6.309, 6.239),
-  m4 = c(6.429, 7.109, 6.929, 6.869, 6.739),
-  m5 = c(6.559, 5.919, 5.679, 5.529, 6.169),
-  m6 = c(7.269, 7.459, 7.209, 6.879, 6.749),
-  m7 = c(6.929, 7.849, 7.279, 7.029, 7.699),
-  m8 = c(6.949, 6.239, 5.809, 5.979, 6.169),
-  m9 = c(8.059, 7.559, 7.659, 7.859, 7.659),
-  m10 = c(5.419, 5.969, 6.149, 6.769, 6.429),
-  m11 = c(4.889, 5.159, 4.969, 5.459, 5.269),
-  m12 = c(5.729, 6.339, 6.589, 6.509, 5.859),
-  m13 = c(6.099, 5.499, 6.089, 5.949, 5.739),
-  m14 = c(6.499, 6.959, 6.789, 6.679, 5.949),
-  m15 = c(6.069, 5.459, 5.599, 5.489, 5.789),
-  m16 = c(5.679, 6.299, 6.499, 6.229, 6.399),
-  m17 = c(5.019, 4.889, 4.289, 4.879, 4.999),
-  m18 = c(5.809, 5.689, 5.839, 5.669, 6.189),
-  m19 = c(5.179, 5.799, 6.009, 5.829, 5.179),
-  m20 = c(6.529, 6.329, 6.109, 5.469, 6.129)
-)
+# Confirmación
+cat("Los resultados han sido guardados en", ruta_resultado, "\n")
 
-# Tabla 11
-tabla11 <- data.frame(
-  envios = c(1600, 1800, 2000, 2200, 2400),
-  m1 = c(5.889, 6.049, 6.739, 6.199, 6.349),
-  m2 = c(5.769, 5.579, 5.869, 5.699, 5.889),
-  m3 = c(6.079, 7.849, 7.779, 7.999, 7.379),
-  m4 = c(7.569, 7.429, 7.559, 7.409, 7.239),
-  m5 = c(6.039, 6.279, 6.159, 6.219, 5.639),
-  m6 = c(5.039, 4.469, 4.159, 4.369, 5.389),
-  m7 = c(5.349, 6.199, 7.219, 7.499, 6.869),
-  m8 = c(6.519, 5.969, 6.149, 7.159, 7.719),
-  m9 = c(6.869, 7.429, 7.279, 7.139, 7.739),
-  m10 = c(6.029, 5.839, 6.129, 6.409, 6.259),
-  m11 = c(6.119, 6.349, 5.909, 5.639, 5.819),
-  m12 = c(7.019, 6.739, 6.169, 7.109, 6.509),
-  m13 = c(7.239, 7.499, 6.939, 6.369, 6.109),
-  m14 = c(6.089, 6.829, 7.049, 6.809, 6.529),
-  m15 = c(7.349, 7.859, 8.029, 7.389, 6.809),
-  m16 = c(6.989, 6.419, 6.129, 6.289, 5.759),
-  m17 = c(6.389, 6.199, 6.129, 5.939, 5.709),
-  m18 = c(6.149, 6.349, 6.989, 6.779, 7.429),
-  m19 = c(5.769, 5.579, 5.379, 4.789, 5.049),
-  m20 = c(5.349, 6.739, 6.529, 6.409, 5.829)
-)
+# PARA GRAFICAR SOLO LOS P-VALORES SIGNIFICATIVOS (< 0.05) EN ROJO
 
-# (Se recomienda importar cada tabla en un data.frame y almacenarlas en esta lista)
-tablas <- list(tabla1, tabla2, tabla3, tabla4, tabla5, 
-               tabla6, tabla7, tabla8, tabla9, tabla10, tabla11)
+# Instalar y cargar librerías necesarias
+if(!require(pheatmap)) install.packages("pheatmap", dependencies = TRUE)
+library(pheatmap)
 
-# Define la ruta para guardar los resultados
-output_dir <- "~/buckets/b1/expw/wilcoxon"
-dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+# Convertir los resultados en una matriz
+num_experimentos <- length(nombres_experimentos)
+p_valor_matrix <- matrix(1, nrow = num_experimentos, ncol = num_experimentos)  # Inicia con 1 (no significativo)
+rownames(p_valor_matrix) <- nombres_experimentos
+colnames(p_valor_matrix) <- nombres_experimentos
 
-# Define los nombres de los archivos de salida
-output_txt <- file.path(output_dir, "wilcoxon_results.txt")
-output_csv <- file.path(output_dir, "wilcoxon_results.csv")
-
-# Iniciar escritura en el archivo de texto
-sink(output_txt)
-
-# Crear una lista para almacenar los resultados para el archivo CSV
-csv_results <- list()
-
-# Realizar comparación de cada par de tablas y guardar en ambos archivos
-for (i in 1:(length(tablas) - 1)) {
-  for (j in (i + 1):length(tablas)) {
-    cat(paste0("Comparación entre Tabla ", i, " y Tabla ", j, ":\n"))
-    
-    for (envio in unique(tablas[[i]]$envios)) {
-      sample1 <- subset(tablas[[i]], envios == envio)[, -1]
-      sample2 <- subset(tablas[[j]], envios == envio)[, -1]
-      
-      # Test de Wilcoxon
-      test_result <- wilcox.test(as.numeric(sample1), as.numeric(sample2), paired = TRUE)
-      p_value <- test_result$p.value
-      cat(paste("Envíos:", envio, " - p-valor:", p_value, "\n"))
-      
-      # Almacenar resultados en la lista para el CSV
-      csv_results <- append(csv_results, list(data.frame(
-        Tabla1 = i,
-        Tabla2 = j,
-        Envíos = envio,
-        p_valor = p_value
-      )))
-    }
-    
-    # Test global para todas las ganancias combinadas
-    sample1_all <- unlist(tablas[[i]][, -1])
-    sample2_all <- unlist(tablas[[j]][, -1])
-    
-    test_result_all <- wilcox.test(as.numeric(sample1_all), as.numeric(sample2_all), paired = TRUE)
-    p_value_all <- test_result_all$p.value
-    cat(paste("Test global para todas las ganancias - p-valor:", p_value_all, "\n\n"))
-    
-    # Almacenar resultados globales en la lista para el CSV
-    csv_results <- append(csv_results, list(data.frame(
-      Tabla1 = i,
-      Tabla2 = j,
-      Envíos = "Global",
-      p_valor = p_value_all
-    )))
-  }
+# Rellenar la matriz con los p-valores obtenidos
+for (i in 1:nrow(resultados_df)) {
+  exp1 <- resultados_df$Experimento1[i]
+  exp2 <- resultados_df$Experimento2[i]
+  p_valor <- resultados_df$P.valor[i]
+  
+  p_valor_matrix[exp1, exp2] <- p_valor
+  p_valor_matrix[exp2, exp1] <- p_valor  # Hacer la matriz simétrica
 }
 
-# Cerrar archivo de texto
-sink()
+# Opcional: rellenar la diagonal con 1 para indicar comparaciones idénticas
+diag(p_valor_matrix) <- 1
 
-# Guardar resultados en CSV
-csv_results_df <- do.call(rbind, csv_results)
-write.csv(csv_results_df, output_csv, row.names = FALSE)
+# Crear una paleta de colores personalizada para los valores menores a 0.05
+color_palette <- c("lightgreen", "white")
+breaks <- c(0, 0.05, 1)  # Define los cortes: valores <0.05 en rojo, >=0.05 en blanco
 
-cat("Resultados guardados en", output_txt, "y", output_csv, "\n")
+# Crear el heatmap con ajustes adicionales para mejorar la estética
+pheatmap(p_valor_matrix, 
+         cluster_rows = FALSE, 
+         cluster_cols = FALSE, 
+         display_numbers = TRUE,
+         color = color_palette,
+         breaks = breaks,
+         main = "Matriz de p-valores de Test de Wilcoxon (p < 0.05 en verde)",
+         number_format = "%.3f",
+         fontsize_number = 10,            # Tamaño de los números en celdas
+         fontsize_row = 10,               # Tamaño de las etiquetas de fila
+         fontsize_col = 10,               # Tamaño de las etiquetas de columna
+         border_color = "grey80",         # Color del borde de las celdas
+         angle_col = 45,                  # Girar etiquetas de columnas
+         cellwidth = 25,                  # Ajustar ancho de celdas
+         cellheight = 25,                 # Ajustar altura de celdas
+         na_col = "white")                # Fondo blanco para valores no significativo
