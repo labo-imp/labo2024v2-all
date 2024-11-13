@@ -285,14 +285,14 @@ TS_strategy_base7 <- function( pinputexps )
                                         202007, 202006, 202005, 202004,
                                         202003, 202002, 202001, 201912,
                                         201911, 201910, 201909, 201908,
-                                        201907)
+                                        201907, 201906, 201905, 201904)
 
   param_local$train$training <- c(202101, 202012, 202011, 202010, 
                                   202009, 202008, 202007, 202006, 
                                   202005, 202004, 202003, 202002,
                                   202001, 201912, 201911, 201910,
                                   201909, 201908, 201907, 201906,
-                                  201905)
+                                  201905, 201904, 201903, 201902)
   param_local$train$validation <- c(202102)
   param_local$train$testing <- c(202103)
 
@@ -439,7 +439,7 @@ EV_evaluate_conclase_gan <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_mayo_21m <- function( pnombrewf )
+wf_mayo_24m <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
@@ -470,5 +470,5 @@ wf_mayo_21m <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202107
-wf_mayo_21m()
+wf_mayo_24m()
 
