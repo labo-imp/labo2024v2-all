@@ -10,15 +10,16 @@ require("rpart")
 require("parallel")
 require("primes")
 
+
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 523801
+PARAM$semilla_primigenia <- 100069
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 # elegir SU dataset comentando/ descomentando
-# PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+#PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
 PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 #------------------------------------------------------------------------------
@@ -139,21 +140,20 @@ tb_grid_search_detalle <- data.table(
   ganancia_test = numeric()
 )
 
-
 # itero por los loops anidados para cada hiperparametro
 
-for(vcp in c( -0.5, 0, 0.1 ) ){
-  for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-    for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-      for(vmin_bucket in c(2, 4, 8, 16, 32, 64 ) ) {
-        # notar como se agrega
+# itero por los loops anidados para cada hiperparametro
+for (vmax_depth in c(2, 3, 4, 5, 6, 7, 8, 9, 10)) {
+  for (vmin_split in c(1200, 1000, 800, 600, 400, 200, 100, 50, 20)) {
+    for (vmin_bucket in c(500, 250, 100, 80, 60, 40, 20, 10, 5)) {  # Nuevo bucle para minbucket
+      for (vcp in c(-0.7, -0.5, -0.3, -0.1, 0, 0.1)) {  # Nuevo bucle para cp
         
-        # vminsplit  minima cantidad de registros en un nodo para hacer el split
+        # Defino los parámetros incluyendo los nuevos valores
         param_basicos <- list(
           "cp" = vcp, # complejidad minima
-          "maxdepth" = vmax_depth, # profundidad máxima del arbol
-          "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-          "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
+          "maxdepth" = vmax_depth, # profundidad máxima del árbol
+          "minsplit" = vmin_split, # tamaño mínimo de nodo para hacer split
+          "minbucket" = vmin_bucket # mínima cantidad de registros en una hoja
         )
         
         # Un solo llamado, con la semilla 17
@@ -164,18 +164,18 @@ for(vcp in c( -0.5, 0, 0.1 ) ){
           list( tb_grid_search_detalle,
                 rbindlist(ganancias) )
         )
-        
       }
     }
   }
   
-  # grabo cada vez TODA la tabla en el loop mas externo
+  # grabo cada vez TODA la tabla en el loop más externo
   fwrite( tb_grid_search_detalle,
           file = "gridsearch_detalle.txt",
           sep = "\t" )
 }
 
 #----------------------------
+
 # genero y grabo el resumen
 tb_grid_search <- tb_grid_search_detalle[,
   list( "ganancia_mean" = mean(ganancia_test),
@@ -193,4 +193,5 @@ fwrite( tb_grid_search,
   file = "gridsearch.txt",
   sep = "\t"
 )
+
 
