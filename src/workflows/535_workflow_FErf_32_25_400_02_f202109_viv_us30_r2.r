@@ -1,5 +1,5 @@
-# Corrida general del Workflow Baseline
-
+# Corrida general del Workflow us = 0.3 en linea 308 y rank 2
+# FErf con num_it = 32, num_leaves = 24, min_data = 1600, feat_frac = 0.2
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
 gc(full = TRUE) # garbage collection
@@ -263,7 +263,6 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 }
 #------------------------------------------------------------------------------
 # Training Strategy  Baseline
-#   y solo incluyo en el dataset al 20% de los CONTINUA
 #  azaroso, utiliza semilla
 
 TS_strategy_base9 <- function( pinputexps )
@@ -277,18 +276,36 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
-    202101, 202012, 202011)
+  param_local$final_train$training <- c(
+    202107, 202106, 202105, 202104, 202103, 202102, 202101, 
+    202012, 202011, 202010, 202009, 202008, 202007, 
+    # 202006  Excluyo por variables rotas
+    202005, 202004, 202003, 202002, 202001,
+    201912, 201911,
+    # 201910 Excluyo por variables rotas
+    201909, 201908, 201907, 201906,
+    # 201905  Excluyo por variables rotas
+    201904, 201903
+  )
 
 
-  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,
-    202012, 202011, 202010, 202009)
+  param_local$train$training <- c(
+    202105, 202104, 202103, 202102, 202101, 
+    202012, 202011, 202010, 202009, 202008, 202007,
+    # 202006  Excluyo por variables rotas
+    202005, 202004, 202003, 202002, 202001,
+    201912, 201911,
+    # 201910 Excluyo por variables rotas
+    201909, 201908, 201907, 201906,
+    # 201905  Excluyo por variables rotas
+    201904, 201903, 201902, 201901
+    )
   param_local$train$validation <- c(202106)
   param_local$train$testing <- c(202107)
 
-  # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
+  # Atencion  0.3  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.2
+  param_local$train$undersampling <- 0.3 ## UNDERSAMPLING DE 0.3 PARA ACORTAR TIEMPO DE CORRIDA
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -303,7 +320,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 {
   if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
 
-  param_local$meta$script <- "/src/wf-etapas/z2203_HT_lightgbm_gan.r"
+  param_local$meta$script <- "/src/wf-etapas/z2201_HT_lightgbm_gan.r"
 
   # En caso que se haga cross validation, se usa esta cantidad de folds
   param_local$lgb_crossvalidation_folds <- 5
@@ -312,8 +329,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   param_local$train$positivos <- c( "BAJA+2")
   param_local$train$gan1 <- 117000
   param_local$train$gan0 <-  -3000
-  param_local$train$meseta <- 401
-  param_local$train$excluir_campos <- c("numero_de_cliente", "foto_mes")
+  param_local$train$meseta <- 2001
 
   # Hiperparametros  del LightGBM
   #  los que tienen un solo valor son los que van fijos
@@ -351,7 +367,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     learning_rate = c( 0.02, 0.3 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 20L, 2000L, "integer" )
+    min_data_in_leaf = c( 100L, 10000L, "integer" )
   )
 
 
@@ -413,10 +429,10 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <-  1600L
-  param_local$envios_hasta <-  2400L
-  param_local$envios_salto <-   200L
-  param_local$competition <- "labo-i-conceptual-2024-v-2"
+  param_local$envios_desde <-  10000L
+  param_local$envios_hasta <-  12000L ### MODIFICADO A 12K P/ 100 submits
+  param_local$envios_salto <-    500L
+  param_local$competition <- "labo-i-vivencial-2024-v-2"
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -424,11 +440,11 @@ KA_evaluate_kaggle <- function( pinputexps )
 #------------------------------------------------------------------------------
 # A partir de ahora comienza la seccion de Workflows Completos
 #------------------------------------------------------------------------------
-# Este es el  Workflow Baseline
+# Este es el  Workflow
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_septiembre <- function( pnombrewf )
+wf_sept_FErf_32_25_400_02_us30_r2 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
@@ -438,9 +454,9 @@ wf_septiembre <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
+  FErf_attributes_base( arbolitos= 32, ### MODIFICADO
+    hojas_por_arbol= 25, ### MODIFICADO
+    datos_por_hoja= 400, ### MODIFICADO
     mtry_ratio= 0.2
   )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
@@ -448,7 +464,7 @@ wf_septiembre <- function( pnombrewf )
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
-  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
+  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(2), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()
 
@@ -459,5 +475,6 @@ wf_septiembre <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202109
-wf_septiembre()
+wf_sept_FErf_32_25_400_02_us30_r2()
+## wf modificado con undersampling = 0.3 en linea 308
 
