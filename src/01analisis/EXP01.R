@@ -37,6 +37,7 @@ ganancia %>% group_by(semilla) %>% count()
 
 ganancia %>% arrange(desc(ganancia))
 
+
 ## Sin Meses de Pandemia (marzo y abril 2020)
 
 path = '~/buckets/b1/flow-03/wf_septiembre-005/011-KA_evaluate_kaggle/ganancias_log.txt'
