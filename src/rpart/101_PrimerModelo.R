@@ -64,3 +64,4 @@ fwrite(dapply[, list(numero_de_cliente, Predicted)],
         file = "./exp/KA2001/K101_001_viv.csv",
         sep = ","
 )
+
