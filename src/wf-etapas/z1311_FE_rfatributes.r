@@ -32,83 +32,83 @@ source( paste0( args[1] , "/src/lib/action_lib.r" ) )
 #------------------------------------------------------------------------------
 
 AgregaVarRandomForest <- function() {
-
+  
   cat( "inicio AgregaVarRandomForest()\n")
   gc(verbose= FALSE)
   dataset[, clase01 := 0L ]
   dataset[ get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase01_valor1, 
-      clase01 := 1L ]
-
+           clase01 := 1L ]
+  
   campos_buenos <- setdiff(
     colnames(dataset),
     c( "clase_ternaria", "clase01")
   )
-
+  
   dataset[, entrenamiento :=
-    as.integer( get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$train$training )]
-
+            as.integer( get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$train$training )]
+  
   dtrain <- lgb.Dataset(
     data = data.matrix(dataset[entrenamiento == TRUE, campos_buenos, with = FALSE]),
     label = dataset[entrenamiento == TRUE, clase01],
     free_raw_data = FALSE
   )
-
+  
   modelo <- lgb.train(
-     data = dtrain,
-     param = envg$PARAM$lgb_param,
-     verbose = -100
+    data = dtrain,
+    param = envg$PARAM$lgb_param,
+    verbose = -100
   )
-
+  
   cat( "Fin construccion RandomForest\n" )
   # grabo el modelo, achivo .model
   lgb.save(modelo, file="modelo.model" )
-
+  
   qarbolitos <- copy(envg$PARAM$lgb_param$num_iterations)
-
+  
   periodos <- dataset[ , unique( get(envg$PARAM$dataset_metadata$periodo) ) ]
-
+  
   for( periodo in  periodos )
   {
     cat( "periodo = ", periodo, "\n" )
     datamatrix <- data.matrix(dataset[ get(envg$PARAM$dataset_metadata$periodo)== periodo, campos_buenos, with = FALSE])
-
+    
     cat( "Inicio prediccion\n" )
     prediccion <- predict(
-        modelo,
-        datamatrix,
-        type = "leaf"
+      modelo,
+      datamatrix,
+      type = "leaf"
     )
     cat( "Fin prediccion\n" )
-
+    
     for( arbolito in 1:qarbolitos )
     {
-       cat( arbolito, " " )
-       hojas_arbol <- unique(prediccion[ , arbolito])
-
-       for (pos in 1:length(hojas_arbol)) {
-         # el numero de nodo de la hoja, estan salteados
-         nodo_id <- hojas_arbol[pos]
-         dataset[ get(envg$PARAM$dataset_metadata$periodo)== periodo, paste0(
-            "rf_", sprintf("%03d", arbolito),
-             "_", sprintf("%03d", nodo_id)
-          ) :=  as.integer( nodo_id == prediccion[ , arbolito]) ]
-
-       }
-
-       rm( hojas_arbol )
+      cat( arbolito, " " )
+      hojas_arbol <- unique(prediccion[ , arbolito])
+      
+      for (pos in 1:length(hojas_arbol)) {
+        # el numero de nodo de la hoja, estan salteados
+        nodo_id <- hojas_arbol[pos]
+        dataset[ get(envg$PARAM$dataset_metadata$periodo)== periodo, paste0(
+          "rf_", sprintf("%03d", arbolito),
+          "_", sprintf("%03d", nodo_id)
+        ) :=  as.integer( nodo_id == prediccion[ , arbolito]) ]
+        
+      }
+      
+      rm( hojas_arbol )
     }
     cat( "\n" )
-
+    
     rm( prediccion )
     rm( datamatrix )
     gc(verbose= FALSE)
   }
-
+  
   gc(verbose= FALSE)
   
   # borro clase01 , no debe ensuciar el dataset
   dataset[ , clase01 := NULL ]
-
+  
 }
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
@@ -159,9 +159,9 @@ setorderv(dataset, envg$PARAM$dataset_metadata$primarykey)
 cat( "grabado dataset\n")
 cat( "Iniciando grabado del dataset\n" )
 fwrite(dataset,
-  file = "dataset.csv.gz",
-  logical01 = TRUE,
-  sep = ","
+       file = "dataset.csv.gz",
+       logical01 = TRUE,
+       sep = ","
 )
 cat( "Finalizado grabado del dataset\n" )
 
@@ -169,7 +169,7 @@ cat( "Finalizado grabado del dataset\n" )
 # copia la metadata sin modificar
 cat( "grabado metadata\n")
 write_yaml( envg$PARAM$dataset_metadata, 
-  file="dataset_metadata.yml" )
+            file="dataset_metadata.yml" )
 
 #------------------------------------------------------------------------------
 
@@ -187,8 +187,8 @@ tb_campos <- as.data.table(list(
 ))
 
 fwrite(tb_campos,
-  file = "dataset.campos.txt",
-  sep = "\t"
+       file = "dataset.campos.txt",
+       sep = "\t"
 )
 
 #------------------------------------------------------------------------------
