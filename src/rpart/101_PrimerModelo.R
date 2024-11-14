@@ -1,3 +1,4 @@
+#list.files("~/exp/HT2810/")
 # Arbol elemental con libreria  rpart
 # Debe tener instaladas las librerias  data.table ,  rpart  y  rpart.plot
 # Correr en Google Cloud con RStudio
@@ -11,7 +12,8 @@ require("rpart.plot")
 setwd("~/buckets/b1") # Establezco el Working Directory
 
 # cargo el dataset pequeno vivencial del disco local
-dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
+dataset <- fread("exp/HT2810/gridsearch.csv")
+colnames(dataset)
 
 dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
 dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
@@ -19,7 +21,7 @@ dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
 # genero el modelo,  aqui se construye el arbol
 # quiero predecir clase_ternaria a partir de el resto de las variables
 modelo <- rpart(
-    formula = "clase_ternaria ~ .",
+    formula = "ganancia_promedio~ .",
     data = dtrain, # los datos donde voy a entrenar
     xval = 0,
     cp = -0.3, # esto significa no limitar la complejidad de los splits
@@ -57,10 +59,10 @@ dapply[, Predicted := as.numeric(prob_baja2 > 1 / 40)]
 # genero el archivo para Kaggle
 # primero creo la carpeta donde va el experimento
 dir.create("./exp/")
-dir.create("./exp/KA2001")
+dir.create("./exp/GRID")
 
 # solo los campos para Kaggle
 fwrite(dapply[, list(numero_de_cliente, Predicted)],
-        file = "./exp/KA2001/K101_001_viv.csv",
+        file = "./exp/GRID/grid.csv",
         sep = ","
 )
