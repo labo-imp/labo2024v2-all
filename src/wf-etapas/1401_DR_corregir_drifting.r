@@ -226,6 +226,27 @@ drift_dolar_financiero <- function(campos_monetarios) {
   cat( "fin drift_dolar_financiero()\n")
 }
 #------------------------------------------------------------------------------
+
+drift_rank_percentiles <- function(campos_drift) {
+  cat("inicio drift_rank_percentiles()\n")
+  
+  for (campo in campos_drift) {
+    cat(campo, " ")
+    
+    # Calcula los percentiles usando data.table
+    dataset[, paste0(campo, "_percentil") := {
+      # Ordena los valores y calcula el rango
+      ranks <- frank(get(campo), ties.method = "random")
+      # Convierte los rangos a percentiles (1-100)
+      ceiling(ranks / .N * 100)
+    }, by = eval(envg$PARAM$dataset_metadata$periodo)]
+    
+    # Elimina la columna original
+    dataset[, (campo) := NULL]
+  }
+  
+  cat("fin drift_rank_percentiles()\n")
+}
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 cat( "ETAPA  z1401_DR_corregir_drifting.r  START\n")
@@ -277,7 +298,8 @@ switch(envg$PARAM$metodo,
   "dolar_oficial"  = drift_dolar_oficial(campos_monetarios),
   "UVA"            = drift_UVA(campos_monetarios),
   "estandarizar"   = drift_estandarizar(campos_monetarios),
-  "dolar_financiero"  = drift_dolar_financiero(campos_monetarios)
+  "dolar_financiero"  = drift_dolar_financiero(campos_monetarios),
+  "rank_percentiles"  = drift_rank_percentiles(campos_monetarios)
 )
 
 
