@@ -412,7 +412,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <-  1600L
+  param_local$envios_desde <-  2000L
   param_local$envios_hasta <-  3000L
   param_local$envios_salto <-   200L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
