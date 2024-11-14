@@ -264,6 +264,38 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
+# Training Strategy Walking forward
+TS_strategy_walkforward <- function (pinputexps)
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+  
+  param_local$meta$script <- "/src/wf-etapas/2101_TS_training_strategy.r"
+  
+  param_local$future <- c(202109)
+  
+  param_local$final_train$undersampling <- 1.0
+  param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+  #seleccion de meses donde se realiza el entrenamiento del modelo final
+  param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
+                                        202101, 202012, 202011)
+  
+  #seleccion de meses para formar la triada trin/validate/test para la BO 
+  #9 meses desde 09/2020 a 05/2021
+  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,
+                                  202012, 202011, 202010, 202009)
+  param_local$train$validation <- c(202106)
+  param_local$train$testing <- c(202107)
+  
+  # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
+  # 1.0 significa NO undersampling
+  param_local$train$undersampling <- 0.2
+  param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+  
+  return( exp_correr_script( param_local ) ) # linea fija
+  
+}
+
+#------------------------------------------------------------------------------
 # Training Strategy  Baseline
 #   y solo incluyo en el dataset al 20% de los CONTINUA
 #  azaroso, utiliza semilla
@@ -279,10 +311,12 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+  #seleccion de meses donde se realiza el entrenamiento del modelo final
   param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
     202101, 202012, 202011)
 
-
+  #seleccion de meses para formar la triada trin/validate/test para la BO 
+  #9 meses desde 09/2020 a 05/2021
   param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,
     202012, 202011, 202010, 202009)
   param_local$train$validation <- c(202106)
@@ -425,10 +459,6 @@ KA_evaluate_kaggle <- function( pinputexps )
 #------------------------------------------------------------------------------
 # A partir de ahora comienza la seccion de Workflows Completos
 #------------------------------------------------------------------------------
-# Este es el  Workflow RF que tiene selecciona hojas inteligentemente
-# de acuerdo a su pureza GINI
-# Que predice 202107 donde conozco la clase
-# y ya genera graficos
 
 wf_septiembre <- function( pnombrewf )
 {
@@ -440,15 +470,16 @@ wf_septiembre <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
 
-  #llamado a la version _smart_GINI /// originalmente 20 arbolitos
-  FErf_attributes_base( arbolitos= 10,
-    hojas_por_arbol= 500,
-    datos_por_hoja= 1,
+  FErf_attributes_base( arbolitos= 100,
+    hojas_por_arbol= 25,
+    datos_por_hoja= 1100,
     mtry_ratio= 0.2
   )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
+  #PROXIMAMENTE:
+  #ts9 <- TS_strategy_walkforward()
   ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 ) #aqui, semillas =20!

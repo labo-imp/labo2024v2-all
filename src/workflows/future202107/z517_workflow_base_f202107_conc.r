@@ -12,7 +12,7 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw_julio/"
 envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/datasets/"
@@ -204,7 +204,7 @@ FErf_attributes_base <- function( pinputexps,
     boosting = "rf",
     bagging_fraction = ( 1.0 - 1.0/exp(1.0) ),
     bagging_freq = 1.0,
-    feature_fraction = 1.0,
+    feature_fraction = 1,
 
     # genericos de LightGBM
     max_bin = 31L,
@@ -442,11 +442,12 @@ wf_julio <- function( pnombrewf )
   DR_drifting_base(metodo="deflacion")
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
+  FErf_attributes_base( arbolitos= 50,
+    hojas_por_arbol= 40,
     datos_por_hoja= 1000,
-    mtry_ratio= 0.2
+    mtry_ratio= 0.1
   )
+  
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts7 <- TS_strategy_base7()
@@ -463,5 +464,6 @@ wf_julio <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202107
+
 wf_julio()
 
