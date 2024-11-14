@@ -433,7 +433,7 @@ EV_evaluate_conclase_gan <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_julio_7m_sin_covid <- function( pnombrewf )
+wf_julio_9m_sin_covid <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
