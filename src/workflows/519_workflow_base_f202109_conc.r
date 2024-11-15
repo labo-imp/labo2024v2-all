@@ -434,7 +434,7 @@ wf_septiembre <- function( pnombrewf )
   DT_incorporar_dataset_competencia2024()
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_percentiles")
+  DR_drifting_base(metodo="dolar_financiero")
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 20,
