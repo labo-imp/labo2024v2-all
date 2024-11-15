@@ -14,13 +14,16 @@ require("data.table")
 require("rpart")
 require("yaml")
 require("ggplot2")
+require("grid")
+require("gridtext")
 
 
 # cambiar aqui los parametros
 PARAM <- list()
-PARAM$minsplit <- 300
-PARAM$minbucket <- 20
-PARAM$maxdepth <- 11
+PARAM$cp <- -0.82
+PARAM$minsplit <- 769
+PARAM$minbucket <-8
+PARAM$maxdepth <- 6
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -78,7 +81,7 @@ modelo <- rpart(
        formula = "clase_ternaria ~ . -fold",
        data = dataset[fold == 1, ],
        xval = 0,
-       cp = -1,
+       cp = PARAM$cp,
        minsplit = PARAM$minsplit,
        minbucket = PARAM$minbucket,
        maxdepth = PARAM$maxdepth
@@ -119,6 +122,22 @@ gra <- ggplot(
            aes( x = pos, y = ganancia_acumulada,
                 color = ifelse(fold == 1, "train", "test") )
              ) + geom_line()
+# Crear la cadena de texto con las etiquetas y los valores
+texto_hiperparametros <- paste("min_split =", PARAM$minsplit,
+                               "\nmin_bucket =", PARAM$minbucket,
+                               "\nmax_depth =", PARAM$maxdepth,
+                               "\ncp =", PARAM$cp)
+
+# Agregar el texto sin que afecte al gráfico
+gra <- gra + 
+  annotation_custom(
+    grob = textGrob(texto_hiperparametros, 
+                    x = unit(0.35, "npc"),  # Posición en el gráfico (90% en el eje x)
+                    y = unit(0.15, "npc"), # Posición en el gráfico (5% en el eje y)
+                    just = "right",        # Justificado a la derecha
+                    gp = gpar(col = "blue", fontsize = 10))  # Apariencia)
+  )
+
 
 print( gra )
 
