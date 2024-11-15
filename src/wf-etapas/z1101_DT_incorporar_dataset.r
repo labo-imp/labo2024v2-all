@@ -49,7 +49,7 @@ campitos <- c( envg$PARAM$primarykey, envg$PARAM$entity_id, envg$PARAM$periodo, 
 campitos <- unique( campitos )
 
 for( vcampo in campitos ){
-
+  
   if( ! (vcampo %in% campos ) ) 
     action_abortar( paste0( "No existe el campo : ", vcampo ) )
 }
@@ -76,9 +76,9 @@ setorderv(dataset, envg$PARAM$primarykey)
 cat("grabo el dataset\n")
 cat( "Iniciando grabado del dataset\n" )
 fwrite(dataset,
-  file = "dataset.csv.gz",
-  logical01 = TRUE,
-  sep = ","
+       file = "dataset.csv.gz",
+       logical01 = TRUE,
+       sep = ","
 )
 cat( "Finalizado grabado del dataset\n" )
 #--------------------------------------
@@ -110,8 +110,8 @@ tb_campos <- as.data.table(list(
 ))
 
 fwrite(tb_campos,
-  file = "dataset.campos.txt",
-  sep = "\t"
+       file = "dataset.campos.txt",
+       sep = "\t"
 )
 
 #------------------------------------------------------------------------------
