@@ -102,11 +102,11 @@ pheatmap(p_valor_matrix,
 
 relaciones <- data.frame(
   from <- c(
-    "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C05_K_HP-Adrian", "C05_K_HP-Adrian", "C05_K_HP-Adrian", "C05_K_HP-Adrian", "C05_K_HP-Adrian", "C06_K_HP-Adrian", "C06_K_HP-Adrian", "C06_K_HP-Adrian", "C06_K_HP-Adrian", "C06_K_HP-Adrian", "C06_K_HP-Adrian", "C06_K_HP-Adrian", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C08_K_HP-Adrian", "C08_K_HP-Adrian", "C08_K_HP-Adrian", "C08_K_HP-Adrian", "C11_K_7HP-Profe", "C11_K_7HP-Profe", "C11_K_7HP-Profe", "C11_K_7HP-Profe", "C11_K_7HP-Profe", "WF-003", "WF-003", "WF-003", "WF-003", "WF-003", "WF-003", "WF-003", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-007", "WF-007", "WF-007", "WF-007", "WF-007", "WF-007", "WF-008", "WF-008", "WF-008", "WF-008", "WF-008", "WF-008", "WF-008", "WF-008", "WF-008", "WF-009", "WF-009", "WF-009", "WF-009", "WF-009", "WF-009", "WF-009", "WF-011", "WF-011", "WF-011", "WF-011", "WF-011", "WF-012", "WF-012", "WF-012", "WF-012", "WF-015", "WF-015", "WF-015", "WF-015", "WF-015", "WF-015", "WF-016", "WF-016", "WF-016", "WF-016", "WF-017", "WF-017", "WF-017", "WF-017", "WF-017", "WF-017", "WF-017", "WF-018", "WF-018", "WF-018", "WF-018", "WF-018", "WF-018", "WF-018"),
+    "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C04_K_HP-Adrian", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "C07_K_HP-JJF", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-005", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-006", "WF-008", "WF-008", "WF-008", "WF-008", "WF-008", "WF-008", "WF-008", "WF-008", "WF-008"),
   
   # Vectores con las entidades a la derecha de la flecha (a la derecha del "->")
   to <- c(
-    "WF-001", "WF-007", "WF-010", "WF-013", "WF-014", "WF-015", "WF-016", "WF-017", "WF-018", "C05_K_HP-Adrian", "C08_K_HP-Adrian", "C11_K_7HP-Profe", "WF-001", "WF-010", "WF-013", "WF-014", "WF-016", "WF-001", "WF-007", "WF-010", "WF-013", "WF-014", "WF-016", "C08_K_HP-Adrian", "WF-001", "WF-007", "WF-010", "WF-013", "WF-014", "WF-016", "WF-017", "WF-018", "C05_K_HP-Adrian", "C08_K_HP-Adrian", "C11_K_7HP-Profe", "WF-009", "WF-012", "WF-015", "C11_K_7HP-Profe", "WF-001", "WF-010", "WF-013", "WF-014", "WF-016", "WF-005", "WF-009", "WF-010", "WF-013", "WF-014", "WF-016", "C07_K_HP-JJF", "WF-001", "WF-007", "WF-009", "WF-010", "WF-011", "WF-013", "WF-014", "WF-015", "WF-016", "WF-017", "WF-018", "C04_K_HP-Adrian", "C05_K_HP-Adrian", "C06_K_HP-Adrian", "C08_K_HP-Adrian", "C11_K_7HP-Profe", "WF-001", "WF-003", "WF-005", "WF-007", "WF-008", "WF-009", "WF-010", "WF-011", "WF-012", "WF-013", "WF-014", "WF-015", "WF-016", "WF-017", "WF-018", "C04_K_HP-Adrian", "C05_K_HP-Adrian", "C06_K_HP-Adrian", "C07_K_HP-JJF", "C08_K_HP-Adrian", "C11_K_7HP-Profe", "WF-001", "WF-010", "WF-012", "WF-013", "WF-014", "WF-016", "WF-001", "WF-005", "WF-010", "WF-013", "WF-014", "WF-016", "WF-017", "C07_K_HP-JJF", "C08_K_HP-Adrian", "WF-001", "WF-007", "WF-010", "WF-013", "WF-014", "WF-016", "C05_K_HP-Adrian", "WF-001", "WF-010", "WF-013", "WF-014", "WF-016", "WF-001", "WF-010", "WF-013", "WF-014", "WF-001", "WF-007", "WF-010", "WF-013", "WF-014", "WF-016", "WF-001", "WF-012", "WF-013", "WF-014", "WF-009", "WF-010", "WF-011", "WF-012", "WF-015", "WF-016", "C06_K_HP-Adrian", "WF-001", "WF-009", "WF-010", "WF-012", "WF-013", "WF-014", "WF-016"),
+    "WF-001", "WF-007", "WF-010", "WF-013", "WF-014", "WF-015", "WF-016", "WF-017", "WF-018", "C05_K_HP-Adrian", "C08_K_HP-Adrian", "C11_K_7HP-Profe", "WF-001", "WF-007", "WF-010", "WF-013", "WF-014", "WF-016", "WF-017", "WF-018", "C05_K_HP-Adrian", "C08_K_HP-Adrian", "C11_K_7HP-Profe", "WF-001", "WF-007", "WF-009", "WF-010", "WF-011", "WF-013", "WF-014", "WF-015", "WF-016", "WF-017", "WF-018", "C04_K_HP-Adrian", "C05_K_HP-Adrian", "C06_K_HP-Adrian", "C08_K_HP-Adrian", "C11_K_7HP-Profe", "WF-001", "WF-003", "WF-005", "WF-007", "WF-008", "WF-009", "WF-010", "WF-011", "WF-012", "WF-013", "WF-014", "WF-015", "WF-016", "WF-017", "WF-018", "C04_K_HP-Adrian", "C05_K_HP-Adrian", "C06_K_HP-Adrian", "C07_K_HP-JJF", "C08_K_HP-Adrian", "C11_K_7HP-Profe", "WF-001", "WF-005", "WF-010", "WF-013", "WF-014", "WF-016", "WF-017", "C07_K_HP-JJF", "C08_K_HP-Adrian"),
   stringsAsFactors = FALSE
 )
 
@@ -125,16 +125,19 @@ layout <- layout_with_fr(grafo)  # Usar el layout Fruchterman-Reingold para mejo
 # Configuración de visualización
 plot(grafo, 
      layout = layout,              # Usar el layout con separación adecuada
-     vertex.size = 30, 
+     vertex.size = 10,
      vertex.label.cex = 0.8, 
-     vertex.label.dist = 2,        # Aumentar la distancia de las etiquetas
-     edge.arrow.size = 0.5, 
+     vertex.label.dist = 0,        # Aumentar la distancia de las etiquetas
+     edge.arrow.size = 0.3, 
      main = "Diagrama Acíclico Dirigido (DAG) de Experimentos",
      vertex.label.color = "black",  # Color de las etiquetas
      vertex.color = "lightblue",    # Color de los nodos
      edge.color = "grey",           # Color de las aristas
      edge.width = 2,                # Ancho de las aristas
-     vertex.frame.color = "black")  # Marco de los nodos
+     vertex.frame.color = "black",  # Marco de los nodos
+     vertex.spacing = 5,            # Aumentar la distancia entre los nodos (si el layout lo permite)
+     asp = 0.8                      # Ajustar la relación de aspecto para mejorar la separación
+)
 
 # Confirmación de visualización
 cat("El Diagrama Acíclico Dirigido (DAG) ha sido generado exitosamente.\n")

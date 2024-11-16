@@ -348,9 +348,9 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     feature_fraction = c(0.5, 0.9),                 # Rango de valores para feature_fraction
     lambda_l1 = c(0.0, 100.0),                      # Rango de valores para lambda_l1
     lambda_l2 = c(0.0, 1000.0),                     # Rango de valores para lambda_l2
-    num_leaves = c(8L, 2048L, "integer"),           # Rango de valores para num_leaves
+    num_leaves = c(8L, 208L, "integer"),           # Rango de valores para num_leaves
     min_data_in_leaf = c(20L, 10000L, "integer"),   # Rango de valores para min_data_in_leaf
-    learning_rate = c(0.01, 0.2)                    # Rango de valores para learning_rate
+    learning_rate = c(0.01, 0.15)                    # Rango de valores para learning_rate
   )
 
 
