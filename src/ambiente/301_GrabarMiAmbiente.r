@@ -18,7 +18,7 @@ miAmbiente$dataset_competencia <- "~/datasets/conceptual_competencia_2024.csv.gz
 
 
 # aqui va su primer semilla
-miAmbiente$semilla_primigenia <- 523801L
+miAmbiente$semilla_primigenia <- 760007L
 
 
 write_yaml( miAmbiente,
@@ -34,3 +34,4 @@ cat("Espere unos minutos mientras se hace un backup\n")
 system( "~/install/repobrutalcopy.sh", wait= FALSE )
 
 cat("\nel ambiente ha sido GRABADO\n")
+
