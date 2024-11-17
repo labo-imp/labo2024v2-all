@@ -77,8 +77,6 @@ DT_incorporar_dataset_competencia2024 <- function()
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
-  
-
   return( exp_correr_script( param_local ) ) # linea fija}
 }
 #------------------------------------------------------------------------------
@@ -305,7 +303,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 {
   if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
 
-  param_local$meta$script <- "/src/wf-etapas/2201_HT_lightgbm_gan.r"
+  param_local$meta$script <- "/src/wf-etapas/z2203_HT_lightgbm_gan.r"
 
   # En caso que se haga cross validation, se usa esta cantidad de folds
   param_local$lgb_crossvalidation_folds <- 5
@@ -315,6 +313,12 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   param_local$train$gan1 <- 117000
   param_local$train$gan0 <-  -3000
   param_local$train$meseta <- 401
+  
+  # Excluir campos
+  param_local$train$excluir_campos <- c() # workflow base original
+  #param_local$train$excluir_campos <- c("numero_de_cliente") # excluir numero_de_cliente
+  #param_local$train$excluir_campos <- c("foto_mes") # excluir foto_mes
+  #param_local$train$excluir_campos <- c("numero_de_cliente", "foto_mes") # excluir ambos campos
 
   # Hiperparametros  del LightGBM
   #  los que tienen un solo valor son los que van fijos
