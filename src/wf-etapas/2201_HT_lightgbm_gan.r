@@ -459,7 +459,7 @@ cat( "Finalizada lectura del dataset\n" )
 
 # Forzar a nulos
 #dataset[, numero_de_cliente := NULL]
-dataset[, foto_mes := NULL]
+#dataset[, foto_mes := NULL]
 
 if( "azar" %in% colnames(dataset) )
   dataset[, azar := NULL]
