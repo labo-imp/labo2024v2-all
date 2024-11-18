@@ -141,20 +141,23 @@ FEhist_base <- function( pinputexps)
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
+  param_local$meta$script <- "/src/wf-etapas/1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
   param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
-
+  param_local$lag6 <- FALSE
+  param_local$lag12 <- FALSE
+  param_local$lag18 <- FALSE
+  
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
-  param_local$Tendencias1$tendencia <- TRUE
+  param_local$Tendencias1$tendencia <- FALSE
   param_local$Tendencias1$minimo <- FALSE
   param_local$Tendencias1$maximo <- FALSE
   param_local$Tendencias1$promedio <- FALSE
-  param_local$Tendencias1$ratioavg <- FALSE
+  param_local$Tendencias1$ratioavg <- TRUE
   param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden

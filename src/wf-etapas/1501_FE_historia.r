@@ -286,6 +286,68 @@ if (envg$PARAM$lag3) {
   cat( "Fin lag3\n")
 }
 
+cols_lagueables <- intersect(cols_lagueables, colnames(dataset))
+if (envg$PARAM$lag6) {
+  cat( "Inicio lag6\n")
+  # creo los campos lags de orden 6
+  envg$OUTPUT$lag6$ncol_antes <- ncol(dataset)
+  dataset[, paste0(cols_lagueables, "_lag6") := shift(.SD, 6, NA, "lag"),
+          by = eval(envg$PARAM$dataset_metadata$entity_id),
+          .SDcols = cols_lagueables
+  ]
+  
+  # agrego los delta lags de orden 6
+  for (vcol in cols_lagueables)
+  {
+    dataset[, paste0(vcol, "_delta6") := get(vcol) - get(paste0(vcol, "_lag6"))]
+  }
+  
+  envg$OUTPUT$lag6$ncol_despues <- ncol(dataset)
+  GrabarOutput()
+  cat( "Fin lag6\n")
+}
+
+cols_lagueables <- intersect(cols_lagueables, colnames(dataset))
+if (envg$PARAM$lag12) {
+  cat( "Inicio lag12\n")
+  # creo los campos lags de orden 12
+  envg$OUTPUT$lag12$ncol_antes <- ncol(dataset)
+  dataset[, paste0(cols_lagueables, "_lag12") := shift(.SD, 12, NA, "lag"),
+          by = eval(envg$PARAM$dataset_metadata$entity_id),
+          .SDcols = cols_lagueables
+  ]
+  
+  # agrego los delta lags de orden 12
+  for (vcol in cols_lagueables)
+  {
+    dataset[, paste0(vcol, "_delta12") := get(vcol) - get(paste0(vcol, "_lag12"))]
+  }
+  
+  envg$OUTPUT$lag12$ncol_despues <- ncol(dataset)
+  GrabarOutput()
+  cat( "Fin lag12\n")
+}
+
+cols_lagueables <- intersect(cols_lagueables, colnames(dataset))
+if (envg$PARAM$lag18) {
+  cat( "Inicio lag18\n")
+  # creo los campos lags de orden 18
+  envg$OUTPUT$lag18$ncol_antes <- ncol(dataset)
+  dataset[, paste0(cols_lagueables, "_lag18") := shift(.SD, 18, NA, "lag"),
+          by = eval(envg$PARAM$dataset_metadata$entity_id),
+          .SDcols = cols_lagueables
+  ]
+  
+  # agrego los delta lags de orden 18
+  for (vcol in cols_lagueables)
+  {
+    dataset[, paste0(vcol, "_delta18") := get(vcol) - get(paste0(vcol, "_lag18"))]
+  }
+  
+  envg$OUTPUT$lag18$ncol_despues <- ncol(dataset)
+  GrabarOutput()
+  cat( "Fin lag18\n")
+}
 
 #--------------------------------------
 # agrego las tendencias
