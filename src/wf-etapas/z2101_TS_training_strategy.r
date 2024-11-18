@@ -44,7 +44,7 @@ envg$PARAM$semillas <- sample(primos)[1:2]
 envg$PARAM$train$semilla <- envg$PARAM$semillas[1]
 envg$PARAM$final_train$semilla <- envg$PARAM$semillas[2]
 
-  
+
 # cargo el dataset donde voy a entrenar
 # esta en la carpeta del exp_input y siempre se llama  dataset.csv.gz
 # cargo el dataset
@@ -68,12 +68,12 @@ if( "future" %in%  names( envg$PARAM ) )
   # grabo los datos del futuro
   cat( "Iniciando grabado de dataset_future.csv.gz\n" )
   fwrite(dataset[get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$future, ],
-    file = "dataset_future.csv.gz",
-    logical01 = TRUE,
-    sep = ","
+         file = "dataset_future.csv.gz",
+         logical01 = TRUE,
+         sep = ","
   )
   cat( "Finalizado grabado de dataset_future.csv.gz\n" )
-
+  
   archivos_salida <- c( archivos_salida, "dataset_future.csv.gz")
 }
 
@@ -82,27 +82,27 @@ if( "final_train" %in%  names( envg$PARAM ) )
 {
   # grabo los datos donde voy a entrenar los Final Models
   cat( "Iniciando grabado de dataset_train_final.csv.gz\n" )
-
+  
   set.seed(envg$PARAM$final_train$semilla, kind = "L'Ecuyer-CMRG")
   dataset[
     get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$final_train$training,
     azar := runif(nrow(dataset[get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$final_train$training ]))
   ]
-
+  
   campos_buenos <- setdiff( colnames(dataset), c("azar") )
-
+  
   fwrite(
     dataset[ get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$final_train$training &
-      (azar <= envg$PARAM$final_train$undersampling |
-      get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$final_train$clase_minoritaria ), 
-      campos_buenos,
-      with= FALSE],
+               (azar <= envg$PARAM$final_train$undersampling |
+                  get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$final_train$clase_minoritaria ), 
+             campos_buenos,
+             with= FALSE],
     file = "dataset_train_final.csv.gz",
     logical01 = TRUE,
     sep = ","
   )
   cat( "Finalizado grabado de dataset_train_final.csv.gz\n" )
-
+  
   archivos_salida <- c( archivos_salida, "dataset_train_final.csv.gz" )
 }
 
@@ -116,34 +116,34 @@ if( "train" %in%  names( envg$PARAM ) )
     get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$train$training,
     azar := runif(nrow(dataset[get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$train$training]))
   ]
-
+  
   dataset[, fold_train := 0L]
   dataset[
     get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$train$training &
       (azar <= envg$PARAM$train$undersampling |
-        get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase_minoritaria ),
+         get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase_minoritaria ),
     fold_train := 1L
   ]
-
+  
   dataset[, fold_validate := 0L]
   dataset[get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$train$validation, fold_validate := 1L]
-
+  
   dataset[, fold_test := 0L]
   dataset[get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$train$testing, fold_test := 1L]
-
+  
   campos_buenos <- setdiff( colnames(dataset), c("azar") )
-
+  
   cat( "Iniciando grabado de dataset_training.csv.gz\n" )
   fwrite(
     dataset[fold_train + fold_validate + fold_test >= 1, 
-      campos_buenos,
-      with= FALSE ],
+            campos_buenos,
+            with= FALSE ],
     file = "dataset_training.csv.gz",
     logical01 = TRUE,
     sep = ","
   )
   cat( "Finalizado grabado de dataset_training.csv.gz\n" )
-
+  
   archivos_salida <- c( archivos_salida, "dataset_training.csv.gz" )
 }
 
@@ -153,7 +153,7 @@ if( "train" %in%  names( envg$PARAM ) )
 cat( "grabar metadata\n")
 
 write_yaml( envg$PARAM$dataset_metadata, 
-  file="dataset_metadata.yml" )
+            file="dataset_metadata.yml" )
 
 
 #------------------------------------------------------------------------------
@@ -178,8 +178,8 @@ tb_campos <- as.data.table(list(
 ))
 
 fwrite(tb_campos,
-  file = "dataset_training.campos.txt",
-  sep = "\t"
+       file = "dataset_training.campos.txt",
+       sep = "\t"
 )
 
 #------------------------------------------------------------------------------

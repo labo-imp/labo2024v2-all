@@ -57,8 +57,8 @@ if( file.exists( "tb_future_prediccion.txt" ) ){
   tb_future_prediccion <- fread( "tb_future_prediccion.txt" )
 } else {
   tb_future_prediccion <- dfuture[ ,
-      c( envg$PARAM$dataset_metadata$primarykey, envg$PARAM$dataset_metadata$clase),
-      with=FALSE ]
+                                   c( envg$PARAM$dataset_metadata$primarykey, envg$PARAM$dataset_metadata$clase),
+                                   with=FALSE ]
 }
 
 qpred <- nrow( tb_modelos )
@@ -66,26 +66,26 @@ qpred <- nrow( tb_modelos )
 dfuture_matriz <- data.matrix(dfuture[, campos_buenos, with = FALSE])
 
 for ( ipred in seq(qpred) ) {
-
+  
   mod <- tb_modelos[ ipred ]
   cat("\nmodelo_rank: ", mod$rank, ", isem: ", mod$isem, "\n")
   envg$OUTPUT$status$modelo_rank <- mod$rank
   envg$OUTPUT$status$modelo_isem <- mod$isem
-
+  
   modelo_final <- lgb.load(filename =  paste0( "./", envg$PARAM$input[1], "/", mod$archivo))
-
+  
   # genero la prediccion, Scoring
   cat( "creo predict\n")
   prediccion <- predict(
     modelo_final,
     dfuture_matriz
   )
-
+  
   campo_pred <- paste0("m_",mod$rank, "_", mod$isem)
   tb_future_prediccion[, paste0(campo_pred) := prediccion ]
   tb_modelos[ ipred, campo := campo_pred ]
   tb_modelos[ ipred, archivo_pred := "tb_future_prediccion.txt" ]
-
+  
   rm( prediccion )
   rm( modelo_final )
   gc(verbose= FALSE)
@@ -106,7 +106,7 @@ fwrite( tb_future_prediccion,
 cat( "grabar metadata\n")
 
 write_yaml( envg$PARAM$dataset_metadata, 
-  file="dataset_metadata.yml" )
+            file="dataset_metadata.yml" )
 
 #------------------------------------------------------------------------------
 
