@@ -154,8 +154,8 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$minimo <- TRUE
   param_local$Tendencias1$maximo <- TRUE
   param_local$Tendencias1$promedio <- TRUE
-  param_local$Tendencias1$ratioavg <- TRUE
-  param_local$Tendencias1$ratiomax <- TRUE
+  param_local$Tendencias1$ratioavg <- FALSE
+  param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- TRUE
@@ -164,8 +164,8 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias2$minimo <- TRUE
   param_local$Tendencias2$maximo <- TRUE
   param_local$Tendencias2$promedio <- TRUE
-  param_local$Tendencias2$ratioavg <- TRUE
-  param_local$Tendencias2$ratiomax <- TRUE
+  param_local$Tendencias2$ratioavg <- FALSE
+  param_local$Tendencias2$ratiomax <- FALSE
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
 
