@@ -2,7 +2,7 @@ library(readr)
 library(tidyverse)
 
 rutas <- c(
-  '~/buckets/b1/flow-05/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt',
+  '~/buckets/b1/flow-15/wf_septiembre-002/011-KA_evaluate_kaggle/ganancias_log.txt',
   '~/buckets/b1/flow-03/wf_septiembre-005/011-KA_evaluate_kaggle/ganancias_log.txt',
   '~/buckets/b1/expw-00/expw_KA-0012_ganancias_log.txt',
   '~/buckets/b1/flow-06/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt',
@@ -34,6 +34,39 @@ for (i in seq_along(rutas_modificadas)) {
   cat("Respaldo de:", rutas_modificadas[i], "a", ruta_respaldo, "\n")
 }
 
+## Respaldar experimentos en git
+
+rutas <- c(
+  '~/buckets/b1/flow-15/wf_septiembre-002/base_519_workflow_base_f202109_conc.r',# base
+  '~/buckets/b1/flow-03/wf_septiembre-005/519_workflow_base_f202109_conc.r', #exp1
+  '~/buckets/b1/expw-00/flow_wf_septiembre-014_519_workflow_base_f202109_conc_covid.r',#exp1_bis
+  '~/buckets/b1/flow-06/wf_septiembre-001/519_workflow_base_f202109_conc.r', #exp2
+  '~/buckets/b1/flow-07/wf_septiembre-002/519_workflow_base_f202109_conc.r',#exp3
+  '~/buckets/b1/flow-11/wf_septiembre-001/519_workflow_base_f202109_conc.r',#exp4
+  '~/buckets/b1/flow-13/wf_septiembre-001/519_workflow_base_f202109_conc.r'#exp5
+)
+
+# Definir la carpeta de destino
+carpeta_destino <- '~/labo2024v2/src/01analisis/scripts_exp/'
+
+# Bucle para copiar y renombrar con sufijo incremental
+for (i in seq_along(rutas)) {
+  # Obtener el nombre del archivo con sufijo
+  nombre_archivo <- paste0( i - 1,"_", basename(rutas[i]))
+  
+  # Crear la ruta de destino
+  ruta_respaldo <- file.path(carpeta_destino, nombre_archivo)
+  
+  # Copiar el archivo (simulado en este ejemplo)
+  file.copy(rutas[i], ruta_respaldo, overwrite = TRUE)
+  
+  # Imprimir la acción realizada
+  cat("Respaldo de:", rutas[i], "a", ruta_respaldo, "\n")
+}
+
+
+
+
 # Definir la función para procesar múltiples archivos
 procesar_ganancia <- function(rutas) {
   # Crear una lista para almacenar los vectores 'mejor'
@@ -43,14 +76,14 @@ procesar_ganancia <- function(rutas) {
     
     # Ordenar por gan_sum en orden descendente y seleccionar la primera fila desde la columna 4 hasta la última
     mejor <- ganancia[order(-ganancia$gan_sum), ][1, 4:ncol(ganancia)]
-    
+    print(mejor)
     # Convertir en un vector numérico
     as.numeric(mejor)
   })
   
   # Combinar todos los vectores en un data.frame
   resultados_df <- do.call(rbind, resultados)
-  colnames(resultados_df) <- paste0("V", 1:ncol(resultados_df))  # Renombrar las columnas
+  colnames(resultados_df) <- paste0("m", 1:ncol(resultados_df))  # Renombrar las columnas
   
   return(as.data.frame(resultados_df))
 }
@@ -79,3 +112,4 @@ for (i in 1:(n - 1)) {
 pvalores_df <- as.data.frame(pvalores)
 print(pvalores_df)
 
+pvalores_df > 0.05

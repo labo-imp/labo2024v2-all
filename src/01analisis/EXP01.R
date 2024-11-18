@@ -416,6 +416,8 @@ rutas <- c(
   "/home/ctalamilla_ia/buckets/b1/expw-13/SC-0001/tb_future_prediccion.txt"
 )
 
+rutas <- c("/home/ctalamilla_ia/buckets/b1/expw-16/SC-0001/tb_future_prediccion.txt")
+
 # Función para procesar cada archivo
 procesar_archivo <- function(input_path) {
   # Extraer el nombre reducido y reemplazar "/" con "-"
