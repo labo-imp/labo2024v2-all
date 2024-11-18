@@ -317,8 +317,8 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   
   # Excluir campos
   #param_local$train$excluir_campos <- c() # workflow base original
-  #param_local$train$excluir_campos <- c("numero_de_cliente") # excluir numero_de_cliente
-  param_local$train$excluir_campos <- c("foto_mes") # excluir foto_mes
+  param_local$train$excluir_campos <- c("numero_de_cliente") # excluir numero_de_cliente
+  #param_local$train$excluir_campos <- c("foto_mes") # excluir foto_mes
   #param_local$train$excluir_campos <- c("numero_de_cliente", "foto_mes") # excluir ambos campos
 
   # Hiperparametros  del LightGBM
