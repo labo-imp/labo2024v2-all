@@ -1,8 +1,8 @@
 require("rlang")
 
 # workflow que voy a correr future 202107
-PARAM <- "src/workflows/future202107/z517_workflow_base_f202107_conc.r"
-#PARAM <- "src/workflows/z519_workflow_base_f202109_conc.r"
+PARAM <- "src/workflows/future202107/517_workflow_base_f202107_conc.r"
+#PARAM <- "src/workflows/519_workflow_base_f202109_conc.r"
 
 envg <- env()
 
@@ -46,11 +46,13 @@ correr_workflow( PARAM )
 Tiempo_fin <- Sys.time()
 Tiempo_total <- difftime(Tiempo_fin, Tiempo_inicio, units = "hours")
 cat("\n-----------------------------------------------------------------------------------")
-cat("\n           EV_37")
+cat("\n           EV_08")
 cat("\n-----------------------------------------------------------------------------------")
-cat("\n           1000 X 50 iteraciones(arboles) de 40 hojas c/u ")
+cat("\n          LAG_2: OK.              Canaritos OFF")
 cat("\n-----------------------------------------------------------------------------------")
-cat("\n           mtry = 0.1 .. feature_fraction = 1")
+cat("\n           1000 X 100 iteraciones(arboles) de 25 hojas c/u ")
+cat("\n-----------------------------------------------------------------------------------")
+cat("\n           mtry = 0.2 .. feature_fraction = 1")
 cat("\n-----------------------------------------------------------------------------------")
 cat("\n           El tiempo total fue de", round(Tiempo_total, 2), "horas\n")
 cat("\n-----------------------------------------------------------------------------------")

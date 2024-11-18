@@ -143,9 +143,9 @@ FEhist_base <- function( pinputexps)
 
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
-  param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+  param_local$lag1 <- FALSE
+  param_local$lag2 <- TRUE # ERA FALSE no me engraso con los lags de orden 2
+  param_local$lag3 <- FALSE # ERA FALSEno me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
@@ -284,7 +284,7 @@ TS_strategy_base7 <- function( pinputexps )
     202101, 202012, 202011, 202010, 202009)
 
 
-  param_local$train$training <- c(202102, 202101, 202103,
+  param_local$train$training <- c(202101, 202102, 202103,
     202012, 202011, 202010, 202009) #, 202008, 202007
   param_local$train$validation <- c(202104)
   param_local$train$testing <- c(202105)
