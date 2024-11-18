@@ -318,7 +318,6 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   #  los que tienen un solo valor son los que van fijos
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
 
-
   param_local$lgb_param <- list(
     boosting = "gbdt", # puede ir dart, ni pruebe random_forest
     objective = "binary",
@@ -331,21 +330,21 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     min_gain_to_split = c(0.0, 10.0),
     lambda_l1 = c(0.0, 500.0), 
     lambda_l2 = c(0.0, 500.0), 
-    num_leaves = c(2L, 20248L, "integer"), 
+    num_leaves = c(2L, 2048L, "integer"), 
     learning_rate = c(0.02, 0.2), 
     min_data_in_leaf = c(5L, 10000L, "integer"),
-    feature_fraction = c(0, 1)) 
-    
-    #max_depth = c(5L, 12L, "integer"),
-    #bagging_fraction = c(0.5, 0.9), 
-    #scale_pos_weight = c(150L, 165L, "integer"),
-    #max_bin = c(31L, 255L, "integer"), 
-    #bagging_freq = c(1L, 5L, "integer"), 
-    #pos_bagging_fraction = c(0.7, 1.0), 
-    #neg_bagging_fraction = c(0.5, 1.0), 
-    #extra_trees = c(FALSE, TRUE), 
-    #min_sum_hessian_in_leaf = c(0.001, 5.0), 
-    #path_smooth = c(0.0, 0.5)) # Nuevo parámetro en reemplazo de monotone_constraints min_child_weight = c(1.0, 10.0) # Controla el peso mínimo de la hessiana en una hoja )
+    feature_fraction = c(0, 1),
+    extra_trees = FALSE) 
+  
+  #max_depth = c(5L, 12L, "integer"),
+  #bagging_fraction = c(0.5, 0.9), 
+  #scale_pos_weight = c(150L, 165L, "integer"),
+  #max_bin = c(31L, 255L, "integer"), 
+  #bagging_freq = c(1L, 5L, "integer"), 
+  #pos_bagging_fraction = c(0.7, 1.0), 
+  #neg_bagging_fraction = c(0.5, 1.0), 
+  #min_sum_hessian_in_leaf = c(0.001, 5.0), 
+  #path_smooth = c(0.0, 0.5)) # Nuevo parámetro en reemplazo de monotone_constraints min_child_weight = c(1.0, 10.0) # Controla el peso mínimo de la hessiana en una hoja )
   
 
 
