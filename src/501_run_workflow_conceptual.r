@@ -1,7 +1,7 @@
 require("rlang")
 
 # workflow que voy a correr
-PARAM <- "src/workflows/z637_workflow_base_ROC_f202107_conc.r"
+PARAM <- "519_workflow_base_f202109_conc.r"
 
 envg <- env()
 
@@ -38,3 +38,4 @@ correr_workflow <- function( wf_scriptname )
 
 # aqui efectivamente llamo al workflow
 correr_workflow( PARAM )
+
