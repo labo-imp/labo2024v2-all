@@ -5,7 +5,7 @@ require("data.table")
 require("rpart")
 
 PARAM <- list()
-PARAM$semilla <- 102191
+PARAM$semilla <- 699989
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart <- list (
@@ -55,6 +55,7 @@ particionar(dataset,
   agrupa = "clase_ternaria",
   seed = PARAM$semilla # aqui se usa SU semilla
 )
+
 
 
 # genero el modelo
