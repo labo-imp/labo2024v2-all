@@ -342,14 +342,14 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     extra_trees = FALSE,
     
     # Variables ajustables
-    max_depth = c(5L, 16L, "integer"),
-    min_gain_to_split = c(0.0, 1.0),
-    bagging_fraction = c(0.5, 0.9),                 # Rango de valores para bagging_fraction
-    feature_fraction = c(0.5, 0.9),                 # Rango de valores para feature_fraction
-    lambda_l1 = c(0.0, 1000.0),                      # Rango de valores para lambda_l1
-    lambda_l2 = c(0.0, 1000.0),                     # Rango de valores para lambda_l2
-    num_leaves = c(8L, 548L, "integer"),           # Rango de valores para num_leaves
-    min_data_in_leaf = c(20L, 2000L, "integer"),   # Rango de valores para min_data_in_leaf
+    max_depth = c(5L, 12L, "integer"),
+    min_gain_to_split = 0.03898070191,
+    bagging_fraction = 0.5022423908,                 # Rango de valores para bagging_fraction
+    feature_fraction = 0.9,                 # Rango de valores para feature_fraction
+    lambda_l1 = c(80.0, 90.0),                      # Rango de valores para lambda_l1
+    lambda_l2 = c(600.0, 800.0),                     # Rango de valores para lambda_l2
+    num_leaves = c(20L, 40L, "integer"),           # Rango de valores para num_leaves
+    min_data_in_leaf = c(1500L, 2500L, "integer"),   # Rango de valores para min_data_in_leaf
     learning_rate = c(0.001, 0.1)                    # Rango de valores para learning_rate
   )
 
