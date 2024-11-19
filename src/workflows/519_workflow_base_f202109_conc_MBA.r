@@ -105,7 +105,7 @@ FEintra_manual_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/1301b_FE_intrames_manual.r"
+  param_local$meta$script <- "/src/wf-etapas/1301c_FE_intrames_manual.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -330,12 +330,12 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
     min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 7.5, # lambda_l1 >= 0.0
-    lambda_l2 = 0.16, # lambda_l2 >= 0.0
+    lambda_l1 = 0.0, # lambda_l1 >= 0.0
+    lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
-    bagging_fraction = 0.47, # 0.0 < bagging_fraction <= 1.0
+    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
@@ -347,10 +347,10 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.02, 0.16),
-    feature_fraction = c( 0.5, 0.7 ),
-    num_leaves = c( 8L, 388L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 20L, 329L, 2000L, "integer" )
+    learning_rate = c( 0.02, 0.3),
+    feature_fraction = c( 0.5, 0.9 ),
+    num_leaves = c( 8L, 2048L,  "integer" ),
+    min_data_in_leaf = c( 20L, 2000L, "integer" )
   )
 
 
@@ -412,9 +412,9 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <-  700L
-  param_local$envios_hasta <-  1100L
-  param_local$envios_salto <-   100L
+  param_local$envios_desde <-  1600L
+  param_local$envios_hasta <-  2400L
+  param_local$envios_salto <-   200L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
 
   return( exp_correr_script( param_local ) ) # linea fija

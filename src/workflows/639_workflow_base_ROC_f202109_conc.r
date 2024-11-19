@@ -12,8 +12,8 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw13/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow13/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$arch_ambiente <- "miAmbiente.yml"
@@ -294,16 +294,16 @@ TS_strategy_base9 <- function( pinputexps )
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
-# Hyperparamteter Tuning Baseline
+# Hyperparamteter Tuning Baseline por AUCROC
 #  donde la Bayuesian Optimization solo considera 4 hiperparámetros
 #  azaroso, utiliza semilla
 #  puede llegar a recibir  bypass, que por default esta en false
 
-HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
+HT_tuning_AUCROC_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 {
   if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
 
-  param_local$meta$script <- "/src/wf-etapas/z2201_HT_lightgbm_gan.r"
+  param_local$meta$script <- "/src/wf-etapas/z2202_HT_lightgbm_AUCROC.r"
 
   # En caso que se haga cross validation, se usa esta cantidad de folds
   param_local$lgb_crossvalidation_folds <- 5
@@ -330,12 +330,12 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
     min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 7.5, # lambda_l1 >= 0.0
-    lambda_l2 = 0.16, # lambda_l2 >= 0.0
+    lambda_l1 = 0.0, # lambda_l1 >= 0.0
+    lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
-    bagging_fraction = 0.47, # 0.0 < bagging_fraction <= 1.0
+    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
@@ -347,10 +347,10 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.02, 0.16),
-    feature_fraction = c( 0.5, 0.7 ),
-    num_leaves = c( 8L, 388L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 20L, 329L, 2000L, "integer" )
+    learning_rate = c( 0.02, 0.3 ),
+    feature_fraction = c( 0.5, 0.9 ),
+    num_leaves = c( 8L, 2048L,  "integer" ),
+    min_data_in_leaf = c( 20L, 2000L, "integer" )
   )
 
 
@@ -412,9 +412,9 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <-  700L
-  param_local$envios_hasta <-  1100L
-  param_local$envios_salto <-   100L
+  param_local$envios_desde <-  1600L
+  param_local$envios_hasta <-  2400L
+  param_local$envios_salto <-   200L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -427,7 +427,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_septiembre <- function( pnombrewf )
+wf_septiembre_AUC <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
@@ -445,9 +445,14 @@ wf_septiembre <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
+  ht <- HT_tuning_AUCROC_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
-  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
+  fm <- FM_final_models_lightgbm( 
+    c(ht, ts9),  # inputs del experimento
+    ranks=c(1), # las posiciones de la Bayesian Optimization
+    qsemillas=20  # la cantidad de modelos que genero con identicos hiperparam cambiando solo la semilla
+  )
+  
   SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()
 
@@ -458,5 +463,5 @@ wf_septiembre <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202109
-wf_septiembre()
+wf_septiembre_AUC()
 
