@@ -327,8 +327,6 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     feature_pre_filter = FALSE,
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
-    max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
-    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
@@ -344,13 +342,15 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     extra_trees = FALSE,
     
     # Variables ajustables
+    max_depth = c(5L, 16L, "integer"),
+    min_gain_to_split = c(0.0, 1.0),
     bagging_fraction = c(0.5, 0.9),                 # Rango de valores para bagging_fraction
     feature_fraction = c(0.5, 0.9),                 # Rango de valores para feature_fraction
-    lambda_l1 = c(0.0, 100.0),                      # Rango de valores para lambda_l1
+    lambda_l1 = c(0.0, 1000.0),                      # Rango de valores para lambda_l1
     lambda_l2 = c(0.0, 1000.0),                     # Rango de valores para lambda_l2
-    num_leaves = c(8L, 208L, "integer"),           # Rango de valores para num_leaves
-    min_data_in_leaf = c(20L, 10000L, "integer"),   # Rango de valores para min_data_in_leaf
-    learning_rate = c(0.01, 0.15)                    # Rango de valores para learning_rate
+    num_leaves = c(8L, 548L, "integer"),           # Rango de valores para num_leaves
+    min_data_in_leaf = c(20L, 2000L, "integer"),   # Rango de valores para min_data_in_leaf
+    learning_rate = c(0.001, 0.1)                    # Rango de valores para learning_rate
   )
 
 
@@ -437,8 +437,8 @@ wf_septiembre <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
+  FErf_attributes_base( arbolitos= 100,
+    hojas_por_arbol= 32,
     datos_por_hoja= 1000,
     mtry_ratio= 0.2
   )
