@@ -1,4 +1,5 @@
 # Corrida general del Workflow Baseline
+#519_leaderboard_workflow_base_f202109_conc.r
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
@@ -199,7 +200,7 @@ FErf_attributes_base <- function( pinputexps,
 
     # para que LightGBM emule Random Forest
     boosting = "rf",
-    bagging_fraction = ( 1.0 - 1.0/exp(1.0) ),
+    bagging_fraction = 0.8,#( 1.0 - 1.0/exp(1.0) ),
     bagging_freq = 1.0,
     feature_fraction = 1.0,
 
@@ -437,9 +438,9 @@ wf_septiembre <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 100,
-    hojas_por_arbol= 25,
-    datos_por_hoja= 1000,
+  FErf_attributes_base( arbolitos= 20,
+    hojas_por_arbol= 1000,
+    datos_por_hoja= 20,
     mtry_ratio= 0.2
   )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
@@ -447,7 +448,7 @@ wf_septiembre <- function( pnombrewf )
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
-  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
+  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )#20
   SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()
 
@@ -458,5 +459,6 @@ wf_septiembre <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202109
+cat("\n RUNNING Leaderboard WF \n")
 wf_septiembre()
 
