@@ -1,4 +1,4 @@
-# Corrida general del Workflow Baseline
+# Corrida general del Workflow RF (random forest)
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
@@ -172,8 +172,9 @@ FEhist_base <- function( pinputexps)
 #  Agregado de variables de Random Forest, corrido desde LightGBM
 #  atencion, parmetros para generar variables, NO para buen modelo
 #  azaroso, utiliza semilla
+#  version _smart_GINI la version base se encuentra en prefijo z
 
-FErf_attributes_base <- function( pinputexps,
+FErf_attributes_smart_GINI <- function( pinputexps,
   arbolitos,
   hojas_por_arbol,
   datos_por_hoja,
@@ -182,8 +183,8 @@ FErf_attributes_base <- function( pinputexps,
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-
-  param_local$meta$script <- "/src/wf-etapas/z1311_FE_rfatributes.r"
+  # version _smart_GINI_001
+  param_local$meta$script <- "/src/wf-etapas/1311_FE_rfatributes_smart_GINI_001.r"
 
   # Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
@@ -272,19 +273,19 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
-
-  param_local$future <- c(202109)
-
+  param_local$future <- c(202107)
+  
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
-    202101, 202012, 202011)
-
-
-  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,
-    202012, 202011, 202010, 202009)
-  param_local$train$validation <- c(202106)
-  param_local$train$testing <- c(202107)
+  param_local$final_train$training <- c( 202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009,
+                                         202008, 202002, 202001, 201912, 201911, 201910, 201909, 201908, 201907 ) 
+  
+  param_local$train$training <- c( 202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008, 202002, 202001,
+                                   201912, 201911, 201910, 201909, 201908, 201907, 201906, 201905 ) 
+  
+  param_local$train$validation <- c(202104)
+  param_local$train$testing <- c(202105)
+  
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -419,38 +420,65 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
+
+#------------------------------------------------------------------------------
+# proceso KA_evaluate_kaggle
+# deterministico, SIN random
+
+EV_evaluate <- function( pinputexps )
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+  
+  param_local$meta$script <- "/src/wf-etapas/z501_EV_evaluate_conclase_gan.r"
+  
+  param_local$semilla <- NULL  # no usa semilla, es deterministico
+  
+  param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
+  
+  param_local$envios_desde <-  1600L
+  param_local$envios_hasta <-  2400L
+  param_local$envios_salto <-   200L
+  param_local$competition <- "labo-i-conceptual-2024-v-2"
+  
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # A partir de ahora comienza la seccion de Workflows Completos
 #------------------------------------------------------------------------------
-# Este es el  Workflow Baseline
+# Este es el  Workflow RF que tiene selecciona hojas inteligentemente
+# de acuerdo a su pureza GINI
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_septiembre <- function( pnombrewf )
+
+wf_julio <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
-
+  
   DT_incorporar_dataset_competencia2024()
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
-
-  FErf_attributes_base( arbolitos= 100,
-    hojas_por_arbol= 25,
-    datos_por_hoja= 1000,
-    mtry_ratio= 0.2
+  
+  #llamado a la version _smart_GINI /// originalmente 20 arbolitos
+  FErf_attributes_smart_GINI( arbolitos= 20,
+                              hojas_por_arbol= 16,
+                              datos_por_hoja= 1000,
+                              mtry_ratio= 0.2
   )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
-
+  
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
-
-  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
+  
+  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=10 ) #aqui, semillas =20!
   SC_scoring( c(fm, ts9) )
-  KA_evaluate_kaggle()
-
+  #KA_evaluate_kaggle()
+  EV_evaluate()
+  
   return( exp_wf_end() ) # linea fija
 }
 #------------------------------------------------------------------------------
@@ -458,5 +486,7 @@ wf_septiembre <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202109
-wf_septiembre()
+#wf_septiembre()
+# llamo al workflow con future = 202107
+wf_julio()
 
