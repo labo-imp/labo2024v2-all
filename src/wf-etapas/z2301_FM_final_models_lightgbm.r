@@ -33,16 +33,16 @@ source( paste0( args[1] , "/src/lib/action_lib.r" ) )
 grabar_importancia <- function(modelo_final, modelo_rank, iteracion_bayesiana) {
   tb_importancia <- as.data.table(lgb.importance(modelo_final))
   fwrite(tb_importancia,
-    file = paste0(
-      "impo_",
-      sprintf("%02d", modelo_rank),
-      "_",
-      sprintf("%03d", iteracion_bayesiana),
-      ".txt"
-    ),
-    sep = "\t"
+         file = paste0(
+           "impo_",
+           sprintf("%02d", modelo_rank),
+           "_",
+           sprintf("%03d", iteracion_bayesiana),
+           ".txt"
+         ),
+         sep = "\t"
   )
-
+  
   rm(tb_importancia)
 }
 #------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ envg$PARAM$dataset_metadata <- read_yaml( paste0( "./", envg$PARAM$input[2], "/d
 campos_buenos <- setdiff(colnames(dataset), c(envg$PARAM$dataset_metadata$clase, "clase01"))
 
 dataset[ , clase01 := 
-  ifelse( get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase01_valor1, 1, 0 ) ]
+           ifelse( get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase01_valor1, 1, 0 ) ]
 
 # genero un modelo para cada uno de las modelos_qty MEJORES
 # iteraciones de la Bayesian Optimization
@@ -103,18 +103,18 @@ if( file.exists( "tb_modelos.txt" ) ){
 cat(format(Sys.time(), "%Y%m%d %H%M%S"), "\n",
     file = "z-Rcanresume.txt",
     append = TRUE
-   )
+)
 
 imodelo <- 0L
 for (modelo_rank in envg$PARAM$modelos_rank) {
   imodelo <- imodelo + 1L
   cat("\nmodelo_rank: ", modelo_rank, ", semillas: ")
   envg$OUTPUT$status$modelo_rank <- modelo_rank
-
+  
   parametros <- as.list(copy(tb_log[modelo_rank]))
   iteracion_bayesiana <- parametros$iteracion_bayesiana
-
-
+  
+  
   # creo CADA VEZ el dataset de lightgbm
   cat( "creo lgb.Dataset\n")
   dtrain <- lgb.Dataset(
@@ -122,9 +122,9 @@ for (modelo_rank in envg$PARAM$modelos_rank) {
     label = dataset[, clase01],
     free_raw_data = FALSE
   )
-
+  
   ganancia <- parametros$ganancia
-
+  
   # elimino los parametros que no son de lightgbm
   parametros$experimento <- NULL
   parametros$cols <- NULL
@@ -134,21 +134,21 @@ for (modelo_rank in envg$PARAM$modelos_rank) {
   parametros$ganancia <- NULL
   parametros$metrica <- NULL
   parametros$iteracion_bayesiana <- NULL
-
+  
   #  parametros$num_iterations  <- 10  # esta linea es solo para pruebas
-
+  
   sem <- 0L
-
+  
   for (vsemilla in envg$PARAM$semillas)
   {
     sem <- sem + 1L
     cat(sem, " ")
     envg$OUTPUT$status$sem <- sem
     GrabarOutput()
-
+    
     # Utilizo la semilla definida en este script
     parametros$seed <- vsemilla
-
+    
     nombre_raiz <- paste0(
       sprintf("%02d", modelo_rank),
       "_",
@@ -156,13 +156,13 @@ for (modelo_rank in envg$PARAM$modelos_rank) {
       "_s",
       parametros$seed
     )
-
+    
     arch_modelo <- paste0(
       "modelo_",
       nombre_raiz,
       ".model"
     )
-
+    
     # genero el modelo entrenando en los datos finales
     #  en caso que ya no exista
     if( !file.exists( arch_modelo ) )
@@ -175,35 +175,35 @@ for (modelo_rank in envg$PARAM$modelos_rank) {
         verbose = -100
       )
       cat( " ...Fin." )
-
+      
       # grabo el modelo, achivo .model
       lgb.save(modelo_final,
-        file = arch_modelo
+               file = arch_modelo
       )
-
+      
       # creo y grabo la importancia de variables, solo para la primer semilla
       if (sem == 1) {
         cat(format(Sys.time(), "%Y%m%d %H%M%S"), "\n",
             file = "z-Rcanresume.txt",
             append = TRUE
         )
-
+        
         grabar_importancia(modelo_final, modelo_rank, iteracion_bayesiana)
       }
-
+      
       # Agrego a tb_semillas
       tb_modelos <- rbind( tb_modelos,
-         list(modelo_rank,
-              iteracion_bayesiana,
-              vsemilla,
-              sem,
-              arch_modelo
-             ))
-
+                           list(modelo_rank,
+                                iteracion_bayesiana,
+                                vsemilla,
+                                sem,
+                                arch_modelo
+                           ))
+      
       fwrite( tb_modelos,
               file = "tb_modelos.txt",
               sep ="\t"
-            )
+      )
     }
   }
 }
@@ -213,7 +213,7 @@ for (modelo_rank in envg$PARAM$modelos_rank) {
 cat( "grabar metadata\n")
 
 write_yaml( envg$PARAM$dataset_metadata, 
-  file="dataset_metadata.yml" )
+            file="dataset_metadata.yml" )
 
 #------------------------------------------------------------------------------
 

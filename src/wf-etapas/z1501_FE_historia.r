@@ -117,20 +117,20 @@ TendenciaYmuchomas <- function(
   gc(verbose= FALSE)
   # Esta es la cantidad de meses que utilizo para la historia
   ventana_regresion <- ventana
-
+  
   last <- nrow(dataset)
-
+  
   # creo el vector_desde que indica cada ventana
   # de esta forma se acelera el procesamiento ya que lo hago una sola vez
   vector_ids <- dataset[ , get( envg$PARAM$dataset_metadata$entity_id) ]
-
+  
   vector_desde <- seq(
     -ventana_regresion + 2,
     nrow(dataset) - ventana_regresion + 1
   )
-
+  
   vector_desde[1:ventana_regresion] <- 1
-
+  
   for (i in 2:last) {
     if (vector_ids[i - 1] != vector_ids[i]) {
       vector_desde[i] <- i
@@ -141,38 +141,38 @@ TendenciaYmuchomas <- function(
       vector_desde[i] <- vector_desde[i - 1]
     }
   }
-
+  
   for (campo in cols) {
     nueva_col <- fhistC(dataset[, get(campo)], vector_desde)
-
+    
     if (tendencia) {
       dataset[, paste0(campo, "_tend", ventana) :=
-        nueva_col[(0 * last + 1):(1 * last)]]
+                nueva_col[(0 * last + 1):(1 * last)]]
     }
-
+    
     if (minimo) {
       dataset[, paste0(campo, "_min", ventana) :=
-        nueva_col[(1 * last + 1):(2 * last)]]
+                nueva_col[(1 * last + 1):(2 * last)]]
     }
-
+    
     if (maximo) {
       dataset[, paste0(campo, "_max", ventana) :=
-        nueva_col[(2 * last + 1):(3 * last)]]
+                nueva_col[(2 * last + 1):(3 * last)]]
     }
-
+    
     if (promedio) {
       dataset[, paste0(campo, "_avg", ventana) :=
-        nueva_col[(3 * last + 1):(4 * last)]]
+                nueva_col[(3 * last + 1):(4 * last)]]
     }
-
+    
     if (ratioavg) {
       dataset[, paste0(campo, "_ratioavg", ventana) :=
-        get(campo) / nueva_col[(3 * last + 1):(4 * last)]]
+                get(campo) / nueva_col[(3 * last + 1):(4 * last)]]
     }
-
+    
     if (ratiomax) {
       dataset[, paste0(campo, "_ratiomax", ventana) :=
-        get(campo) / nueva_col[(2 * last + 1):(3 * last)]]
+                get(campo) / nueva_col[(2 * last + 1):(3 * last)]]
     }
   }
 }
@@ -205,9 +205,9 @@ GrabarOutput()
 #  lags o media moviles ( todas menos las obvias )
 
 campitos <- c( envg$PARAM$dataset_metadata$primarykey,
-  envg$PARAM$dataset_metadata$entity_id,
-  envg$PARAM$dataset_metadata$periodo,
-  envg$PARAM$dataset_metadata$clase )
+               envg$PARAM$dataset_metadata$entity_id,
+               envg$PARAM$dataset_metadata$periodo,
+               envg$PARAM$dataset_metadata$clase )
 
 campitos <- unique( campitos )
 
@@ -227,16 +227,16 @@ if (envg$PARAM$lag1) {
   # creo los campos lags de orden 1
   envg$OUTPUT$lag1$ncol_antes <- ncol(dataset)
   dataset[, paste0(cols_lagueables, "_lag1") := shift(.SD, 1, NA, "lag"),
-    by = eval( envg$PARAM$dataset_metadata$entity_id),
-    .SDcols = cols_lagueables
+          by = eval( envg$PARAM$dataset_metadata$entity_id),
+          .SDcols = cols_lagueables
   ]
-
+  
   # agrego los delta lags de orden 1
   for (vcol in cols_lagueables)
   {
     dataset[, paste0(vcol, "_delta1") := get(vcol) - get(paste0(vcol, "_lag1"))]
   }
-
+  
   envg$OUTPUT$lag1$ncol_despues <- ncol(dataset)
   GrabarOutput()
   cat( "Fin lag1\n")
@@ -249,16 +249,16 @@ if (envg$PARAM$lag2) {
   # creo los campos lags de orden 2
   envg$OUTPUT$lag2$ncol_antes <- ncol(dataset)
   dataset[, paste0(cols_lagueables, "_lag2") := shift(.SD, 2, NA, "lag"),
-    by = eval(envg$PARAM$dataset_metadata$entity_id),
-    .SDcols = cols_lagueables
+          by = eval(envg$PARAM$dataset_metadata$entity_id),
+          .SDcols = cols_lagueables
   ]
-
+  
   # agrego los delta lags de orden 2
   for (vcol in cols_lagueables)
   {
     dataset[, paste0(vcol, "_delta2") := get(vcol) - get(paste0(vcol, "_lag2"))]
   }
-
+  
   envg$OUTPUT$lag2$ncol_despues <- ncol(dataset)
   GrabarOutput()
   cat( "Fin lag2\n")
@@ -271,16 +271,16 @@ if (envg$PARAM$lag3) {
   # creo los campos lags de orden 3
   envg$OUTPUT$lag3$ncol_antes <- ncol(dataset)
   dataset[, paste0(cols_lagueables, "_lag3") := shift(.SD, 3, NA, "lag"),
-    by = eval(envg$PARAM$dataset_metadata$entity_id),
-    .SDcols = cols_lagueables
+          by = eval(envg$PARAM$dataset_metadata$entity_id),
+          .SDcols = cols_lagueables
   ]
-
+  
   # agrego los delta lags de orden 3
   for (vcol in cols_lagueables)
   {
     dataset[, paste0(vcol, "_delta3") := get(vcol) - get(paste0(vcol, "_lag3"))]
   }
-
+  
   envg$OUTPUT$lag3$ncol_despues <- ncol(dataset)
   GrabarOutput()
   cat( "Fin lag3\n")
@@ -299,16 +299,16 @@ cols_lagueables <- intersect(cols_lagueables, colnames(dataset))
 if (envg$PARAM$Tendencias1$run) {
   envg$OUTPUT$TendenciasYmuchomas1$ncol_antes <- ncol(dataset)
   TendenciaYmuchomas(dataset,
-    cols = cols_lagueables,
-    ventana = envg$PARAM$Tendencias1$ventana, # 6 meses de historia
-    tendencia = envg$PARAM$Tendencias1$tendencia,
-    minimo = envg$PARAM$Tendencias1$minimo,
-    maximo = envg$PARAM$Tendencias1$maximo,
-    promedio = envg$PARAM$Tendencias1$promedio,
-    ratioavg = envg$PARAM$Tendencias1$ratioavg,
-    ratiomax = envg$PARAM$Tendencias1$ratiomax
+                     cols = cols_lagueables,
+                     ventana = envg$PARAM$Tendencias1$ventana, # 6 meses de historia
+                     tendencia = envg$PARAM$Tendencias1$tendencia,
+                     minimo = envg$PARAM$Tendencias1$minimo,
+                     maximo = envg$PARAM$Tendencias1$maximo,
+                     promedio = envg$PARAM$Tendencias1$promedio,
+                     ratioavg = envg$PARAM$Tendencias1$ratioavg,
+                     ratiomax = envg$PARAM$Tendencias1$ratiomax
   )
-
+  
   envg$OUTPUT$TendenciasYmuchomas1$ncol_despues <- ncol(dataset)
   GrabarOutput()
 }
@@ -318,16 +318,16 @@ cols_lagueables <- intersect(cols_lagueables, colnames(dataset))
 if (envg$PARAM$Tendencias2$run) {
   envg$OUTPUT$TendenciasYmuchomas2$ncol_antes <- ncol(dataset)
   TendenciaYmuchomas(dataset,
-    cols = cols_lagueables,
-    ventana = envg$PARAM$Tendencias2$ventana, # 6 meses de historia
-    tendencia = envg$PARAM$Tendencias2$tendencia,
-    minimo = envg$PARAM$Tendencias2$minimo,
-    maximo = envg$PARAM$Tendencias2$maximo,
-    promedio = envg$PARAM$Tendencias2$promedio,
-    ratioavg = envg$PARAM$Tendencias2$ratioavg,
-    ratiomax = envg$PARAM$Tendencias2$ratiomax
+                     cols = cols_lagueables,
+                     ventana = envg$PARAM$Tendencias2$ventana, # 6 meses de historia
+                     tendencia = envg$PARAM$Tendencias2$tendencia,
+                     minimo = envg$PARAM$Tendencias2$minimo,
+                     maximo = envg$PARAM$Tendencias2$maximo,
+                     promedio = envg$PARAM$Tendencias2$promedio,
+                     ratioavg = envg$PARAM$Tendencias2$ratioavg,
+                     ratiomax = envg$PARAM$Tendencias2$ratiomax
   )
-
+  
   envg$OUTPUT$TendenciasYmuchomas2$ncol_despues <- ncol(dataset)
   GrabarOutput()
 }
@@ -337,16 +337,16 @@ if (envg$PARAM$Tendencias2$run) {
 cat( "grabado dataset\n")
 cat( "Iniciando grabado del dataset\n" )
 fwrite(dataset,
-  file = "dataset.csv.gz",
-  logical01 = TRUE,
-  sep = ","
+       file = "dataset.csv.gz",
+       logical01 = TRUE,
+       sep = ","
 )
 cat( "Finalizado grabado del dataset\n" )
 
 # copia la metadata sin modificar
 cat( "grabado metadata\n")
 write_yaml( envg$PARAM$dataset_metadata, 
-  file="dataset_metadata.yml" )
+            file="dataset_metadata.yml" )
 
 #------------------------------------------------------------------------------
 
@@ -364,8 +364,8 @@ tb_campos <- as.data.table(list(
 ))
 
 fwrite(tb_campos,
-  file = "dataset.campos.txt",
-  sep = "\t"
+       file = "dataset.campos.txt",
+       sep = "\t"
 )
 
 #------------------------------------------------------------------------------

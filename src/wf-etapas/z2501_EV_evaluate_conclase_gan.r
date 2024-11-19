@@ -64,25 +64,25 @@ ganancia_mejor <- -Inf
 vganancias_suavizadas <- c()
 
 for ( irank in ranks ) {
-
+  
   gan_sum <- paste0( "gan_sum_", irank )
   tb_ganancias[ , paste0(gan_sum) := 0 ]
-
+  
   isems <- tb_predicciones[ rank==irank, unique( isem )]
-
+  
   for (vsem in isems)
   {
     cat( irank, vsem, "\n")
     envg$OUTPUT$status$rank <- irank
     envg$OUTPUT$status$isem <- vsem
     GrabarOutput()
-
+    
     campito <- tb_predicciones[ rank==irank & isem==vsem, campo]
     temp_pred <- tb_future_prediccion[ , c( campito, envg$PARAM$dataset_metadata$clase ), with=FALSE ]
     setorderv( temp_pred, campito, -1 )
     temp_pred[, ganancia_acum :=
-        cumsum(ifelse(get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$positivos, envg$PARAM$train$gan1, envg$PARAM$train$gan0))]
-
+                cumsum(ifelse(get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$positivos, envg$PARAM$train$gan1, envg$PARAM$train$gan0))]
+    
     temp_pred[, gan_suavizada := frollmean(
       x = ganancia_acum,
       n = envg$PARAM$graficar$ventana_suavizado,
@@ -90,13 +90,13 @@ for ( irank in ranks ) {
       na.rm = TRUE,
       hasNA = TRUE
     )]
-
+    
     ganancia_suavizada_max <- temp_pred[, max(gan_suavizada, na.rm = TRUE)]
     corte_mejor <- which.max( temp_pred[, gan_suavizada ] )
-
+    
     tb_ganancias[, paste0(gan_sum) := get(gan_sum) + temp_pred$ganancia_acum ]
     tb_ganancias[, paste0(campito) := temp_pred$ganancia_acum ]
-
+    
     # MLFlow
     linea <- list()
     linea$rank <- irank
@@ -107,16 +107,16 @@ for ( irank in ranks ) {
     linea$ganancia <- ganancia_suavizada_max
     linea$metrica <- ganancia_suavizada_max
     mlog_log(linea, arch = "ganancias_log.txt")
-
+    
     ymax <- max(tb_ganancias, na.rm = TRUE)
-
-
+    
+    
     rm(temp_pred)
     gc(verbose= FALSE)
   }
-
+  
   tb_ganancias[, paste0(gan_sum) := get(gan_sum) / length(isems) ]
-
+  
   # calculo la mayor ganancia  SUAVIZADA
   tb_ganancias[, gan_suavizada := frollmean(
     x = get(gan_sum),
@@ -125,10 +125,10 @@ for ( irank in ranks ) {
     na.rm = TRUE,
     hasNA = TRUE
   )]
-
+  
   ganancia_suavizada_max <- tb_ganancias[, max(gan_suavizada, na.rm = TRUE)]
   corte_mejor <- which.max( tb_ganancias[, gan_suavizada ] )
-
+  
   # MLFlow
   linea <- list()
   linea$rank <- irank
@@ -138,7 +138,7 @@ for ( irank in ranks ) {
   linea$corte <- corte_mejor
   linea$ganancia <- ganancia_suavizada_max
   linea$metrica <- ganancia_suavizada_max
-
+  
   superacion <- FALSE
   if( ganancia_suavizada_max  > ganancia_mejor )
   {
@@ -146,14 +146,14 @@ for ( irank in ranks ) {
     superacion <- TRUE
   }
   mlog_log(linea, arch = "ganancias_log.txt", parentreplicate= superacion)
-
+  
   ymax <- max(tb_ganancias, na.rm = TRUE)
-
+  
   campos_ganancias <- setdiff(colnames(tb_ganancias), "envios")
   ymin <- min(tb_ganancias[envios >= envg$PARAM$graficar$envios_desde & envios <= envg$PARAM$graficar$envios_hasta, campos_ganancias, with=FALSE ],
-      na.rm = TRUE
-    )
-
+              na.rm = TRUE
+  )
+  
   arch_grafico <- paste0(
     "modelo_",
     sprintf("%02d", irank),
@@ -161,9 +161,9 @@ for ( irank in ranks ) {
     sprintf("%03d", tb_predicciones[ rank==irank, min( iteracion_bayesiana )]),
     ".pdf"
   )
-
+  
   pdf(arch_grafico)
-
+  
   plot(
     x = tb_ganancias[envios >= envg$PARAM$graficar$envios_desde, envios],
     y = tb_ganancias[envios >= envg$PARAM$graficar$envios_desde, get(tb_predicciones[ rank==irank & isem==1, campo]) ],
@@ -176,7 +176,7 @@ for ( irank in ranks ) {
     ylab = "Ganancia",
     panel.first = grid()
   )
-
+  
   # las siguientes curvas
   if ( length(isems) > 1) {
     for (s in 2:length(isems))
@@ -185,21 +185,21 @@ for ( irank in ranks ) {
         x = tb_ganancias[envios >= envg$PARAM$graficar$envios_desde, envios],
         y = tb_ganancias[envios >= envg$PARAM$graficar$envios_desde, get(tb_predicciones[ rank==irank & isem==s, campo])],
         col = "gray"
-       )
+      )
     }
   }
-
+  
   # finalmente la curva promedio
   lines(
     x = tb_ganancias[envios >= envg$PARAM$graficar$envios_desde, envios],
     y = tb_ganancias[envios >= envg$PARAM$graficar$envios_desde, get(gan_sum) ],
     col = "red"
   )
-
+  
   dev.off()
-
+  
   # Aqui se deberia grabar en una tabla general  ganancia_suavizada_max
-
+  
   # grabo las ganancias, para poderlas comparar con OTROS modelos
   arch_ganancias <- paste0(
     "ganancias_",
@@ -207,13 +207,13 @@ for ( irank in ranks ) {
     "_",
     sprintf("%03d", tb_predicciones[ rank==irank, min( iteracion_bayesiana )]),
     ".txt"
-   )
-
-  fwrite(tb_ganancias,
-    file = arch_ganancias,
-    sep = "\t",
   )
-
+  
+  fwrite(tb_ganancias,
+         file = arch_ganancias,
+         sep = "\t",
+  )
+  
   vganancias_suavizadas <- c( vganancias_suavizadas, ganancia_suavizada_max)
 }
 
