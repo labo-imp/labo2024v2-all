@@ -12,7 +12,7 @@ require("primes")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 523801
+PARAM$semilla_primigenia <- 693827
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
@@ -142,40 +142,36 @@ tb_grid_search_detalle <- data.table(
 
 # itero por los loops anidados para cada hiperparametro
 
-for(vcp in c( -0.5, 0, 0.1 ) ){
+
+# Iterar por los valores de cp, maxdepth, minsplit y minbucket
+for (vcp in c(-1, -0.75, -0.5, -0.25, -0.1, -0.075, -0.05, -0.025, -0.01, -0.0075, -0.005, -0.0025, -0.001)) {
   for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
     for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-      for(vmin_bucket in c(2, 4, 8, 16, 32, 64 ) ) {
-        # notar como se agrega
+      for (vmin_bucket in c(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100)) { 
         
-        # vminsplit  minima cantidad de registros en un nodo para hacer el split
+        # Definir los hiperparámetros para esta combinación específica
         param_basicos <- list(
-          "cp" = vcp, # complejidad minima
-          "maxdepth" = vmax_depth, # profundidad máxima del arbol
-          "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-          "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
+          "cp" = vcp,  # Usa el valor actual de cp
+          "maxdepth" = vmax_depth,  # Usa el valor actual de maxdepth
+          "minsplit" = vmin_split,  # Usa el valor actual de minsplit
+          "minbucket" = vmin_bucket  # Usa el valor actual de minbucket
         )
         
-        # Un solo llamado, con la semilla 17
+        # Ejecutar Monte Carlo Cross Validation para esta combinación
         ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
         
-        # agrego a la tabla
-        tb_grid_search_detalle <- rbindlist( 
-          list( tb_grid_search_detalle,
-                rbindlist(ganancias) )
-        )
-        
+        # Añadir los resultados al data.table
+        tb_grid_search_detalle <- rbindlist(list(tb_grid_search_detalle, rbindlist(ganancias)))
       }
     }
   }
   
-  # grabo cada vez TODA la tabla en el loop mas externo
-  fwrite( tb_grid_search_detalle,
-          file = "gridsearch_detalle.txt",
-          sep = "\t" )
+  # Guardar los resultados parciales después de recorrer todas las combinaciones de maxdepth, minsplit y minbucket para un cp
+  fwrite(tb_grid_search_detalle, file = "gridsearch_detalle.txt", sep = "\t")
 }
 
 #----------------------------
+
 # genero y grabo el resumen
 tb_grid_search <- tb_grid_search_detalle[,
   list( "ganancia_mean" = mean(ganancia_test),
