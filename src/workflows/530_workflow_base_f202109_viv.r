@@ -136,36 +136,35 @@ DR_drifting_base <- function( pinputexps, metodo)
 FEhist_base <- function( pinputexps)
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
-
-
+  
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
-
+  
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
-
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
+  param_local$lag3 <- TRUE # no me engraso con los lags de orden 3
+  
   # no me engraso las manos con las tendencias
-  param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
+  param_local$Tendencias1$run <- TRUE # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- FALSE
-  param_local$Tendencias1$maximo <- FALSE
-  param_local$Tendencias1$promedio <- FALSE
-  param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
-
+  param_local$Tendencias1$minimo <- TRUE
+  param_local$Tendencias1$maximo <- TRUE
+  param_local$Tendencias1$promedio <- TRUE
+  param_local$Tendencias1$ratioavg <- TRUE
+  param_local$Tendencias1$ratiomax <- TRUE
+  
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
-  param_local$Tendencias2$minimo <- FALSE
-  param_local$Tendencias2$maximo <- FALSE
-  param_local$Tendencias2$promedio <- FALSE
-  param_local$Tendencias2$ratioavg <- FALSE
-  param_local$Tendencias2$ratiomax <- FALSE
-
+  param_local$Tendencias2$tendencia <- TRUE
+  param_local$Tendencias2$minimo <- TRUE
+  param_local$Tendencias2$maximo <- TRUE
+  param_local$Tendencias2$promedio <- TRUE
+  param_local$Tendencias2$ratioavg <- TRUE
+  param_local$Tendencias2$ratiomax <- TRUE
+  
   param_local$semilla <- NULL # no usa semilla, es deterministico
-
+  
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
@@ -268,46 +267,35 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 TS_strategy_base9 <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
-
+  
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
-
-
+  
+  
   param_local$future <- c(202109)
-
+  
+  tr_base = c(201901,201902, 201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
+              202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
+              202101, 202102, 202103, 202104, 202105)
+  
+  tr_f_base = c(201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
+                202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
+                202101, 202102, 202103, 202104, 202105, 202106, 202107)
+  
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(
-    202107, 202106, 202105, 202104, 202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007, 
-    # 202006  Excluyo por variables rotas
-    202005, 202004, 202003, 202002, 202001,
-    201912, 201911,
-    # 201910 Excluyo por variables rotas
-    201909, 201908, 201907, 201906,
-    # 201905  Excluyo por variables rotas
-    201904, 201903
-  )
-
-
-  param_local$train$training <- c(
-    202105, 202104, 202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007,
-    # 202006  Excluyo por variables rotas
-    202005, 202004, 202003, 202002, 202001,
-    201912, 201911,
-    # 201910 Excluyo por variables rotas
-    201909, 201908, 201907, 201906,
-    # 201905  Excluyo por variables rotas
-    201904, 201903, 201902, 201901
-    )
+  param_local$final_train$training <- tr_f_base
+  
+  
+  param_local$train$training <- tr_base
+  
   param_local$train$validation <- c(202106)
   param_local$train$testing <- c(202107)
-
+  
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 1.0
+  param_local$train$undersampling <- 0.2
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-
+  
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
@@ -449,16 +437,15 @@ wf_septiembre <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="deflacion") #Aca cambie
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
+  FErf_attributes_base( arbolitos= 100,
+    hojas_por_arbol= 25,
     datos_por_hoja= 1000,
     mtry_ratio= 0.2
-  )
+  ) #ACA CAMBIE
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
