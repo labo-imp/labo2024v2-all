@@ -436,7 +436,7 @@ wf_julio <- function( pnombrewf )
   DT_incorporar_dataset_competencia2024()
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="estandarizar") #deflacion
+  DR_drifting_base(metodo="deflacion") #deflacion
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 100,
@@ -461,6 +461,8 @@ wf_julio <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202107
-
+cat("\n-----------------------------------------------------------------------------------")
+cat("\n            Expw_julio_3 EV_03 metodo drifting: deflacion Y TODOS LAG ON")
+cat("\n-----------------------------------------------------------------------------------")
 wf_julio()
 
