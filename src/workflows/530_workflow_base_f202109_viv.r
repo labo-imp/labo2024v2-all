@@ -270,23 +270,18 @@ TS_strategy_base9 <- function( pinputexps )
   
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
   
-  
   param_local$future <- c(202109)
-  
-  tr_base = c(201901,201902, 201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
-              202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
-              202101, 202102, 202103, 202104, 202105)
-  
-  tr_f_base = c(201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
-                202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
-                202101, 202102, 202103, 202104, 202105, 202106, 202107)
   
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- tr_f_base
+  param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
+                                        202101, 202012, 202011, 202010, 202009, 202008,
+                                        202007, 202006, 202005, 202004, 202003, 202002,
+                                        202001, 201912, 201911)
   
-  
-  param_local$train$training <- tr_base
+  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101, 202012, 202011,
+                                  202010, 202009, 202008, 202007, 202006, 202005, 202004,
+                                  202003, 202002, 202001, 201912, 201911, 201910, 201909)
   
   param_local$train$validation <- c(202106)
   param_local$train$testing <- c(202107)
@@ -438,14 +433,14 @@ wf_septiembre <- function( pnombrewf )
 
   DT_incorporar_dataset_competencia2024()
   FEintra_manual_base()
-  DR_drifting_base(metodo="deflacion") #Aca cambie
+  DR_drifting_base(metodo="deflacion")
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 100,
-    hojas_por_arbol= 25,
+  FErf_attributes_base( arbolitos= 20,
+    hojas_por_arbol= 16,
     datos_por_hoja= 1000,
     mtry_ratio= 0.2
-  ) #ACA CAMBIE
+  )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
