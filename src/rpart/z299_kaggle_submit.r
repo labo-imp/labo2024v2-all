@@ -7,7 +7,7 @@ require("yaml")
 
 PARAM <- list()
 
-PARAM$modalidad <- "vivencial"  # "conceptual"
+PARAM$modalidad <- "conceptual"  # "vivencial"
 
 PARAM$rpart <- list (
   "cp" = -1,
