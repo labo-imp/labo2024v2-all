@@ -1,10 +1,8 @@
 require("rlang")
 
 # workflow pesronalizado que voy a correr future 202107
-#PARAM <- "src/workflows/517_workflow_f202107_conc.r"
+PARAM <- "src/workflows/517_workflow_f202107_conc.r"
 
-#Workflow para competencia:
-PARAM <- "src/workflows/519_workflow_base_f202109_conc.r"
 
 envg <- env()
 
@@ -48,7 +46,7 @@ correr_workflow( PARAM )
 Tiempo_fin <- Sys.time()
 Tiempo_total <- difftime(Tiempo_fin, Tiempo_inicio, units = "hours")
 cat("\n-----------------------------------------------------------------------------------")
-cat("\n           KA-03. Expw_leaderboard metodo drifting: estandarizar")
+cat("\n            Expw_leaderboard metodo drifting: estandarizar Y TODOS LAG ON")
 cat("\n-----------------------------------------------------------------------------------")
 cat("\n           El tiempo total fue de", round(Tiempo_total, 2), "horas\n")
 cat("\n-----------------------------------------------------------------------------------")

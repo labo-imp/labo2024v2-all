@@ -12,7 +12,7 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw_julio_2/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw_julio_3/"
 envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/datasets/"
@@ -144,28 +144,28 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+  param_local$lag2 <- TRUE#FALSE # no me engraso con los lags de orden 2
+  param_local$lag3 <- TRUE#FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- FALSE
-  param_local$Tendencias1$maximo <- FALSE
-  param_local$Tendencias1$promedio <- FALSE
-  param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$minimo <- TRUE#FALSE
+  param_local$Tendencias1$maximo <- TRUE#FALSE
+  param_local$Tendencias1$promedio <- TRUE#FALSE
+  param_local$Tendencias1$ratioavg <- TRUE#FALSE
+  param_local$Tendencias1$ratiomax <- TRUE#FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE#FALSE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
-  param_local$Tendencias2$minimo <- FALSE
-  param_local$Tendencias2$maximo <- FALSE
-  param_local$Tendencias2$promedio <- FALSE
-  param_local$Tendencias2$ratioavg <- FALSE
-  param_local$Tendencias2$ratiomax <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE#FALSE
+  param_local$Tendencias2$minimo <- TRUE#FALSE
+  param_local$Tendencias2$maximo <- TRUE#FALSE
+  param_local$Tendencias2$promedio <- TRUE#FALSE
+  param_local$Tendencias2$ratioavg <- TRUE#FALSE
+  param_local$Tendencias2$ratiomax <- TRUE#FALSE
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
 
@@ -436,7 +436,7 @@ wf_julio <- function( pnombrewf )
   DT_incorporar_dataset_competencia2024()
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="deflacion")
+  DR_drifting_base(metodo="estandarizar") #deflacion
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 100,

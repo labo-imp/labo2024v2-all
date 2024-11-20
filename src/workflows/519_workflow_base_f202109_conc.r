@@ -120,10 +120,10 @@ DR_drifting_base <- function( pinputexps, metodo)
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z1401_DR_corregir_drifting.r"
+  param_local$meta$script <- "/src/wf-etapas/1401_DR_corregir_drifting.r"
 
   # valores posibles
-  #  "ninguno", "rank_simple", "rank_cero_fijo", "deflacion", "estandarizar"
+  #  "ninguno", "rank_simple", "rank_cero_fijo", "deflacion", "estandarizar", "inflacion"
   param_local$metodo <- metodo
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -434,7 +434,7 @@ wf_septiembre <- function( pnombrewf )
   DT_incorporar_dataset_competencia2024()
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="estandarizar")
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 100,
