@@ -12,8 +12,8 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw-18/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow-18/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw-17/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow-17/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$arch_ambiente <- "miAmbiente.yml"
@@ -136,35 +136,36 @@ DR_drifting_base <- function( pinputexps, metodo)
 FEhist_base <- function( pinputexps)
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
-  
+
+
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
-  
+
   param_local$lag1 <- TRUE
-  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
-  param_local$lag3 <- TRUE # no me engraso con los lags de orden 3
-  
+  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+
   # no me engraso las manos con las tendencias
-  param_local$Tendencias1$run <- TRUE # FALSE, no corre nada de lo que sigue
+  param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- TRUE
-  param_local$Tendencias1$maximo <- TRUE
-  param_local$Tendencias1$promedio <- TRUE
-  param_local$Tendencias1$ratioavg <- TRUE
-  param_local$Tendencias1$ratiomax <- TRUE
-  
+  param_local$Tendencias1$minimo <- FALSE
+  param_local$Tendencias1$maximo <- FALSE
+  param_local$Tendencias1$promedio <- FALSE
+  param_local$Tendencias1$ratioavg <- FALSE
+  param_local$Tendencias1$ratiomax <- FALSE
+
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- TRUE
+  param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- TRUE
-  param_local$Tendencias2$minimo <- TRUE
-  param_local$Tendencias2$maximo <- TRUE
-  param_local$Tendencias2$promedio <- TRUE
-  param_local$Tendencias2$ratioavg <- TRUE
-  param_local$Tendencias2$ratiomax <- TRUE
-  
+  param_local$Tendencias2$tendencia <- FALSE
+  param_local$Tendencias2$minimo <- FALSE
+  param_local$Tendencias2$maximo <- FALSE
+  param_local$Tendencias2$promedio <- FALSE
+  param_local$Tendencias2$ratioavg <- FALSE
+  param_local$Tendencias2$ratiomax <- FALSE
+
   param_local$semilla <- NULL # no usa semilla, es deterministico
-  
+
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
@@ -274,21 +275,28 @@ TS_strategy_base9 <- function( pinputexps )
   
   param_local$future <- c(202109)
   
-  tr_base = c(201901,201902, 201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
-              202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
-              202101, 202102, 202103, 202104, 202105)
-  
-  tr_f_base = c(201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
-                202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012,
-                202101, 202102, 202103, 202104, 202105, 202106, 202107)
-  
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- tr_f_base
+  param_local$final_train$training <- c(201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
+                                        202001, 202002, 
+                                        #202003, 202004, 
+                                        202005, 202006, 202007, 
+                                        #202008, 202009, 202010, 202011, 
+                                        202012,
+                                        202101, 202102, 202103, 202104, 202105, 202106, 202107)
+  #c(2202107, 202106, 202105, 202104)
+  # c(202107, 202106, 202105, 202104, 202103, 202102,202101, 202012, 202011)
   
   
-  param_local$train$training <- tr_base
-  
+  param_local$train$training <- c(201901, 201902, 201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912,
+                                  202001, 202002, 
+                                  #202003, 202004, 
+                                  202005, 202006, 202007, 
+                                  #202008, 202009, 202010, 202011, 
+                                  202012,
+                                  202101, 202102, 202103, 202104, 202105)
+  #c(202105, 202104, 202103, 202102)
+  #c(202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009)
   param_local$train$validation <- c(202106)
   param_local$train$testing <- c(202107)
   
@@ -308,22 +316,22 @@ TS_strategy_base9 <- function( pinputexps )
 HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 {
   if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
-  
+
   param_local$meta$script <- "/src/wf-etapas/z2201_HT_lightgbm_gan.r"
-  
+
   # En caso que se haga cross validation, se usa esta cantidad de folds
   param_local$lgb_crossvalidation_folds <- 5
-  
+
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
   param_local$train$positivos <- c( "BAJA+2")
   param_local$train$gan1 <- 117000
   param_local$train$gan0 <-  -3000
   param_local$train$meseta <- 401
-  
+
   # Hiperparametros  del LightGBM
   #  los que tienen un solo valor son los que van fijos
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
-  
+
   param_local$lgb_param <- list(
     boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
     objective = "binary",
@@ -336,33 +344,33 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
     min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
+    lambda_l1 = 0.0, # lambda_l1 >= 0.0
+    lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
-    
+
+    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
-    
+
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
     skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
+
     extra_trees = FALSE,
-    
-    # Variables ajustables
-    bagging_fraction = c(0.5, 0.9),                 # Rango de valores para bagging_fraction
-    feature_fraction = c(0.5, 0.9),                 # Rango de valores para feature_fraction
-    lambda_l1 = c(0.0, 100.0),                      # Rango de valores para lambda_l1
-    lambda_l2 = c(0.0, 1000.0),                     # Rango de valores para lambda_l2
-    num_leaves = c(20L, 200L, "integer"),           # Rango de valores para num_leaves
-    min_data_in_leaf =  c(1L, 2500L, "integer"),   # Rango de valores para min_data_in_leaf
-    learning_rate = c(0.01, 0.1)                   # Rango de valores para learning_rate
+    # Parte variable
+    learning_rate = c( 0.02, 0.3 ),
+    feature_fraction = c( 0.5, 0.9 ),
+    num_leaves = c( 8L, 2048L,  "integer" ),
+    min_data_in_leaf = c( 20L, 2000L, "integer" )
   )
-  
-  
+
+
   # una Bayesian humilde, pero no descabellada
   param_local$bo_iteraciones <- bo_iteraciones # iteraciones de la Optimizacion Bayesiana
-  
+
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
@@ -438,9 +446,9 @@ wf_septiembre <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MICE")
+  CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="deflacion")
+  DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 20,
@@ -451,7 +459,7 @@ wf_septiembre <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 100 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
