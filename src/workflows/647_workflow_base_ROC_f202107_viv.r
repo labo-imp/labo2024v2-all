@@ -276,7 +276,7 @@ TS_strategy_base7 <- function( pinputexps )
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
 
-  param_local$future <- c(202109)
+  param_local$future <- c(202107)
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
@@ -459,7 +459,7 @@ wf_julio_AUC <- function( pnombrewf )
   )
 
   SC_scoring( c(fm, ts7) )
-  KA_evaluate_kaggle()
+  EV_evaluate_conclase_gan()
 
   return( exp_wf_end() ) # linea fija
 }
