@@ -12,7 +12,7 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw_leaderboard/"
 envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
@@ -410,7 +410,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
-  param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
+  param_local$isems_submit <- 1:10 # misterioso parametro, no preguntar *********************era 20 *********
 
   param_local$envios_desde <-  1600L
   param_local$envios_hasta <-  2400L
@@ -424,7 +424,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # A partir de ahora comienza la seccion de Workflows Completos
 #------------------------------------------------------------------------------
 # Este es el  Workflow Baseline
-# Que predice 202107 donde conozco la clase
+# Que predice 202109 donde conozco la clase
 # y ya genera graficos
 
 wf_septiembre <- function( pnombrewf )
@@ -447,7 +447,7 @@ wf_septiembre <- function( pnombrewf )
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
-  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
+  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=10 ) #modificado a 10 para hacer 2 por dia
   SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()
 
