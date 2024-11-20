@@ -342,7 +342,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     extra_trees = FALSE,
     
     # Variables ajustables
-    max_depth = c(5L, 12L, "integer"),
+    max_depth = 6L,
     min_gain_to_split = 0.03898070191,
     bagging_fraction = 0.5022423908,                 # Rango de valores para bagging_fraction
     feature_fraction = 0.9,                 # Rango de valores para feature_fraction
@@ -350,7 +350,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     lambda_l2 = c(600.0, 800.0),                     # Rango de valores para lambda_l2
     num_leaves = c(20L, 40L, "integer"),           # Rango de valores para num_leaves
     min_data_in_leaf = c(1500L, 2500L, "integer"),   # Rango de valores para min_data_in_leaf
-    learning_rate = c(0.001, 0.1)                    # Rango de valores para learning_rate
+    learning_rate = c(0.01, 0.1)                    # Rango de valores para learning_rate
   )
 
 
@@ -438,7 +438,7 @@ wf_septiembre <- function( pnombrewf )
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 100,
-    hojas_por_arbol= 32,
+    hojas_por_arbol= 20,
     datos_por_hoja= 1000,
     mtry_ratio= 0.2
   )
