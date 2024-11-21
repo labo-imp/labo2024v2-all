@@ -322,7 +322,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
 
   param_local$lgb_param <- list(
-    boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
+    boosting = "rf", # puede ir  dart  , ni pruebe random_forest
     objective = "binary",
     metric = "custom",
     first_metric_only = TRUE,
@@ -344,16 +344,16 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     is_unbalance = FALSE, #
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
-    drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
+    drop_rate =  0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
     skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
 
     extra_trees = FALSE,
     # Parte variable
     learning_rate = c( 0.02, 0.3 ),
-    feature_fraction = c( 0.5, 0.9 ),
-    num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 20L, 2000L, "integer" )
+    feature_fraction = c( 0.01, 1.0 ),
+    num_leaves = c( 8L, 1024L,  "integer" ),
+    min_data_in_leaf = c( 100L, 40000L, "integer" )
   )
 
 
@@ -450,7 +450,7 @@ wf_julio <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts7 <- TS_strategy_base7()
-  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 100 )  # iteraciones inteligentes
 
   fm <- FM_final_models_lightgbm( c(ht, ts7), ranks=c(1), qsemillas=30 )
   SC_scoring( c(fm, ts7) )
