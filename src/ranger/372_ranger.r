@@ -12,7 +12,7 @@ require("randomForest") # solo se usa para imputar nulos
 
 
 PARAM <- list()
-PARAM$experimento <- 3722
+PARAM$experimento <- 3723
 
 # hiperparámetros de Random Forest
 PARAM$ranger <- list(
@@ -102,7 +102,7 @@ entrega <- as.data.table(list(
 
 
 
-nom_arch_kaggle <- "KA3720_011.csv"
+nom_arch_kaggle <- "KA3720_012.csv"
 
 # genero el archivo para Kaggle
 fwrite(entrega,

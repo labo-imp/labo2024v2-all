@@ -14,7 +14,7 @@ ruta_json <- paste0(bucket_dir,archivo_kaggle)
 contenido <- fromJSON(ruta_json)
 cat("Usuario actual: ",contenido$user,"\n")
 
-user <- "otro"
+user <- "original"
 
 if (user == "original"){
   #-----joaquindebrida
@@ -32,3 +32,5 @@ write(
 )
 
 cat("Archivo JSON actualizado correctamente.")
+# para correr en consola>
+# ~/install/conexion_kaggle.sh
