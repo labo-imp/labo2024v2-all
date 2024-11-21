@@ -23,13 +23,13 @@ require("mlrMBO")
 # cantidad de iteraciones de la Optimizacion Bayesiana
 PARAM <- list()
 
-PARAM$BO_iter <- 100 #cantidad de iteraciones de la Bayesian Optimization
+PARAM$BO_iter <- 200 #cantidad de iteraciones de la Bayesian Optimization
 
 # la letra L al final de 1L significa ENTERO
 PARAM$hs <- makeParamSet(
-    makeNumericParam("cp", lower = -1, upper = 0.1),
-    makeIntegerParam("minsplit", lower = 1L, upper = 8000L),
-    makeIntegerParam("minbucket", lower = 1L, upper = 4000L),
+    makeNumericParam("cp", lower = -1, upper = 1),
+    makeIntegerParam("minsplit", lower = 1L, upper = 18000L),
+    makeIntegerParam("minbucket", lower = 1L, upper = 18000L),
     makeIntegerParam("maxdepth", lower = 3L, upper = 20L),
     forbidden = quote(minbucket > 0.5 * minsplit)
 )
@@ -278,5 +278,5 @@ system( "~/install/repobrutalcopy.sh" )
 
 # apago la virtual machine  para que no facture Google Cloud
 # Give them nothing, but take from them everything.
-system( "sudo shutdown" )
+system( "~/install/apagar-vm.sh" )
 
