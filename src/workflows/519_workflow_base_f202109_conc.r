@@ -412,9 +412,9 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <-  0L
-  param_local$envios_hasta <-  5000L
-  param_local$envios_salto <-   1000L
+  param_local$envios_desde <-  1600L
+  param_local$envios_hasta <-  2400L
+  param_local$envios_salto <-   200L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -432,7 +432,7 @@ wf_septiembre <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="MICE")
   FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
