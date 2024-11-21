@@ -342,14 +342,14 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     extra_trees = FALSE,
     
     # Variables ajustables
-    max_depth = 6L,
-    min_gain_to_split = 0.03898070191,
-    bagging_fraction = 0.5022423908,                 # Rango de valores para bagging_fraction
-    feature_fraction = 0.9,                 # Rango de valores para feature_fraction
-    lambda_l1 = c(80.0, 90.0),                      # Rango de valores para lambda_l1
-    lambda_l2 = c(600.0, 800.0),                     # Rango de valores para lambda_l2
+    max_depth = c(5L, 8L, "integer"),
+    min_gain_to_split = c(0.0, 0.1),
+    bagging_fraction = c(0.5, 0.9),                 # Rango de valores para bagging_fraction
+    feature_fraction = c(0.5, 0.9),                 # Rango de valores para feature_fraction
+    lambda_l1 = c(0.0, 100.0),                      # Rango de valores para lambda_l1
+    lambda_l2 = c(0.0, 1000.0),                     # Rango de valores para lambda_l2
     num_leaves = c(20L, 40L, "integer"),           # Rango de valores para num_leaves
-    min_data_in_leaf = c(1500L, 2500L, "integer"),   # Rango de valores para min_data_in_leaf
+    min_data_in_leaf = c(1800L, 2200L, "integer"),   # Rango de valores para min_data_in_leaf
     learning_rate = c(0.01, 0.1)                    # Rango de valores para learning_rate
   )
 
@@ -406,7 +406,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2601_KA_evaluate_kaggle.r"
+  param_local$meta$script <- "/src/wf-etapas/2601_KA_evaluate_kaggle.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -432,20 +432,20 @@ wf_septiembre <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="MICE")
   FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 100,
-    hojas_por_arbol= 20,
+  FErf_attributes_base( arbolitos= 20,
+    hojas_por_arbol= 16,
     datos_por_hoja= 1000,
     mtry_ratio= 0.2
   )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 100 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
