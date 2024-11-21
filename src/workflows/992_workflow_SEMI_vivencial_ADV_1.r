@@ -244,7 +244,7 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
   param_local$train$positivos <- c( "BAJA+2")
   param_local$train$training <- c( 202101, 202102, 202103)
   param_local$train$validation <- c( 202105 )
-  param_local$train$undersampling <- 0.1
+  param_local$train$undersampling <- 0.5 #### MODIFICADO, creo que tengo que respetar el mismo undersampling para todo
   param_local$train$gan1 <- 117000
   param_local$train$gan0 <-  -3000
 
@@ -284,9 +284,9 @@ TS_strategy_base9 <- function( pinputexps )
     201910, # NO LO Excluyo por variables rotas, MODIFICADO
     201909, 201908, 201907, 201906,
     201905,  # NO LO Excluyo por variables rotas, MODIFICADO
-    201904, 201903
+   # 201904, 201903 ### Excluyo estos meses para respetar la misma cant. de meses que el train para la HT
   )
-
+  ### TOTAL: 27 MESES DE TRAIN FINAL
 
   param_local$train$testing <- c(202107)
   param_local$train$validation <- c(202106)
@@ -302,7 +302,7 @@ TS_strategy_base9 <- function( pinputexps )
     201905,  # NO LO Excluyo por variables rotas, MODIFICADO
     201904, 201903
   )
-
+### TOTAL: 27 MESES DE TRAIN
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
