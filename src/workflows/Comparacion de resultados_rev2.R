@@ -7,7 +7,7 @@ require("rlang")
 require("yaml")
 require("data.table")
 
-Gan_Public_GBDT <- read.delim("/home/stellaconuar/buckets/b1/expw/KA-0002/tb_ganancias.txt",sep = "\t")
+Gan_Public_GBDT <- read.delim("/home/stellaconuar/buckets/b1/expw/KA-0005/tb_ganancias.txt",sep = "\t")
 Gan_Public_DART <- read.delim("/home/stellaconuar/buckets/b1/expw/KA-0003/tb_ganancias.txt",sep = "\t")
 Gan_Public_RF <- read.delim("/home/stellaconuar/buckets/b1/expw/KA-0004/tb_ganancias.txt",sep = "\t")
 
