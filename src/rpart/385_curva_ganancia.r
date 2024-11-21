@@ -61,6 +61,7 @@ miAmbiente <- read_yaml( "~/buckets/b1/miAmbiente.yml" )
 
 # cargo los datos
 dataset <- fread( miAmbiente$dataset_pequeno )
+dataset[clase_ternaria == "BAJA+1", clase_ternaria := "CONTINUA"]
 
 
 # a partir de ahora solo trabajo con 202107, el mes que tiene clase

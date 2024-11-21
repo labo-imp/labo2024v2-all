@@ -15,19 +15,18 @@ PARAM$experimento <- "KA4210"
 
 PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
+
 Experimentomedio <- read.delim("~/buckets/b1/exp/Experimentomedio/Experimentomedio.txt")
 Experimentomedio=as.data.frame(Experimentomedio)
-Experimentomedio=Experimentomedio[Experimentomedio$ganancia>12000000,]
-Experimentomedio=as.data.frame(Experimentomedio)
 
- for (it in 1:nrow(Experimentomedio)){
-PARAM$finalmodel$num_iterations <- Experimentomedio$num_iterations[it]
-PARAM$finalmodel$learning_rate <- Experimentomedio$learning_rate[it]
-PARAM$finalmodel$feature_fraction <- Experimentomedio$feature_fraction[it]
-PARAM$finalmodel$min_data_in_leaf <- Experimentomedio$min_data_in_leaf[it]
-PARAM$finalmodel$num_leaves <- Experimentomedio$num_leaves[it]
 
-PARAM$finalmodel$max_bin <- Experimentomedio$max_bin[it]
+PARAM$finalmodel$num_iterations <- Experimentomedio$num_iterations[97]
+PARAM$finalmodel$learning_rate <- Experimentomedio$learning_rate[97]
+PARAM$finalmodel$feature_fraction <- Experimentomedio$feature_fraction[97]
+PARAM$finalmodel$min_data_in_leaf <- Experimentomedio$min_data_in_leaf[97]
+PARAM$finalmodel$num_leaves <- Experimentomedio$num_leaves[97]
+
+PARAM$finalmodel$max_bin <- 31
 
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista
@@ -168,7 +167,7 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-cortes <- seq(1200, 2300, by = 20)
+cortes <- seq(9000, 13500, by = 500)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
@@ -188,10 +187,7 @@ for (envios in cortes) {
     " learning_rate=", PARAM$finalmodel$learning_rate,
     " num_leaves=", PARAM$finalmodel$num_leaves,
     " min_data_in_leaf=", PARAM$finalmodel$min_data_in_leaf,
-    " feature_fraction=", PARAM$finalmodel$feature_fraction
-    
-    ,
-    
+    " feature_fraction=", PARAM$finalmodel$feature_fraction,
     "'"
   )
 
@@ -214,4 +210,3 @@ for (envios in cortes) {
 }
 
 cat("\n\nSe han realizado los submits a Kaggle\n")
- }
