@@ -55,7 +55,7 @@ ganancia_1 %>% group_by(semilla) %>% count()
 ganancia_1 %>% arrange(desc(ganancia))
 
 
-## Sin Meses de Pandemia (mayo y junio 2020)
+## Sin Meses de Pandemia (abril y mayo 2020)
 
 path = '~/buckets/b1/expw-00/expw_KA-0012_ganancias_log.txt'
 system('cp ~/buckets/b1/expw-00/expw_KA-0012_ganancias_log.txt ~/labo2024v2/src/01analisis/data/ganancias_log_1_bis.txt')
@@ -74,11 +74,10 @@ ganancia_1_bis %>% arrange(desc(ganancia))
 ganancia_1_bis %>% group_by(semilla) %>% count()
 
 
-### Sin Meses de Pandemia Extendido (abajo del p25, marzo, abril, agosto, septiembre, octubre, nov 2020)
+### Sin Meses de Pandemia Extendido (abajo del p25, marzo, abril, agosto, septiembre, octubre 2020)
 
 path = '~/buckets/b1/flow-06/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt'
-path = '~/buckets/b1/flow-17/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt'
-system('cp ~/buckets/b1/flow-17/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt ~/labo2024v2/src/01analisis/data/ganancias_log_2.txt')
+system('cp ~/buckets/b1/flow-06/wf_septiembre-001/011-KA_evaluate_kaggle/ganancias_log.txt ~/labo2024v2/src/01analisis/data/ganancias_log_2.txt')
 
 ganancia_2 <- read_delim(path,
                          delim = "\t", escape_double = FALSE,
