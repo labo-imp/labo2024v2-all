@@ -12,8 +12,8 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw0/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow0/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw66/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow66/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$arch_ambiente <- "miAmbiente.yml"
