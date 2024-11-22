@@ -150,17 +150,17 @@ drift_dolar_blue <- function(campos_monetarios) {
 }
 #------------------------------------------------------------------------------
 
-# drift_dolar_financiero <- function(campos_monetarios) {
-#   cat( "inicio drift_dolar_financiero()\n")
-#   
-#   dataset[tb_indices,
-#           on = c(envg$PARAM$dataset_metadata$periodo),
-#           (campos_monetarios) := .SD / i.dolar_financiero,
-#           .SDcols = campos_monetarios
-#   ]
-#   
-#   cat( "fin drift_dolar_financiero()\n")
-# }
+drift_dolar_financiero <- function(campos_monetarios) {
+  cat( "inicio drift_dolar_financiero()\n")
+
+  dataset[tb_indices,
+          on = c(envg$PARAM$dataset_metadata$periodo),
+          (campos_monetarios) := .SD / i.dolar_financiero,
+          .SDcols = campos_monetarios
+  ]
+
+  cat( "fin drift_dolar_financiero()\n")
+}
 #------------------------------------------------------------------------------
 
 drift_deflacion <- function(campos_monetarios) {
