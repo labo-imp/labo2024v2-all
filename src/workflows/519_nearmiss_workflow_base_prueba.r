@@ -266,45 +266,45 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 #   y solo incluyo en el dataset al 20% de los CONTINUA
 #  azaroso, utiliza semilla
 
-TS_strategy_base9 <- function( pinputexps )
-{
-  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+library(imbalance)
 
+TS_strategy_base9 <- function(pinputexps) {
+  if (-1 == (param_local <- exp_init())$resultado) return(0) # línea fija
+  
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
-
-
+  
   param_local$future <- c(202109)
-
+  
+  # Datos iniciales
   param_local$final_train$undersampling <- 1.0
-  param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+  param_local$final_train$clase_minoritaria <- c("BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
-    202101, 202012, 202011)
-
-
+                                        202101, 202012, 202011)
+  
   param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,
-    202012, 202011, 202010, 202009)
+                                  202012, 202011, 202010, 202009)
   param_local$train$validation <- c(202106)
   param_local$train$testing <- c(202107)
-
-  # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
-  # 1.0 significa NO undersampling
-  # param_local$train$undersampling <- 0.01# 
-  # param_local$train$undersampling <- 0.05# done
-  # param_local$train$undersampling <- 0.1 
-  # param_local$train$undersampling <- 0.2 # Original done
-  # param_local$train$undersampling <- 0.8 # Done
-  # param_local$train$undersampling <- 0.1 
-  # param_local$train$undersampling <- 0.3 
-  # param_local$train$undersampling <- 0.4 
-  # param_local$train$undersampling <- 0.5 # Done
-  # param_local$train$undersampling <- 0.6 #
-  # param_local$train$undersampling <- 0.8 # Done
-  # param_local$train$undersampling <- 1 # Done
-  param_local$train$undersampling <- 0.25
   
-  param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-
-  return( exp_correr_script( param_local ) ) # linea fija
+  # Uso de NearMiss para ajustar el undersampling
+  train_data <- get_training_data(param_local$train$training) # Obtén los datos originales
+  
+  # Define las clases
+  clase_mayoritaria <- "CONTINUA"
+  clase_minoritarias <- param_local$train$clase_minoritaria
+  
+  # Implementa NearMiss (adaptar según tu librería; aquí uso imbalance::nearmiss)
+  nearmiss_data <- nearmiss(
+    data = train_data, # Conjunto de datos original
+    target = "class", # Columna con la etiqueta de clase
+    classes = list(majority = clase_mayoritaria, minority = clase_minoritarias),
+    k = 3 # Número de vecinos cercanos para considerar
+  )
+  
+  # Reemplaza los datos submuestreados en param_local
+  param_local$train$data <- nearmiss_data
+  
+  return(exp_correr_script(param_local)) # línea fija
 }
 #------------------------------------------------------------------------------
 # Hyperparamteter Tuning Baseline

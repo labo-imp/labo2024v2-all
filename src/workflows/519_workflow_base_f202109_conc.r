@@ -294,12 +294,12 @@ TS_strategy_base9 <- function( pinputexps )
   # param_local$train$undersampling <- 0.2 # Original done
   # param_local$train$undersampling <- 0.8 # Done
   # param_local$train$undersampling <- 0.1 Done
-  param_local$train$undersampling <- 0.3 
+  # param_local$train$undersampling <- 0.3 
   # param_local$train$undersampling <- 0.4 
   # param_local$train$undersampling <- 0.5 # Done
   # param_local$train$undersampling <- 0.6 #
   # param_local$train$undersampling <- 0.8 # Done
-  # param_local$train$undersampling <- 0.9 
+  param_local$train$undersampling <- 0.9 
   # param_local$train$undersampling <- 1 Done
   
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
