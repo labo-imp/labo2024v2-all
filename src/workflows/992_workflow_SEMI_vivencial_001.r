@@ -189,7 +189,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   param_local$lgb_param <- list(
     # parametros que se pueden cambiar
     num_iterations = 20,
-    num_leaves  = 4,
+    num_leaves  = 16,
     min_data_in_leaf = 1000,
     feature_fraction_bynode  = 0.2,
 
@@ -291,7 +291,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.30
+  param_local$train$undersampling <- 0.20
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -359,7 +359,7 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
     learning_rate = c( 0.02, 0.5 ),
     feature_fraction = c( 0.5, 0.9 ),
 
-    leaf_size_log = c( -12, -5),   # deriva en min_data_in_leaf
+    leaf_size_log = c( -10, -5),   # deriva en min_data_in_leaf
     coverage_log = c( -8, 0 )      # deriva en num_leaves
   )
 
@@ -454,7 +454,7 @@ wf_SEMI_sep <- function( pnombrewf )
 
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
-    semillerio = 50, # semillerio dentro de la Bayesian Optim
+    semillerio = 24, # semillerio dentro de la Bayesian Optim
     bo_iteraciones = 50  # iteraciones inteligentes, apenas 10
   )
 
@@ -462,7 +462,7 @@ wf_SEMI_sep <- function( pnombrewf )
   fm <- FM_final_models_lightgbm_semillerio( 
     c(ht, ts9), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
-    semillerio = 50,   # cantidad de semillas finales
+    semillerio = 24,   # cantidad de semillas finales
     repeticiones_exp = 1  # cantidad de repeticiones del semillerio
   )
 
