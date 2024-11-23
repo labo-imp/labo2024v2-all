@@ -150,21 +150,21 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- TRUE
-  param_local$Tendencias1$maximo <- TRUE
-  param_local$Tendencias1$promedio <- TRUE
-  param_local$Tendencias1$ratioavg <- TRUE
-  param_local$Tendencias1$ratiomax <- TRUE
+  param_local$Tendencias1$minimo <- FALSE
+  param_local$Tendencias1$maximo <- FALSE
+  param_local$Tendencias1$promedio <- FALSE
+  param_local$Tendencias1$ratioavg <- FALSE
+  param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- TRUE
+  param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- TRUE
-  param_local$Tendencias2$minimo <- TRUE
-  param_local$Tendencias2$maximo <- TRUE
-  param_local$Tendencias2$promedio <- TRUE
-  param_local$Tendencias2$ratioavg <- TRUE
-  param_local$Tendencias2$ratiomax <- TRUE
+  param_local$Tendencias2$tendencia <- FALSE
+  param_local$Tendencias2$minimo <- FALSE
+  param_local$Tendencias2$maximo <- FALSE
+  param_local$Tendencias2$promedio <- FALSE
+  param_local$Tendencias2$ratioavg <- FALSE
+  param_local$Tendencias2$ratiomax <- FALSE
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
 
@@ -269,36 +269,49 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 TS_strategy_base9 <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
-  
-  param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
-  
-  param_local$future <- c(202109)
-  
-  param_local$final_train$undersampling <- 1.0
-  param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
-                                        202101, 202012, 202011, 202010, 202009, 202008,
-                                        202007, 202006, 202005, 202004, 202003, 202002,
-                                        202001, 201912, 201911
-                                        )
-  
-  param_local$train$validation <- c(202106)
-  param_local$train$testing <- c(202107)
-  
-  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101, 202012, 202011,
-                                  202010, 202009, 202008, 202007, 202006, 202005, 202004,
-                                  202003, 202002, 202001, 201912, 201911, 201910, 201909)
-  
 
-  
+  param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
+
+  param_local$future <- c(202109)
+
+  param_local$final_train$undersampling <- 0.20
+  param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+  param_local$final_train$training <- c(
+    202107, 202106, 202105, 202104, 202103, 202102, 202101, 
+    202012, 202011, 202010, 202009, 202008, 202007, 
+    # 202006  Excluyo por variables rotas
+    202005, 202004, 202003, 202002, 202001,
+    201912, 201911,
+    # 201910 Excluyo por variables rotas
+    201909, 201908, 201907, 201906,
+    # 201905  Excluyo por variables rotas
+    201904, 201903
+  )
+
+
+  param_local$train$testing <- c(202107)
+  param_local$train$validation <- c(202106)
+
+  param_local$train$training <- c(
+    202105, 202104, 202103, 202102, 202101, 
+    202012, 202011, 202010, 202009, 202008, 202007, 
+    # 202006  Excluyo por variables rotas
+    202005, 202004, 202003, 202002, 202001,
+    201912, 201911,
+    # 201910 Excluyo por variables rotas
+    201909, 201908, 201907, 201906,
+    # 201905  Excluyo por variables rotas
+    201904, 201903
+  )
+
+
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.2
+  param_local$train$undersampling <- 0.20
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  
+
   return( exp_correr_script( param_local ) ) # linea fija
 }
-
 #------------------------------------------------------------------------------
 # Hyperparamteter Tuning Baseline
 #  donde la Bayuesian Optimization solo considera 4 hiperparámetros
@@ -338,21 +351,32 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
-    lambda_l1 = c(0.0, 100.0), # lambda_l1 >= 0.0
-    lambda_l2 = c(0.0, 1000.0), # lambda_l2 >= 0.0
-    num_leaves = c(20L, 200L, "integer"),
-    min_data_in_leaf = c(1L, 2500L, "integer"),
+    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
+    min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
+    lambda_l1 = 0.0, # lambda_l1 >= 0.0
+    lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
+
     num_iterations = 9999L, # un numero muy grande
     early_stopping_base = 200L,
 
-    bagging_fraction = c(0.5, 0.9),# 0.0 < bagging_fraction <= 1.0
-    
-    # Parte variable
-    learning_rate = c(0.01, 0.1),
-    feature_fraction = c(0.5, 0.9),
+    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
+    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    is_unbalance = FALSE, #
+    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
-   
+    drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
+    max_drop = 50, # <=0 means no limit
+    skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
+
+    extra_trees = FALSE,
+    # Parte variable
+    learning_rate = c( 0.3, 0.8 ),
+    feature_fraction = c( 0.05, 0.95 ),
+
+    leaf_size_log = c( -10, -5),   # deriva en min_data_in_leaf
+    coverage_log = c( -8, 0 )      # deriva en num_leaves
   )
 
 
