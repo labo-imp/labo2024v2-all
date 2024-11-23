@@ -142,7 +142,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
+  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -156,9 +156,9 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- TRUE
-  param_local$Tendencias2$ventana <- 6
-  param_local$Tendencias2$tendencia <- TRUE
+  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$ventana <- 12
+  param_local$Tendencias2$tendencia <- FALSE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -222,7 +222,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
     max_drop = 50,
     skip_drop = 0.5,
 
-    extra_trees = TRUE
+    extra_trees = FALSE
   )
 
 
@@ -275,23 +275,23 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$final_train$undersampling <- 0.20
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 
-                                        202002, 202001, 201912, 201911, 201910, 
-                                        201909, 201908, 201907, 201906, 201905, 
-                                        201904, 201903, 201902, 201901)
+  param_local$final_train$training <- c(
+    202107, 202106, 202105, 202104, 202103, 202102, 202101, 
+    202012, 202011 
+  )
 
   param_local$train$testing <- c(202107)
   param_local$train$validation <- c(202106)
 
-  param_local$train$training <- c(202105, 202104, 202103, 202102, 202002, 
-                                  202001, 201912, 201911, 201910, 201909, 
-                                  201908, 201907, 201906, 201905, 201904, 
-                                  201903, 201902, 201901)
+  param_local$train$training <- c(
+    202105, 202104, 202103, 202102, 202101, 
+    202012, 202011, 202010, 202009
+  )
 
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.4
+  param_local$train$undersampling <- 0.30
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -360,7 +360,7 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
     feature_fraction = c( 0.5, 0.9 ),
 
     leaf_size_log = c( -12, -5),   # deriva en min_data_in_leaf
-    coverage_log = c( -10, 0 )      # deriva en num_leaves
+    coverage_log = c( -8, 0 )      # deriva en num_leaves
   )
 
 
@@ -447,7 +447,7 @@ wf_SEMI_sep <- function( pnombrewf )
   FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
-  ultimo <- FErf_attributes_base()
+  #ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
