@@ -144,27 +144,27 @@ FEhist_base <- function( pinputexps)
 
   param_local$lag1 <- TRUE
   param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+  param_local$lag3 <- TRUE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- FALSE
-  param_local$Tendencias1$maximo <- FALSE
-  param_local$Tendencias1$promedio <- FALSE
-  param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$minimo <- TRUE
+  param_local$Tendencias1$maximo <- TRUE
+  param_local$Tendencias1$promedio <- TRUE
+  param_local$Tendencias1$ratioavg <- TRUE
+  param_local$Tendencias1$ratiomax <- TRUE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
-  param_local$Tendencias2$minimo <- FALSE
-  param_local$Tendencias2$maximo <- FALSE
-  param_local$Tendencias2$promedio <- FALSE
-  param_local$Tendencias2$ratioavg <- FALSE
-  param_local$Tendencias2$ratiomax <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE
+  param_local$Tendencias2$minimo <- TRUE
+  param_local$Tendencias2$maximo <- TRUE
+  param_local$Tendencias2$promedio <- TRUE
+  param_local$Tendencias2$ratioavg <- TRUE
+  param_local$Tendencias2$ratiomax <- TRUE
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
 
@@ -358,12 +358,13 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
     # Parámetros fijos o que participan en la Optimización Bayesiana
     leaf_size_log = c(-10, -5),
     coverage_log = c(-8, 0),
-    max_depth = c(5L, 7L, "integer"),
+    max_depth = c(5L, 8L, "integer"),
     min_gain_to_split = c(0.0, 0.1),
-    bagging_fraction = c(0.5, 0.9),  # Solo una definición
+    bagging_fraction = c(0.5, 0.9),
     feature_fraction = c(0.5, 0.9),
     lambda_l1 = c(0.0, 100.0),
     lambda_l2 = c(0.0, 1000.0),
+    scale_pos_weight = c(1.0, 160.0),
     learning_rate = c(0.01, 0.1)
   )
 
@@ -447,9 +448,9 @@ wf_SEMI_sep <- function( pnombrewf )
 
   DT_incorporar_dataset_competencia2024()
 
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="MICE")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="deflacion")
   FEhist_base()
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
@@ -458,7 +459,7 @@ wf_SEMI_sep <- function( pnombrewf )
 
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
-    semillerio = 20, # semillerio dentro de la Bayesian Optim
+    semillerio = 30, # semillerio dentro de la Bayesian Optim
     bo_iteraciones = 50  # iteraciones inteligentes, apenas 10
   )
 
