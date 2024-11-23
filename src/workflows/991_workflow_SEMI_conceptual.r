@@ -107,7 +107,7 @@ FEintra_manual_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/1301_FE_intrames_manual.r" 
+  param_local$meta$script <- "/src/wf-etapas/z1301_FE_intrames_manual.r" 
   # /src/wf-etapas/z1301_FE_intrames_manual.r" Aqui (linea de arriba) cambie por un script supuestamente optimizado por Ton Vanerio
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -296,7 +296,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.20
+  param_local$train$undersampling <- 0.80 # 0.20 Cambio aqui.
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -342,14 +342,14 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
     min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 0.0, # lambda_l1 >= 0.0
-    lambda_l2 = 0.0, # lambda_l2 >= 0.0
+    lambda_l1 = c(0.0, 10.0), # lambda_l1 >= 0.0 # 0.0
+    lambda_l2 = c(0.0, 10.0), # lambda_l2 >= 0.0 # 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
 
     num_iterations = 9999L, # un numero muy grande
     early_stopping_base = 200L,
 
-    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    bagging_fraction = c(0.5, 0.9), # 0.0 < bagging_fraction <= 1.0 bagging_fraction = 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
@@ -361,11 +361,13 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.3, 0.8 ),
-    feature_fraction = c( 0.05, 0.95 ),
-
+    learning_rate = c(0.01, 0.1), # learning_rate = c( 0.3, 0.8 ), 
+    feature_fraction = c(0.5, 0.9), # feature_fraction = c( 0.05, 0.95 )
+    num_leaves = c(20L, 2000L, "integer"), # Incorporado al script
     leaf_size_log = c( -10, -5),   # deriva en min_data_in_leaf
-    coverage_log = c( -8, 0 )      # deriva en num_leaves
+    coverage_log = c( -8, 0 ),      # deriva en num_leaves
+    min_data_in_leaf = c(10L, 1000L, "integer"),
+    bagging_freq = 5
   )
 
 
