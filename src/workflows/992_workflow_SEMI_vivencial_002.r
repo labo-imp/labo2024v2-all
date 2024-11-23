@@ -142,7 +142,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
+  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -276,23 +276,21 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$undersampling <- 0.20
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 
-                                        202002, 202001, 201912, 201911, 201910, 
-                                        201909, 201908, 201907, 201906, 201905, 
-                                        201904, 201903, 201902, 201901)
-  
+                                        202102, 202101, 202012, 202011)
+
+
   param_local$train$testing <- c(202107)
   param_local$train$validation <- c(202106)
-  
-  param_local$train$training <- c(202105, 202104, 202103, 202102, 202002, 
-                                  202001, 201912, 201911, 201910, 201909, 
-                                  201908, 201907, 201906, 201905, 201904, 
-                                  201903, 201902, 201901
+
+  param_local$train$training <- c(
+    202105, 202104, 202103, 202102, 202101, 
+    202012, 202011, 202010, 202009
   )
 
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.20
+  param_local$train$undersampling <- 0.40
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -480,6 +478,6 @@ wf_SEMI_sep <- function( pnombrewf )
 # llamo al workflow con future = 202108
 wf_SEMI_sep()
 
-# Agrego Lag2
-# Agrego mas meses
-# Semillerio 50
+# Modifica semillerio a 50
+# Modifica undersampling a 0.4
+
