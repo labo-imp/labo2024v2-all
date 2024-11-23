@@ -207,9 +207,194 @@ AgregarVariables_IntraMes <- function(dataset) {
 
   if( atributos_presentes( c("vm_mpagominimo", "vm_mlimitecompra") ))
     dataset[, vmr_mpagominimo := vm_mpagominimo / vm_mlimitecompra]
-
+  
+  
+  
+  
+  
+#---------------------------------------------------------------------------------------------------------------------------------------
   # Aqui debe usted agregar sus propias nuevas variables
 
+  
+  
+  
+  if( atributos_presentes( c("ctrx_quarter", "cpayroll_trx") ))
+    dataset[, monstruo_1 := 0.5*ctrx_quarter + 0.5*cpayroll_trx]
+  
+  if( atributos_presentes( c("vm_msaldototal", "vm_mconsumospesos") ))
+    dataset[, monstruo_2 :=  vm_mconsumospesos / vm_msaldototal]
+  
+  if( atributos_presentes( c("ctrx_quarter_normalizado", "mprestamos_personales_rank") ))
+    dataset[, monstruo_3 := 0.5*ctrx_quarter_normalizado + 0.5*mprestamos_personales_rank]
+  
+  if( atributos_presentes( c("mcuentas_saldo_rank", "mcaja_ahorro_rank") ))
+    dataset[, monstruo_4 := 0.5*mcuentas_saldo_rank + 0.5*mcaja_ahorro_rank]
+  
+  if( atributos_presentes( c("ctrx_quarter", "rf_002_000", "rf_002_001", "rf_006_013", "rf_010_013") ))
+    dataset[, monstruo_5 := 0.6*ctrx_quarter + 0.4*(rf_002_000 + rf_002_001 + rf_006_013 + rf_010_013)]
+  
+  if( atributos_presentes( c("ctrx_quarter", "cpayroll_trx") ))
+    dataset[, monstruo_6 := 0.6*ctrx_quarter + 0.4*cpayroll_trx]
+  
+  if( atributos_presentes( c("ctrx_quarter", "ctrx_quarter_normalizado") ))
+    dataset[, monstruo_7 := ctrx_quarter - ctrx_quarter_normalizado]
+  
+  if( atributos_presentes( c("ctrx_quarter_normalizado_lag1", "mcaja_ahorro_rank") ))
+    dataset[, monstruo_8 := 0.5*ctrx_quarter_normalizado_lag1 + 0.5*mcaja_ahorro_rank]
+  
+  if( atributos_presentes( c("rf_002_000", "rf_002_001", "rf_006_013", "rf_010_013") ))
+    dataset[, monstruo_9 := (rf_002_000 + rf_002_001 + rf_006_013 + rf_010_013)/4]
+  
+  if( atributos_presentes( c("ctrx_quarter", "ctrx_quarter_normalizado", "ctrx_quarter_normalizado_lag1") ))
+    dataset[, monstruo_10 := (ctrx_quarter + ctrx_quarter_normalizado + ctrx_quarter_normalizado_lag1)/3]
+  
+  if( atributos_presentes( c("mtarjeta_visa_consumo_rank", "mprestamos_personales_rank", "mcaja_ahorro_rank") ))
+    dataset[, monstruo_11 := (mtarjeta_visa_consumo_rank + mprestamos_personales_rank + mcaja_ahorro_rank)/3]
+  
+  if( atributos_presentes( c("ctrx_quarter", "cpayroll_trx") ))
+    dataset[, monstruo_12 := 0.8*ctrx_quarter + 0.2*cpayroll_trx]
+  
+  if( atributos_presentes( c("mtarjeta_visa_consumo_rank", "mcuentas_saldo_rank") ))
+    dataset[, monstruo_13 := mtarjeta_visa_consumo_rank / mcuentas_saldo_rank]
+  
+  if( atributos_presentes( c("rf_010_013", "mprestamos_personales_rank") ))
+    dataset[, monstruo_14 := rf_010_013 + mprestamos_personales_rank]
+  
+  if( atributos_presentes( c("mtarjeta_visa_consumo_rank", "mcuentas_saldo_rank") ))
+    dataset[, monstruo_15 := mtarjeta_visa_consumo_rank / mcuentas_saldo_rank]
+  
+  if( atributos_presentes( c("ctrx_quarter", "cproductos") ))
+    dataset[, monstruo_16 := ctrx_quarter / cproductos]
+  
+  if( atributos_presentes( c("mcaja_ahorro_rank", "rf_010_013") ))
+    dataset[, monstruo_17 := mcaja_ahorro_rank / rf_010_013]
+  
+  if( atributos_presentes( c("ctrx_quarter_normalizado_lag1", "rf_010_013") ))
+    dataset[, monstruo_18 := ctrx_quarter_normalizado_lag1 / rf_010_013]
+  
+  if( atributos_presentes( c("rf_002_000", "rf_010_013") ))
+    dataset[, monstruo_19 := rf_002_000 + rf_010_013]
+ 
+   if( atributos_presentes( c("cpayroll_trx", "ctrx_quarter") ))
+    dataset[, monstruo_20 := cpayroll_trx * ctrx_quarter]
+  
+ 
+  # ABOMINACIONES
+  
+  if( atributos_presentes( c("monstruo_1", "rf_003_000") ))
+    dataset[, abominacion_1 := 0.5*monstruo_1 + 0.5*rf_003_000]
+  
+  
+  if( atributos_presentes( c("monstruo_1", "rf_003_000") ))
+    dataset[, abominacion_2 := 0.8*monstruo_1 + 0.2*rf_003_000]
+  
+  if( atributos_presentes( c("monstruo_1", "cpayroll_trx") ))
+    dataset[, abominacion_3 := 0.5*monstruo_1 + 0.5*cpayroll_trx]
+  
+  if( atributos_presentes( c("monstruo_1", "mprestamos_personales_rank") ))
+    dataset[, abominacion_4 := monstruo_1 * mprestamos_personales_rank]
+  
+  if( atributos_presentes( c("monstruo_1", "rf_010_001") ))
+    dataset[, abominacion_5 :=  rf_010_001 - monstruo_1]
+  
+  if( atributos_presentes( c("monstruo_1", "mcuentas_saldo_rank") ))
+    dataset[, abominacion_6 :=  mcuentas_saldo_rank * monstruo_1]
+  
+  if( atributos_presentes( c("monstruo_1", "ccomisiones_mantenimiento_tend6") ))
+    dataset[, abominacion_7 :=  ccomisiones_mantenimiento_tend6 * monstruo_1]
+  
+  if( atributos_presentes( c("monstruo_1", "rf_003_000") ))
+    dataset[, abominacion_8 :=  rf_003_000 * monstruo_1]
+  
+  if( atributos_presentes( c("monstruo_1", "rf_003_000") ))
+    dataset[, abominacion_9 :=  rf_003_000 + monstruo_1]
+  
+  if( atributos_presentes( c("monstruo_1", "rf_003_000") ))
+    dataset[, abominacion_10 :=  monstruo_1 * rf_003_000]
+  
+  
+  #Bestias (con logica economica)
+  
+  if (atributos_presentes(c("cliente_antiguedad", "vm_cconsumos")))
+    dataset[, bestia_01 := vm_cconsumos / cliente_antiguedad]
+  
+  if (atributos_presentes(c("vm_mconsumospesos", "vm_cconsumos"))) 
+    dataset[, bestia_02 := vm_mconsumospesos / vm_cconsumos]
+  
+  if (atributos_presentes(c("vm_mpagosdolares", "vm_mconsumosdolares")))
+    dataset[, bestia_03 := vm_mpagosdolares / vm_mconsumosdolares]
+  
+  if (atributos_presentes(c("vm_msaldototal", "cliente_antiguedad")))
+    dataset[, bestia_04 := vm_msaldototal / cliente_antiguedad]
+  
+  if(atributos_presentes(c("Master_mconsumototal", "Master_mlimitecompra")))
+    dataset[, bestia_05 := Master_mconsumototal / Master_mlimitecompra]
+  
+  if(atributos_presentes(c("Visa_mconsumototal", "Visa_mlimitecompra")))
+    dataset[, bestia_06 := Visa_mconsumototal / Visa_mlimitecompra]
+  
+  if(atributos_presentes(c("chomebanking_transacciones", "ccallcenter_transacciones")))
+    dataset[, bestia_07 := chomebanking_transacciones / 
+              (chomebanking_transacciones + ccallcenter_transacciones)]
+  
+  if(atributos_presentes(c("ctarjeta_visa", "ctarjeta_master", "cprestamos_personales")))
+    dataset[, bestia_08 := (ctarjeta_visa > 0) + 
+              (ctarjeta_master > 0) + (cprestamos_personales > 0)]
+  
+  if(atributos_presentes(c("Master_mpagominimo", "Master_mconsumototal")))
+    dataset[, bestia_09 := Master_mpagominimo / Master_mconsumototal]
+  
+  if(atributos_presentes(c("Visa_mpagominimo", "Visa_mconsumototal")))
+    dataset[, bestia_10 := Visa_mpagominimo / Visa_mconsumototal]
+  
+  if(atributos_presentes(c("mrentabilidad", "cproductos")))
+    dataset[, bestia_11 := mrentabilidad / cproductos]
+  
+  if(atributos_presentes(c("mactivos_margen", "mpasivos_margen")))
+    dataset[, bestia_12 := mactivos_margen - mpasivos_margen]
+  
+  if(atributos_presentes(c("chomebanking_transacciones", "ctrx_quarter")))
+    dataset[, bestia_13 := chomebanking_transacciones / ctrx_quarter]
+  
+  if(atributos_presentes(c("mtarjeta_visa_consumo", "mtarjeta_master_consumo")))
+    dataset[, bestia_14 := ifelse(
+      (mtarjeta_visa_consumo + mtarjeta_master_consumo) > 100000, 1, 0)]
+  
+  if(atributos_presentes(c("mcomisiones", "mrentabilidad")))
+    dataset[, bestia_15 := mcomisiones / mrentabilidad]
+  
+  if (atributos_presentes(c("ctarjeta_visa_transacciones", "cproductos")))
+    dataset[, bestia_16 := ctarjeta_visa_transacciones / cproductos]
+  
+  if (atributos_presentes(c("ctarjeta_master_transacciones", "cproductos")))
+    dataset[, bestia_17 := ctarjeta_master_transacciones / cproductos]
+  
+  if (atributos_presentes(c("mcaja_ahorro", "mcuenta_corriente")))
+    dataset[, bestia_18 := mcaja_ahorro / mcuenta_corriente]
+  
+  if (atributos_presentes(c("ctrx_quarter", "mpayroll")))
+    dataset[, bestia_19 := ctrx_quarter / mpayroll]
+  
+  if (atributos_presentes(c("mtarjeta_visa_consumo", "ctarjeta_visa_transacciones")))
+    dataset[, bestia_20 := mtarjeta_visa_consumo / ctarjeta_visa_transacciones]
+  
+  if (atributos_presentes(c("mtarjeta_master_consumo", "ctarjeta_master_transacciones")))
+    dataset[, bestia_21 := mtarjeta_master_consumo / ctarjeta_master_transacciones]
+  
+  if( atributos_presentes( c("mcomisiones", "mactivos_margen") ))
+    dataset[, bestia_22 := mcomisiones / mactivos_margen]
+  
+  if( atributos_presentes( c("mrentabilidad", "cliente_edad") ))
+    dataset[, bestia_23 := mrentabilidad / cliente_edad]
+  
+  if( atributos_presentes( c("ctarjeta_visa_transacciones", "mtarjeta_visa_consumo") ))
+    dataset[, bestia_24 := mtarjeta_visa_consumo / ctarjeta_visa_transacciones]
+  
+  if( atributos_presentes( c("ctarjeta_master_transacciones", "mtarjeta_master_consumo") ))
+    dataset[, bestia_25 := mtarjeta_master_consumo / ctarjeta_master_transacciones]
+  
+  
+  
   # valvula de seguridad para evitar valores infinitos
   # paso los infinitos a NULOS
   infinitos <- lapply(
