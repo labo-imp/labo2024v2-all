@@ -38,4 +38,3 @@ correr_workflow <- function( wf_scriptname )
 
 # aqui efectivamente llamo al workflow
 correr_workflow( PARAM )
-dcc
