@@ -107,8 +107,8 @@ FEintra_manual_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z1301_FE_intrames_manual.r"
-
+  param_local$meta$script <- "/src/wf-etapas/1301_FE_intrames_manual.r" 
+  # /src/wf-etapas/z1301_FE_intrames_manual.r" Aqui (linea de arriba) cambie por un script supuestamente optimizado por Ton Vanerio
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -144,17 +144,17 @@ FEhist_base <- function( pinputexps)
 
   param_local$lag1 <- TRUE
   param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+  param_local$lag3 <- TRUE # no me engraso con los lags de orden 3 # FALSE
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- FALSE
-  param_local$Tendencias1$maximo <- FALSE
-  param_local$Tendencias1$promedio <- FALSE
-  param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$minimo <- TRUE # FALSE
+  param_local$Tendencias1$maximo <- TRUE # FALSE
+  param_local$Tendencias1$promedio <- TRUE # FALSE
+  param_local$Tendencias1$ratioavg <- TRUE # FALSE
+  param_local$Tendencias1$ratiomax <- TRUE # FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- FALSE
@@ -189,10 +189,10 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
     # parametros que se pueden cambiar
-    num_iterations = 20,
-    num_leaves  = 16,
-    min_data_in_leaf = 1000,
-    feature_fraction_bynode  = 0.2,
+    num_iterations = 100, # 20 Cambio aqui.
+    num_leaves  = 25, # 16 Cambio aqui. 
+    min_data_in_leaf = 1000, # 1000
+    feature_fraction_bynode  = 0.2, # 0.2
 
     # para que LightGBM emule Random Forest
     boosting = "rf",
@@ -278,14 +278,8 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007, 
-    # 202006  Excluyo por variables rotas
-    202005, 202004, 202003, 202002, 202001,
-    201912, 201911,
-    # 201910 Excluyo por variables rotas
-    201909, 201908, 201907, 201906,
-    # 201905  Excluyo por variables rotas
-    201904, 201903
+    202012, 202011, 202010, 202009, 202008, 202007, 202006,
+    202005, 202004, 202003, 202002, 202001, 201912, 201911
   )
 
 
@@ -294,14 +288,9 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$train$training <- c(
     202105, 202104, 202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007, 
-    # 202006  Excluyo por variables rotas
-    202005, 202004, 202003, 202002, 202001,
-    201912, 201911,
-    # 201910 Excluyo por variables rotas
-    201909, 201908, 201907, 201906,
-    # 201905  Excluyo por variables rotas
-    201904, 201903
+    202012, 202011, 202010, 202009, 202008, 202007, 202006,
+    202005, 202004, 202003, 202002, 202001, 201912, 201911,
+    201910, 201909
   )
 
 
@@ -459,9 +448,9 @@ wf_SEMI_sep <- function( pnombrewf )
 
   DT_incorporar_dataset_competencia2024()
 
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="MICE") # metodo="MachineLearning" Este viene en el script por defecto. Probar comentando la linea
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="dolar_blue") #  metodo="rank_cero_fijo" “dolar_blue” "deflacion"
   FEhist_base()
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
