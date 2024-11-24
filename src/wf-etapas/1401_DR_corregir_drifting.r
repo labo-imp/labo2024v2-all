@@ -93,6 +93,17 @@ vUVA <- c(
   0.8631993702994263, 0.8253893405524657, 0.7928918905364516,
   0.7666323845128089, 0.7428976357662823, 0.721615762047849
 )
+# datos de inflacion mes a mes: https://www.bcra.gob.ar/PublicacionesEstadisticas/Principales_variables_datos.asp
+vinflacion_mes <- c(
+  2.9, 3.8, 4.7, 3.4, 3.1, 2.7,
+  2.2, 4.0, 5.9, 3.3, 4.3, 3.7,
+  2.3, 2.0, 3.3, 1.5, 1.5, 2.2,
+  1.9, 2.7, 2.8, 3.8, 3.2, 4.0,
+  4.0, 3.6, 4.8, 4.1, 3.3, 3.2,
+  3.0, 2.5, 3.5
+)
+
+vinflacion <- cumprod(1 + vinflacion_mes / 100)
 
 #------------------------------------------------------------------------------
 
@@ -144,6 +155,20 @@ drift_deflacion <- function(campos_monetarios) {
     .SDcols = campos_monetarios
   ]
 
+  cat( "fin drift_deflacion()\n")
+}
+
+#------------------------------------------------------------------------------
+
+drift_inflacion <- function(campos_monetarios) {
+  cat( "inicio drift_inflacion()\n")
+  
+  dataset[tb_indices,
+          on = c(envg$PARAM$dataset_metadata$periodo),
+          (campos_monetarios) := .SD * i.inflacion,
+          .SDcols = campos_monetarios
+  ]
+  
   cat( "fin drift_deflacion()\n")
 }
 
@@ -216,7 +241,8 @@ tb_indices <- as.data.table( list(
   "IPC" = vIPC,
   "dolar_blue" = vdolar_blue,
   "dolar_oficial" = vdolar_oficial,
-  "UVA" = vUVA
+  "UVA" = vUVA,
+  "inflacion" = vinflacion
   )
 )
 tb_indices[[ envg$PARAM$dataset_metadata$periodo ]] <- vfoto_mes
@@ -249,7 +275,8 @@ switch(envg$PARAM$metodo,
   "dolar_blue"     = drift_dolar_blue(campos_monetarios),
   "dolar_oficial"  = drift_dolar_oficial(campos_monetarios),
   "UVA"            = drift_UVA(campos_monetarios),
-  "estandarizar"   = drift_estandarizar(campos_monetarios)
+  "estandarizar"   = drift_estandarizar(campos_monetarios),
+  "inflacion"      = drift_inflacion(campos_monetarios)
 )
 
 
