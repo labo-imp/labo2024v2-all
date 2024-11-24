@@ -9,16 +9,17 @@ require("data.table")
 require("rpart")
 require("parallel")
 require("primes")
+require("progress")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 523801
+PARAM$semilla_primigenia <- 720677
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 # elegir SU dataset comentando/ descomentando
-# PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+#PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
 PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 #------------------------------------------------------------------------------
@@ -140,35 +141,44 @@ tb_grid_search_detalle <- data.table(
 )
 
 
-# itero por los loops anidados para cada hiperparametro
 
-for(vcp in c( -0.5, 0, 0.1 ) ){
-  for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-    for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-      for(vmin_bucket in c(2, 4, 8, 16, 32, 64 ) ) {
-        # notar como se agrega
+# itero por los loops anidados para cada hiperparametro
+total_combinations <- length(c(-1, -0.85, -0.6)) * 
+  length(c(4, 20)) * length(c(1200, 800, 400, 100)) * length(c(50, 100, 200))
+
+pb <- progress_bar$new(total = total_combinations, format = "  [:bar] :percent eta: :eta")
+
+for (vmax_depth in c(4, 20)) {
+  for (vmin_split in c(1200, 800, 400, 100)) {
+    for (vcp in c(-1, -0.85, -0.6)){
+      for (vmin_bucket in c(50, 100, 200)){
+   
+             
         
-        # vminsplit  minima cantidad de registros en un nodo para hacer el split
-        param_basicos <- list(
-          "cp" = vcp, # complejidad minima
-          "maxdepth" = vmax_depth, # profundidad máxima del arbol
-          "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-          "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
-        )
-        
-        # Un solo llamado, con la semilla 17
-        ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
-        
-        # agrego a la tabla
-        tb_grid_search_detalle <- rbindlist( 
-          list( tb_grid_search_detalle,
-                rbindlist(ganancias) )
-        )
-        
-      }
+     # notar como se agrega
+
+    # vminsplit  minima cantidad de registros en un nodo para hacer el split
+    param_basicos <- list(
+      "cp" = vcp, 
+      "maxdepth" = vmax_depth, # profundidad máxima del arbol
+      "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
+      "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
+    )
+
+    # Un solo llamado, con la semilla 17
+    ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
+
+    # agrego a la tabla
+    tb_grid_search_detalle <- rbindlist( 
+      list( tb_grid_search_detalle,
+            rbindlist(ganancias) )
+    )
+    pb$tick()
+  }
     }
   }
-  
+
+
   # grabo cada vez TODA la tabla en el loop mas externo
   fwrite( tb_grid_search_detalle,
           file = "gridsearch_detalle.txt",
@@ -176,6 +186,7 @@ for(vcp in c( -0.5, 0, 0.1 ) ){
 }
 
 #----------------------------
+
 # genero y grabo el resumen
 tb_grid_search <- tb_grid_search_detalle[,
   list( "ganancia_mean" = mean(ganancia_test),
