@@ -460,7 +460,7 @@ wf_SEMI_sep <- function( pnombrewf )
 
   
   FEintra_manual_base()
-  DR_drifting_base(metodo="dolar_blue")
+  DR_drifting_base(metodo="deflacion")
   FEhist_base()
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
