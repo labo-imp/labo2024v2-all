@@ -136,36 +136,35 @@ DR_drifting_base <- function( pinputexps, metodo)
 FEhist_base <- function( pinputexps)
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
-
-
+  
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
-
+  
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
-
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
+  param_local$lag3 <- TRUE # no me engraso con los lags de orden 3
+  
   # no me engraso las manos con las tendencias
-  param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
+  param_local$Tendencias1$run <- TRUE # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- FALSE
-  param_local$Tendencias1$maximo <- FALSE
-  param_local$Tendencias1$promedio <- FALSE
-  param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
-
+  param_local$Tendencias1$minimo <- TRUE
+  param_local$Tendencias1$maximo <- TRUE
+  param_local$Tendencias1$promedio <- TRUE
+  param_local$Tendencias1$ratioavg <- TRUE
+  param_local$Tendencias1$ratiomax <- TRUE
+  
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
-  param_local$Tendencias2$minimo <- FALSE
-  param_local$Tendencias2$maximo <- FALSE
-  param_local$Tendencias2$promedio <- FALSE
-  param_local$Tendencias2$ratioavg <- FALSE
-  param_local$Tendencias2$ratiomax <- FALSE
-
+  param_local$Tendencias2$tendencia <- TRUE
+  param_local$Tendencias2$minimo <- TRUE
+  param_local$Tendencias2$maximo <- TRUE
+  param_local$Tendencias2$promedio <- TRUE
+  param_local$Tendencias2$ratioavg <- TRUE
+  param_local$Tendencias2$ratiomax <- TRUE
+  
   param_local$semilla <- NULL # no usa semilla, es deterministico
-
+  
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
@@ -263,34 +262,35 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 }
 #------------------------------------------------------------------------------
 # Training Strategy  Baseline
-#   y solo incluyo en el dataset al 20% de los CONTINUA
 #  azaroso, utiliza semilla
 
 TS_strategy_base9 <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
-
+  
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
-
-
+  
   param_local$future <- c(202109)
-
+  
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
-    202101, 202012, 202011)
-
-
-  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,
-    202012, 202011, 202010, 202009)
+                                        202101, 202012, 202011, 202010, 202009, 202008,
+                                        202007, 202006, 202005, 202004, 202003, 202002,
+                                        202001, 201912, 201911)
+  
+  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101, 202012, 202011,
+                                  202010, 202009, 202008, 202007, 202006, 202005, 202004,
+                                  202003, 202002, 202001, 201912, 201911, 201910, 201909)
+  
   param_local$train$validation <- c(202106)
   param_local$train$testing <- c(202107)
-
+  
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
   param_local$train$undersampling <- 0.2
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-
+  
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
@@ -303,7 +303,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 {
   if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
 
-  param_local$meta$script <- "/src/wf-etapas/z2203_HT_lightgbm_gan.r"
+  param_local$meta$script <- "/src/wf-etapas/z2201_HT_lightgbm_gan.r"
 
   # En caso que se haga cross validation, se usa esta cantidad de folds
   param_local$lgb_crossvalidation_folds <- 5
@@ -312,8 +312,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   param_local$train$positivos <- c( "BAJA+2")
   param_local$train$gan1 <- 117000
   param_local$train$gan0 <-  -3000
-  param_local$train$meseta <- 401
-  param_local$train$excluir_campos <- c("numero_de_cliente", "foto_mes")
+  param_local$train$meseta <- 2001
 
   # Hiperparametros  del LightGBM
   #  los que tienen un solo valor son los que van fijos
@@ -351,7 +350,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     learning_rate = c( 0.02, 0.3 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 20L, 2000L, "integer" )
+    min_data_in_leaf = c( 100L, 10000L, "integer" )
   )
 
 
@@ -413,10 +412,10 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <-  1600L
-  param_local$envios_hasta <-  2400L
-  param_local$envios_salto <-   200L
-  param_local$competition <- "labo-i-conceptual-2024-v-2"
+  param_local$envios_desde <-  10000L
+  param_local$envios_hasta <-  12500L
+  param_local$envios_salto <-    500L
+  param_local$competition <- "labo-i-vivencial-2024-v-2"
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -433,9 +432,8 @@ wf_septiembre <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="deflacion")
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 20,
