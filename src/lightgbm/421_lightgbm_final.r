@@ -10,18 +10,18 @@ require("rlist")
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 PARAM <- list()
-PARAM$experimento <- "KA4210"
+PARAM$experimento <- "KA4212"
 
 
 PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 1000
-PARAM$finalmodel$learning_rate <- 0.027
-PARAM$finalmodel$feature_fraction <- 0.8
-PARAM$finalmodel$min_data_in_leaf <- 76
-PARAM$finalmodel$num_leaves <- 8
+PARAM$finalmodel$num_iterations <- 165
+PARAM$finalmodel$learning_rate <- 0.143937559
+PARAM$finalmodel$feature_fraction <- 0.682543677
+PARAM$finalmodel$min_data_in_leaf <- 1584
+PARAM$finalmodel$num_leaves <- 721
 
 PARAM$finalmodel$max_bin <- 31
 
@@ -164,7 +164,8 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-cortes <- seq(9000, 13500, by = 500)
+#cortes <- seq(9000, 13500, by = 500)
+cortes <- seq(1500, 3500, by = 250)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
