@@ -36,7 +36,7 @@ PARAM$feature_fraction <- 0.5
 # voy a generar 512 arboles,
 #  a mas arboles mas tiempo de proceso y MEJOR MODELO,
 #  pero ganancias marginales
-PARAM$num_trees_max <- 512
+PARAM$num_trees_max <- 1024
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
@@ -51,6 +51,72 @@ miAmbiente <- read_yaml( "~/buckets/b1/miAmbiente.yml" )
 dataset <- fread( miAmbiente$dataset_pequeno )
 
 
+#Genero variables
+dataset$antiguedadporahorro=dataset$mcaja_ahorro*dataset$cliente_antiguedad
+dataset$ahoraenrelacionconedad=dataset$mcaja_ahorro/ dataset$cliente_edad
+
+# 1. Edad cliente normalizada
+dataset$cliente_edad_normalizada <- dataset$cliente_edad / max(dataset$cliente_edad, na.rm = TRUE)
+
+# 2. Relación entre rentabilidad mensual y anual
+dataset$rentabilidad_relacion <- dataset$mrentabilidad / dataset$mrentabilidad_annual
+
+
+# 4. Proporción de activos y pasivos
+dataset$activos_pasivos_ratio <- dataset$mactivos_margen / dataset$mpasivos_margen
+
+# 5. Saldo total de cuentas
+dataset$saldo_total_cuentas <- dataset$mcuenta_corriente + dataset$mcaja_ahorro
+
+# 6. Saldo medio de cuentas
+dataset$saldo_medio_cuentas <- (dataset$mcuenta_corriente + dataset$mcaja_ahorro) / 2
+
+# 7. Suma de consumos de tarjetas
+dataset$suma_consumos_tarjetas <- dataset$mtarjeta_visa_consumo + dataset$mtarjeta_master_consumo
+
+# 8. Transacciones totales de tarjetas
+dataset$transacciones_totales_tarjetas <- dataset$ctarjeta_visa_transacciones + dataset$ctarjeta_master_transacciones
+
+# 9. Promedio de consumo por transacción Visa
+dataset$consumo_prom_trans_visa <- with(dataset, ifelse(ctarjeta_visa_transacciones != 0, mtarjeta_visa_consumo / ctarjeta_visa_transacciones, 0))
+
+# 10. Promedio de consumo por transacción MasterCard
+dataset$consumo_prom_trans_master <- with(dataset, ifelse(ctarjeta_master_transacciones != 0, mtarjeta_master_consumo / ctarjeta_master_transacciones, 0))
+
+# 11. Ratio de descubierto preacordado respecto al saldo de cuentas
+dataset$descubierto_saldo_ratio <- dataset$cdescubierto_preacordado / dataset$mcuentas_saldo
+
+# 12. Proporción de tarjetas Visa y MasterCard
+dataset$proporcion_tarjetas <- dataset$ctarjeta_visa / dataset$ctarjeta_master
+
+# 13. Relación de consumos entre Visa y MasterCard
+dataset$relacion_consumos_visa_master <- dataset$mtarjeta_visa_consumo / dataset$mtarjeta_master_consumo
+
+# 14. Rentabilidad por productos
+dataset$rentabilidad_por_producto <- dataset$mrentabilidad / dataset$cproductos
+
+# 15. Comisiones por antigüedad del cliente
+dataset$comisiones_antiguedad <- dataset$mcomisiones / dataset$cliente_antiguedad
+
+# 16. Consumo total por antigüedad
+dataset$consumo_total_antiguedad <- (dataset$mtarjeta_visa_consumo + dataset$mtarjeta_master_consumo) / dataset$cliente_antiguedad
+
+# 17. Número total de tarjetas
+dataset$total_tarjetas <- dataset$ctarjeta_visa + dataset$ctarjeta_master
+
+# 18. Indicador de cliente con préstamos personales
+dataset$indicador_prestamos_personales <- ifelse(dataset$cprestamos_personales > 0, 1, 0)
+
+# 19. Saldo medio mensual de cuentas
+dataset$saldo_medio_mensual <- (dataset$mcuenta_corriente + dataset$mcaja_ahorro) / 12
+
+
+
+
+#dataset[clase_ternaria == "BAJA+1", clase_ternaria := "CONTINUA"]
+
+#dataset[clase_ternaria == "BAJA+1", clase_ternaria := "BAJA+2"]
+
 # creo la carpeta donde va el experimento
 dir.create("./exp/", showWarnings = FALSE)
 carpeta_experimento <- paste0("./exp/KA", PARAM$experimento, "/")
@@ -62,7 +128,7 @@ setwd(carpeta_experimento)
 
 
 # que tamanos de ensemble grabo a disco
-grabar <- c(1, 2, 4, 8, 16, 32, 64, 128, 256, 512)
+grabar <- c(32, 64, 128, 256, 512,1024)
 
 
 # defino los dataset de entrenamiento y aplicacion

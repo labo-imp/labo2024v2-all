@@ -12,14 +12,14 @@ require("primes")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 523801
-PARAM$qsemillas <- 20
+PARAM$semilla_primigenia <- 760007L
+PARAM$qsemillas <- 50
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 # elegir SU dataset comentando/ descomentando
-# PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
-PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
+#PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+ PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -139,21 +139,19 @@ tb_grid_search_detalle <- data.table(
   ganancia_test = numeric()
 )
 
+n=0
 
-# itero por los loops anidados para cada hiperparametro
-
-for(vcp in c( -0.5, 0, 0.1 ) ){
-  for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-    for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-      for(vmin_bucket in c(2, 4, 8, 16, 32, 64 ) ) {
+for (vminbucket in c(100,200,400,250,25,50)) {
+    for (vmax_depth in c(2,3,4,5, 6)) {
+      for (vmin_split in c(900,850,800,750,725,700,650,600)) {
         # notar como se agrega
         
         # vminsplit  minima cantidad de registros en un nodo para hacer el split
         param_basicos <- list(
-          "cp" = vcp, # complejidad minima
+          "cp" = -0.5, # complejidad minima
           "maxdepth" = vmax_depth, # profundidad máxima del arbol
           "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-          "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
+          "minbucket" = vminbucket # minima cantidad de registros en una hoja
         )
         
         # Un solo llamado, con la semilla 17
@@ -164,23 +162,23 @@ for(vcp in c( -0.5, 0, 0.1 ) ){
           list( tb_grid_search_detalle,
                 rbindlist(ganancias) )
         )
-        
+        n=n+1
+        print(n)
       }
     }
-  }
   
-  # grabo cada vez TODA la tabla en el loop mas externo
-  fwrite( tb_grid_search_detalle,
-          file = "gridsearch_detalle.txt",
-          sep = "\t" )
+      # grabo cada vez TODA la tabla en el loop mas externo
+      fwrite( tb_grid_search_detalle,
+              file = "gridsearch_detalle.txt",
+              sep = "\t" )
+    
 }
 
-#----------------------------
 # genero y grabo el resumen
 tb_grid_search <- tb_grid_search_detalle[,
-  list( "ganancia_mean" = mean(ganancia_test),
-    "qty" = .N ),
-  list( cp, maxdepth, minsplit, minbucket )
+                                         list( "ganancia_mean" = mean(ganancia_test),
+                                               "qty" = .N ),
+                                         list( cp, maxdepth, minsplit, minbucket )
 ]
 
 # ordeno descendente por ganancia
@@ -190,7 +188,8 @@ setorder( tb_grid_search, -ganancia_mean )
 tb_grid_search[, id := .I ]
 
 fwrite( tb_grid_search,
-  file = "gridsearch.txt",
-  sep = "\t"
+        file = "gridsearch3.txt",
+        sep = "\t"
 )
+
 

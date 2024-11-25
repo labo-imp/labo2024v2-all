@@ -18,9 +18,13 @@ require("ggplot2")
 
 # cambiar aqui los parametros
 PARAM <- list()
-PARAM$minsplit <- 300
-PARAM$minbucket <- 20
-PARAM$maxdepth <- 11
+PARAM$minsplit <- 850
+PARAM$minbucket <- 400
+PARAM$maxdepth <- 4
+
+#PARAM$minsplit <- 1000
+#PARAM$minbucket <- 1000
+#PARAM$maxdepth <- 3
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -57,6 +61,7 @@ miAmbiente <- read_yaml( "~/buckets/b1/miAmbiente.yml" )
 
 # cargo los datos
 dataset <- fread( miAmbiente$dataset_pequeno )
+dataset[clase_ternaria == "BAJA+1", clase_ternaria := "CONTINUA"]
 
 
 # a partir de ahora solo trabajo con 202107, el mes que tiene clase
