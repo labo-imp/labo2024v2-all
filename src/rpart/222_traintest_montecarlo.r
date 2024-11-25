@@ -7,7 +7,7 @@ require("parallel")
 
 PARAM <- list()
 # reemplazar por las propias semillas
-PARAM$semillas <- c(102191, 200177, 410551, 552581, 892237)
+PARAM$semillas <- c(100823, 101281, 550283, 998927, 999287)
 
 # elegir SU dataset comentando/ descomentando
 PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
