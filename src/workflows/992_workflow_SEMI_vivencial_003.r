@@ -142,7 +142,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -156,9 +156,9 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE
   param_local$Tendencias2$ventana <- 6
-  param_local$Tendencias2$tendencia <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -189,7 +189,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   param_local$lgb_param <- list(
     # parametros que se pueden cambiar
     num_iterations = 20,
-    num_leaves  = 8,
+    num_leaves  = 4,
     min_data_in_leaf = 1000,
     feature_fraction_bynode  = 0.2,
 
@@ -275,21 +275,23 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$final_train$undersampling <- 0.20
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(
-    202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 202011 
-  )
+  param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 
+                                        202002, 202001, 201912, 201911, 201910, 
+                                        201909, 201908, 201907, 201906, 201905, 
+                                        201904, 201903, 201902, 201901)
 
   param_local$train$testing <- c(202107)
   param_local$train$validation <- c(202106)
 
-  param_local$train$training <- c(
-    202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009
-  )
+  param_local$train$training <- c(202105, 202104, 202103, 202102, 202002, 
+                                  202001, 201912, 201911, 201910, 201909, 
+                                  201908, 201907, 201906, 201905, 201904, 
+                                  201903, 201902, 201901)
 
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.20
+  param_local$train$undersampling <- 0.4
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -421,8 +423,8 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <- 9500L
-  param_local$envios_hasta <- 11500L
+  param_local$envios_desde <- 9000L
+  param_local$envios_hasta <- 12000L
   param_local$envios_salto <-   500L
   param_local$competition <- "labo-i-vivencial-2024-v-2"
 
