@@ -428,9 +428,9 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <-  1800L
-  param_local$envios_hasta <-  2300L
-  param_local$envios_salto <-   100L
+  param_local$envios_desde <-  1600L
+  param_local$envios_hasta <-  2400L
+  param_local$envios_salto <-   50L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -448,9 +448,9 @@ wf_SEMI_sep <- function( pnombrewf )
 
   DT_incorporar_dataset_competencia2024()
 
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="MICE")
   FEintra_manual_base()
-  DR_drifting_base(metodo="deflacion")
+  DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
@@ -459,8 +459,8 @@ wf_SEMI_sep <- function( pnombrewf )
 
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
-    semillerio = 20, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 50  # iteraciones inteligentes, apenas 10
+    semillerio = 30, # semillerio dentro de la Bayesian Optim
+    bo_iteraciones = 40  # iteraciones inteligentes, apenas 10
   )
 
 
