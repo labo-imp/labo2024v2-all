@@ -31,8 +31,14 @@ source( paste0( args[1] , "/src/lib/action_lib.r" ) )
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 cat( "ETAPA  2101_TS_training_strategy.r  START\n" )
-
 action_inicializar() 
+
+cat( "-------------\n" )
+cat( "PRIMERA LINEA, envg$PARAM$experimento_largo\n" )
+print(envg$PARAM$experimento_largo)
+#ejemplo "/home/joaquindebrida/buckets/b1/expw-SEMI-2/TS-0003"
+
+
 # genero las semillas con las que voy a trabajar
 #  ninguna de ellas es exactamente la original del alumno
 primos <- generate_primes(min = 100000, max = 1000000)
@@ -43,6 +49,19 @@ envg$PARAM$semillas <- sample(primos)[1:2]
 
 envg$PARAM$train$semilla <- envg$PARAM$semillas[1]
 envg$PARAM$final_train$semilla <- envg$PARAM$semillas[2]
+
+cat("------------------\n")
+env_list <- as.list(envg)
+ #Iterar y mostrar el nombre de cada variable y su valor
+for (var_name in names(env_list)) {
+  var_value <- env_list[[var_name]]
+  # Usamos print() para manejar cualquier tipo de objeto
+  cat("Variable:", var_name, "\n")
+  print(var_value)  # Utiliza print() para manejar listas u objetos complejos
+  cat("\n")
+}
+cat("------------------\n")
+
 
   
 # cargo el dataset donde voy a entrenar
@@ -224,7 +243,23 @@ envg$OUTPUT$dataset_finaltrain$ncol <- ncol(dataset[get(envg$PARAM$dataset_metad
 envg$OUTPUT$dataset_finaltrain$nrow <- nrow(dataset[get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$final_train, ])
 envg$OUTPUT$dataset_finaltrain$periodos <- dataset[get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$final_train, length(unique(get(envg$PARAM$dataset_metadata$periodo)))]
 
+
+
 envg$OUTPUT$time$end <- format(Sys.time(), "%Y%m%d %H%M%S")
+cat("------------------\n")
+env_list <- as.list(envg)
+#Iterar y mostrar el nombre de cada variable y su valor
+for (var_name in names(env_list)) {
+  var_value <- env_list[[var_name]]
+  # Usamos print() para manejar cualquier tipo de objeto
+  cat("Variable:", var_name, "\n")
+  print(var_value)  # Utiliza print() para manejar listas u objetos complejos
+  cat("\n")
+}
+cat("------------------\n")
+
+
+
 GrabarOutput()
 
 #------------------------------------------------------------------------------

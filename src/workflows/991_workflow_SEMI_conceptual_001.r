@@ -376,6 +376,17 @@ TS_strategy_meses2 <- function( pinputexps )
   cat("\n-------------  LLAMADO A TS_MES2 -------------------------------------------\n")
   
   param_local$meta$script <- "/src/wf-etapas/2101_TS_training_strategy.r"
+  cat("---------contenido de param_local en TS2---------\n")
+  env_list <- as.list(param_local)
+  #Iterar y mostrar el nombre de cada variable y su valor
+  for (var_name in names(env_list)) {
+    var_value <- env_list[[var_name]]
+    # Usamos print() para manejar cualquier tipo de objeto
+    cat("Variable:", var_name, "\n")
+    print(var_value)  # Utiliza print() para manejar listas u objetos complejos
+    cat("\n")
+  }
+  cat("------------------\n")
   
   param_local$future <- c(202109)
   
@@ -405,12 +416,169 @@ TS_strategy_meses2 <- function( pinputexps )
   
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.20
+  param_local$train$undersampling <- 0.50
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   
   return( exp_correr_script( param_local ) ) # linea fija
 }
 
+#------------------------------------------------------------------------------
+# Hyperparamteter Tuning Inicial
+#  donde la Bayuesian Optimization solo considera 4 hiperparámetros
+#  azaroso, utiliza semilla
+#  puede llegar a recibir  bypass, que por default esta en false
+
+HT_tuning_semillerio_inicial <- function( pinputexps, semillerio, bo_iteraciones, bypass=FALSE)
+{
+  if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
+  
+  param_local$meta$script <- "/src/wf-etapas/2212_HT_lightgbm_SEMI_inicial.r"
+  cat("---------contenido de param_local en HT_inicial---------\n")
+  env_list <- as.list(param_local)
+  #Iterar y mostrar el nombre de cada variable y su valor
+  for (var_name in names(env_list)) {
+    var_value <- env_list[[var_name]]
+    # Usamos print() para manejar cualquier tipo de objeto
+    cat("Variable:", var_name, "\n")
+    print(var_value)  # Utiliza print() para manejar listas u objetos complejos
+    cat("\n")
+  }
+  cat("------------------\n")
+  
+  # En caso que se haga cross validation, se usa esta cantidad de folds
+  param_local$lgb_crossvalidation_folds <- 5
+  
+  param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
+  param_local$train$positivos <- c( "BAJA+2")
+  param_local$train$gan1 <- 117000
+  param_local$train$gan0 <-  -3000
+  param_local$train$meseta <-  401
+  param_local$train$repeticiones_exp <- 1
+  param_local$train$semillerio <- semillerio  # 1 es no usar semillerio en la Bayesian Optim
+  param_local$train$timeout <- 20000
+  
+  # Hiperparametros  del LightGBM
+  #  los que tienen un solo valor son los que van fijos
+  #  los que tienen un vector,  son los que participan de la Bayesian Optimization
+  
+  param_local$lgb_param <- list(
+    boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
+    objective = "binary",
+    metric = "custom",
+    first_metric_only = TRUE,
+    boost_from_average = TRUE,
+    feature_pre_filter = FALSE,
+    force_row_wise = TRUE, # para reducir warnings
+    verbosity = -100,
+    max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
+    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
+    min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
+    lambda_l1 = 0.0, # lambda_l1 >= 0.0
+    lambda_l2 = 0.0, # lambda_l2 >= 0.0
+    max_bin = 31L, # lo debo dejar fijo, no participa de la BO
+    
+    num_iterations = 9999L, # un numero muy grande
+    early_stopping_base = 200L,
+    
+    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
+    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    is_unbalance = FALSE, #
+    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
+    
+    drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
+    max_drop = 50, # <=0 means no limit
+    skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
+    
+    extra_trees = FALSE,
+    # Parte variable
+    learning_rate = c( 0.3, 0.8 ),
+    feature_fraction = c( 0.05, 0.95 ),
+    
+    leaf_size_log = c( -10, -5),   # deriva en min_data_in_leaf
+    coverage_log = c( -8, 0 )      # deriva en num_leaves
+  )
+  
+  
+  # una Bayesian humilde
+  param_local$bo_iteraciones <- bo_iteraciones # iteraciones de la Optimizacion Bayesiana
+  
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+
+#------------------------------------------------------------------------------
+# Hyperparamteter Tuning continua con optimizacion
+#  donde la Bayuesian Optimization solo considera 4 hiperparámetros
+#  azaroso, utiliza semilla
+#  puede llegar a recibir  bypass, que por default esta en false
+
+HT_tuning_semillerio_continua <- function( pinputexps, semillerio, bo_iteraciones, bypass=FALSE)
+{
+  if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
+  
+  param_local$meta$script <- "/src/wf-etapas/2212_HT_lightgbm_SEMI_continua.r"
+
+  
+  # En caso que se haga cross validation, se usa esta cantidad de folds
+  param_local$lgb_crossvalidation_folds <- 5
+  
+  param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
+  param_local$train$positivos <- c( "BAJA+2")
+  param_local$train$gan1 <- 117000
+  param_local$train$gan0 <-  -3000
+  param_local$train$meseta <-  401
+  param_local$train$repeticiones_exp <- 1
+  param_local$train$semillerio <- semillerio  # 1 es no usar semillerio en la Bayesian Optim
+  param_local$train$timeout <- 20000
+  
+  # Hiperparametros  del LightGBM
+  #  los que tienen un solo valor son los que van fijos
+  #  los que tienen un vector,  son los que participan de la Bayesian Optimization
+  
+  param_local$lgb_param <- list(
+    boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
+    objective = "binary",
+    metric = "custom",
+    first_metric_only = TRUE,
+    boost_from_average = TRUE,
+    feature_pre_filter = FALSE,
+    force_row_wise = TRUE, # para reducir warnings
+    verbosity = -100,
+    max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
+    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
+    min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
+    lambda_l1 = 0.0, # lambda_l1 >= 0.0
+    lambda_l2 = 0.0, # lambda_l2 >= 0.0
+    max_bin = 31L, # lo debo dejar fijo, no participa de la BO
+    
+    num_iterations = 9999L, # un numero muy grande
+    early_stopping_base = 200L,
+    
+    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
+    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    is_unbalance = FALSE, #
+    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
+    
+    drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
+    max_drop = 50, # <=0 means no limit
+    skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
+    
+    extra_trees = FALSE,
+    # Parte variable
+    learning_rate = c( 0.3, 0.8 ),
+    feature_fraction = c( 0.05, 0.95 ),
+    
+    leaf_size_log = c( -10, -5),   # deriva en min_data_in_leaf
+    coverage_log = c( -8, 0 )      # deriva en num_leaves
+  )
+  
+  
+  # una Bayesian humilde
+  param_local$bo_iteraciones <- bo_iteraciones # iteraciones de la Optimizacion Bayesiana
+  
+  return( exp_correr_script( param_local ) ) # linea fija
+}
 
 #------------------------------------------------------------------------------
 # Hyperparamteter Tuning Baseline
@@ -569,16 +737,34 @@ wf_SEMI_sep <- function( pnombrewf )
   #ts9 <- TS_strategy_base9()
   
   ts_1 <- TS_strategy_meses1() #Creacion de dataset_training con grupo 1 de meses
-  ht <- HT_tuning_semillerio(
-    semillerio = 30, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 30  # iteraciones inteligentes, apenas 10
+  
+
+ 
+  
+  cat("------------------------------\n")
+
+  cat("Ruta: ",envg$EXPENV$exp_dir[1],"\n")
+  cat("ultimo experimento: ",param_local$lastexp,"\n") # = TS-0001
+  cat("RUTA COMPLETA: ")
+  print(paste0(envg$EXPENV$exp_dir[1],,param_local$lastexp))
+  cat("-")
+  envg$EXPENV$BO_dir <-paste0(envg$EXPENV$exp_dir[1],param_local$lastexp)
+  
+  print(envg$EXPENV$BO_dir)
+  cat("-")
+  cat("------------------------------\n")
+  ht0 <- HT_tuning_semillerio_inicial(
+    semillerio = 3, # semillerio dentro de la Bayesian Optim
+    bo_iteraciones = 3  # iteraciones inteligentes, apenas 10
   )
-  cat("\nDirectorio antes de llamar a ts_2",getwd(),"\n")
+
+
   ts_2 <- TS_strategy_meses2()#Creacion de dataset_training con grupo 2 de meses
-  ht <- HT_tuning_semillerio(
-    semillerio = 30, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 30  # iteraciones inteligentes, apenas 10
+  htcont <- HT_tuning_semillerio_continua(
+    semillerio = 3, # semillerio dentro de la Bayesian Optim
+    bo_iteraciones = 3  # iteraciones inteligentes, apenas 10
   )
+
 
   fm <- FM_final_models_lightgbm_semillerio( 
     c(ht, ts_2), # los inputs
