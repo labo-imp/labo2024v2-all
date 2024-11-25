@@ -363,7 +363,7 @@ TS_strategy_meses1 <- function( pinputexps )
 }
 
 #------------------------------------------------------------------------------
-# Training Strategy  Meses 1: utiliza los primeros meses para crear el dataset_training
+# Training Strategy  Meses 2: utiliza los primeros meses para crear el dataset_training
 #  azaroso, utiliza semilla
 #------------------------------------------------------------------------------
 # Atencion, el undersampling es de 0.10
@@ -375,7 +375,7 @@ TS_strategy_meses2 <- function( pinputexps )
   
   cat("\n-------------  LLAMADO A TS_MES2 -------------------------------------------\n")
   
-  param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
+  param_local$meta$script <- "/src/wf-etapas/2101_TS_training_strategy.r"
   
   param_local$future <- c(202109)
   
@@ -398,7 +398,7 @@ TS_strategy_meses2 <- function( pinputexps )
   param_local$train$validation <- c(202106)
   
   param_local$train$training <- c(
-    202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008, 202007, 202005,
+    202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008, 202007, 202005
     #202004, 202003, 202002, 202001, 201912, 201911, 201909, 201908, 201907, 201906, 201904, 201903
   )
   
@@ -573,7 +573,7 @@ wf_SEMI_sep <- function( pnombrewf )
     semillerio = 30, # semillerio dentro de la Bayesian Optim
     bo_iteraciones = 30  # iteraciones inteligentes, apenas 10
   )
-  
+  cat("\nDirectorio antes de llamar a ts_2",getwd(),"\n")
   ts_2 <- TS_strategy_meses2()#Creacion de dataset_training con grupo 2 de meses
   ht <- HT_tuning_semillerio(
     semillerio = 30, # semillerio dentro de la Bayesian Optim

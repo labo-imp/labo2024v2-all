@@ -30,9 +30,9 @@ source( paste0( args[1] , "/src/lib/action_lib.r" ) )
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-cat( "ETAPA  z2101_TS_training_strategy.r  START\n" )
-action_inicializar() 
+cat( "ETAPA  2101_TS_training_strategy.r  START\n" )
 
+action_inicializar() 
 # genero las semillas con las que voy a trabajar
 #  ninguna de ellas es exactamente la original del alumno
 primos <- generate_primes(min = 100000, max = 1000000)
@@ -48,8 +48,27 @@ envg$PARAM$final_train$semilla <- envg$PARAM$semillas[2]
 # cargo el dataset donde voy a entrenar
 # esta en la carpeta del exp_input y siempre se llama  dataset.csv.gz
 # cargo el dataset
-envg$PARAM$dataset <- paste0( "./", envg$PARAM$input, "/dataset.csv.gz" )
-envg$PARAM$dataset_metadata <- read_yaml( paste0( "./", envg$PARAM$input, "/dataset_metadata.yml" ) )
+
+
+exp_dir <- "~/buckets/b1/expw-SEMI-2/"
+# Sobreescribir solo la parte de la carpeta
+if (!startsWith(envg$PARAM$input, "FErf")) {
+  # Divide el valor en partes usando el separador "-"
+  partes <- strsplit(envg$PARAM$input, "-")[[1]]
+  
+  # Sobrescribe la parte de la carpeta con "FErf" y conserva el número
+  if (length(partes) == 2) {
+    envg$PARAM$input <- paste0("FErf-", partes[2])
+    message(paste("Se corrigió envg$PARAM$input a:", envg$PARAM$input))
+  } else {
+    stop("El formato de envg$PARAM$input no es válido. Debe ser 'carpeta-Numero'.")
+  }
+}
+
+
+cat("Ruta: ",paste0( exp_dir, envg$PARAM$input, "/dataset.csv.gz" ))
+envg$PARAM$dataset <- paste0( exp_dir, envg$PARAM$input, "/dataset.csv.gz" )
+envg$PARAM$dataset_metadata <- read_yaml( paste0( exp_dir, envg$PARAM$input, "/dataset_metadata.yml" ) )
 
 cat( "lectura del dataset\n")
 action_verificar_archivo( envg$PARAM$dataset )

@@ -1,7 +1,7 @@
 require("rlang")
 
 # workflow que voy a correr
-PARAM <- "src/workflows/991_workflow_SEMI_conceptual.r"
+PARAM <- "src/workflows/991_workflow_SEMI_conceptual_001.r"
 
 envg <- env()
 
@@ -44,6 +44,8 @@ correr_workflow( PARAM )
 #Fin del worfklow
 Tiempo_fin <- Sys.time()
 Tiempo_total <- difftime(Tiempo_fin, Tiempo_inicio, units = "hours")
+cat("\n-----------------------------------------------------------------------------------")
+cat("\n     Training strategy 2: grupos de meses")
 cat("\n-----------------------------------------------------------------------------------")
 cat("\n     Catastrophe Analysis. Metodo: MICE")
 cat("\n-----------------------------------------------------------------------------------")
