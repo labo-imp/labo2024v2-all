@@ -1,4 +1,4 @@
-# Corrida general del Workflow Baseline
+# Corrida general del Workflow Baseline con algunas modificaciones
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
@@ -12,7 +12,7 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw_leaderboard/"
 envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
@@ -120,10 +120,10 @@ DR_drifting_base <- function( pinputexps, metodo)
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z1401_DR_corregir_drifting.r"
+  param_local$meta$script <- "/src/wf-etapas/1401_DR_corregir_drifting.r"
 
   # valores posibles
-  #  "ninguno", "rank_simple", "rank_cero_fijo", "deflacion", "estandarizar"
+  #  "ninguno", "rank_simple", "rank_cero_fijo", "deflacion", "estandarizar", "inflacion"
   param_local$metodo <- metodo
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -141,28 +141,28 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+  param_local$lag2 <- TRUE#FALSE # no me engraso con los lags de orden 2
+  param_local$lag3 <- TRUE#FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- FALSE
-  param_local$Tendencias1$maximo <- FALSE
-  param_local$Tendencias1$promedio <- FALSE
-  param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$minimo <- TRUE#FALSE
+  param_local$Tendencias1$maximo <- TRUE#FALSE
+  param_local$Tendencias1$promedio <- TRUE#FALSE
+  param_local$Tendencias1$ratioavg <- TRUE#FALSE
+  param_local$Tendencias1$ratiomax <- TRUE#FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE#FALSE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
-  param_local$Tendencias2$minimo <- FALSE
-  param_local$Tendencias2$maximo <- FALSE
-  param_local$Tendencias2$promedio <- FALSE
-  param_local$Tendencias2$ratioavg <- FALSE
-  param_local$Tendencias2$ratiomax <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE#FALSE
+  param_local$Tendencias2$minimo <- TRUE#FALSE
+  param_local$Tendencias2$maximo <- TRUE#FALSE
+  param_local$Tendencias2$promedio <- TRUE#FALSE
+  param_local$Tendencias2$ratioavg <- TRUE#FALSE
+  param_local$Tendencias2$ratiomax <- TRUE#FALSE
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
 
@@ -410,7 +410,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
-  param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
+  param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar *********************era 20 *********
 
   param_local$envios_desde <-  1600L
   param_local$envios_hasta <-  2400L
@@ -424,7 +424,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # A partir de ahora comienza la seccion de Workflows Completos
 #------------------------------------------------------------------------------
 # Este es el  Workflow Baseline
-# Que predice 202107 donde conozco la clase
+# Que predice 202109 donde conozco la clase
 # y ya genera graficos
 
 wf_septiembre <- function( pnombrewf )
@@ -432,9 +432,9 @@ wf_septiembre <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="MICE")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="deflacion")
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 100,
@@ -456,6 +456,18 @@ wf_septiembre <- function( pnombrewf )
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
+
+cat("\n-----------------------------------------------------------------------------------")
+cat("\n     Catastrophe Analysis. Metodo: MICE")
+cat("\n-----------------------------------------------------------------------------------")
+cat("\n     Feature Engineering Historico: Todos los LAG TRUE y todas las tendencias TRUE")
+cat("\n-----------------------------------------------------------------------------------")
+cat("\n     Data Drifting. metodo: deflacion")
+cat("\n-----------------------------------------------------------------------------------")
+cat("\n     Feature Engineering, Variables creadas con RF:")
+cat("\n     Iteraciones:100 - Hojas:25 - mtry:0.2 - Datos_Hoja:1000")
+cat("\n-----------------------------------------------------------------------------------\n")
+
 
 # llamo al workflow con future = 202109
 wf_septiembre()
