@@ -153,12 +153,12 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$maximo <- FALSE
   param_local$Tendencias1$promedio <- FALSE
   param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$ratiomax <- TRUE
 
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -188,7 +188,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
     # parametros que se pueden cambiar
-    num_iterations = 20,
+    num_iterations = 30,
     num_leaves  = 16,
     min_data_in_leaf = 1000,
     feature_fraction_bynode  = 0.2,
@@ -278,12 +278,12 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
-    # 202006  Excluyo por variables rotas
+    202006 , 
     202005, 202004, 202003, 202002, 202001,
     201912, 201911,
-    # 201910 Excluyo por variables rotas
+    201910,
     201909, 201908, 201907, 201906,
-    # 201905  Excluyo por variables rotas
+    201905, 
     201904, 201903
   )
 
@@ -371,7 +371,7 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.3, 0.8 ),
+    learning_rate = c( 0.01, 0.8 ),
     feature_fraction = c( 0.05, 0.95 ),
 
     leaf_size_log = c( -10, -5),   # deriva en min_data_in_leaf
@@ -439,8 +439,8 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
   param_local$envios_desde <- 10500L
-  param_local$envios_hasta <- 12000L
-  param_local$envios_salto <-   500L
+  param_local$envios_hasta <- 13000L
+  param_local$envios_salto <-   250L
   param_local$competition <- "labo-i-vivencial-2024-v-2"
 
   return( exp_correr_script( param_local ) ) # linea fija
