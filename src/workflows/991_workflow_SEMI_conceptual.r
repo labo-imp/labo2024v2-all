@@ -429,7 +429,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
   param_local$envios_desde <-  1600L
-  param_local$envios_hasta <-  2400L
+  param_local$envios_hasta <-  3000L
   param_local$envios_salto <-   50L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
 
@@ -460,7 +460,7 @@ wf_SEMI_sep <- function( pnombrewf )
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
     semillerio = 30, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 40  # iteraciones inteligentes, apenas 10
+    bo_iteraciones = 50  # iteraciones inteligentes, apenas 10
   )
 
 
