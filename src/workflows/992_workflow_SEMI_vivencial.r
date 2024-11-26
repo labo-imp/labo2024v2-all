@@ -142,7 +142,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -158,7 +158,7 @@ FEhist_base <- function( pinputexps)
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 6
-  param_local$Tendencias2$tendencia <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -273,17 +273,17 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 0.20
+  param_local$final_train$undersampling <- 0.10
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
-    202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 202011 
+    202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 202011, 201912 
   )
 
   param_local$train$testing <- c(202107)
   param_local$train$validation <- c(202106)
 
   param_local$train$training <- c(
-    202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009
+    202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009, 201911
   )
 
 
@@ -357,8 +357,8 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
     learning_rate = c( 0.02, 0.5 ),
     feature_fraction = c( 0.5, 0.9 ),
 
-    leaf_size_log = c( -12, -5),   # deriva en min_data_in_leaf
-    coverage_log = c( -10, 0 )      # deriva en num_leaves
+    leaf_size_log = c( -12, -7),   # deriva en min_data_in_leaf
+    coverage_log = c( -8, 0 )      # deriva en num_leaves
   )
 
 
@@ -446,14 +446,14 @@ wf_SEMI_sep <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
   ultimo <- FErf_attributes_base()
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=1.05, desvio=2.1)
 
   ts9 <- TS_strategy_base9()
 
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
     semillerio = 50, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 50  # iteraciones inteligentes, apenas 10
+    bo_iteraciones = 40  # iteraciones inteligentes, apenas 10
   )
 
 
