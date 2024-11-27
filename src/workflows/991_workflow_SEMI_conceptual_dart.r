@@ -423,9 +423,9 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <-  1600L
-  param_local$envios_hasta <-  2400L
-  param_local$envios_salto <-   200L
+  param_local$envios_desde <-  1700L
+  param_local$envios_hasta <-  1900L
+  param_local$envios_salto <-   50L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
 
   return( exp_correr_script( param_local ) ) # linea fija
