@@ -428,9 +428,9 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <-  1700L
-  param_local$envios_hasta <-  2400L
-  param_local$envios_salto <-   100L
+  param_local$envios_desde <-  1600L
+  param_local$envios_hasta <-  3000L
+  param_local$envios_salto <-   50L
   param_local$competition <- "labo-i-conceptual-2024-v-2"
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -450,7 +450,7 @@ wf_SEMI_sep <- function( pnombrewf )
 
   CA_catastrophe_base( metodo="MICE")
   FEintra_manual_base()
-  DR_drifting_base(metodo="deflacion")
+  DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
@@ -468,7 +468,7 @@ wf_SEMI_sep <- function( pnombrewf )
     c(ht, ts9), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
     semillerio = 20,   # cantidad de semillas finales
-    repeticiones_exp = 10  # cantidad de repeticiones del semillerio
+    repeticiones_exp = 1  # cantidad de repeticiones del semillerio
   )
 
   SC_scoring_semillerio( c(fm, ts9) )
