@@ -156,9 +156,9 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- TRUE
-  param_local$Tendencias2$ventana <- 6
-  param_local$Tendencias2$tendencia <- TRUE
+  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$ventana <- 12
+  param_local$Tendencias2$tendencia <- FALSE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -222,7 +222,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
     max_drop = 50,
     skip_drop = 0.5,
 
-    extra_trees = TRUE
+    extra_trees = FALSE
   )
 
 
@@ -273,7 +273,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 0.30
+  param_local$final_train$undersampling <- 0.20
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 
                                         202002, 202001, 201912, 201911, 201910, 
@@ -292,7 +292,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.40
+  param_local$train$undersampling <- 0.20
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -357,11 +357,11 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.02, 0.5 ),
+    learning_rate = c( 0.2, 0.5 ),
     feature_fraction = c( 0.5, 0.9 ),
 
     leaf_size_log = c( -10, -5),   # deriva en min_data_in_leaf
-    coverage_log = c( -9, 0 )      # deriva en num_leaves
+    coverage_log = c( -8, 0 )      # deriva en num_leaves
   )
 
 
