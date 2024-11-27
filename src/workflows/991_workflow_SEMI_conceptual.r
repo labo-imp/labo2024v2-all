@@ -295,19 +295,19 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$train$training <- c(
     202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
-    202006,#  Excluyo por variables rotas
-    #202005, 202004, 
-    #202003, 202002, 202001,201912, 201911,
+    #202006,#  Excluyo por variables rotas
+    202005, 202004, 
+    202003, 202002, 202001,201912, 201911,
     #201910, #Excluyo por variables rotas
-    #201909, 201908, 201907, 201906,
-    #20190,#  Excluyo por variables rotas
-    #201904, 201903
+    201909, 201908, 201907, 201906,
+    #201905,#  Excluyo por variables rotas
+    201904, 201903
   )
 
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.8
+  param_local$train$undersampling <- 0.2
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
