@@ -1,5 +1,5 @@
-# Corrida general del Workflow Semillerio
-
+# Corrida general del Workflow Semillerio 002
+# Dos grupos de meses
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
@@ -13,7 +13,7 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw-SEMI/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw-final-1m/"
 envg$EXPENV$wf_dir <- "~/buckets/b1/flow-SEMI/"
 envg$EXPENV$repo_dir <- "~/labo2024v2/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
@@ -274,17 +274,17 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 0.2
+  param_local$final_train$undersampling <- 0.20
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
-    #202006,   Excluyo por variables rotas
+    # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
     201912, 201911,
-    #201910,  Excluyo por variables rotas
+    # 201910 Excluyo por variables rotas
     201909, 201908, 201907, 201906,
-    #201905, #  Excluyo por variables rotas
+    # 201905  Excluyo por variables rotas
     201904, 201903
   )
 
@@ -295,23 +295,194 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$train$training <- c(
     202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
-    202006,#  Excluyo por variables rotas
-    #202005, 202004, 
-    #202003, 202002, 202001,201912, 201911,
-    #201910, #Excluyo por variables rotas
-    #201909, 201908, 201907, 201906,
-    #20190,#  Excluyo por variables rotas
-    #201904, 201903
+    # 202006  Excluyo por variables rotas
+    202005, 202004, 202003, 202002, 202001,
+    201912, 201911,
+    # 201910 Excluyo por variables rotas
+    201909, 201908, 201907, 201906,
+    # 201905  Excluyo por variables rotas
+    201904, 201903
   )
 
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.8
+  param_local$train$undersampling <- 0.20
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
+
+#------------------------------------------------------------------------------
+# Training Strategy  Meses 1: Todos los meses
+#  azaroso, utiliza semilla
+#------------------------------------------------------------------------------
+
+TS_strategy_meses1 <- function( pinputexps )
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+
+  param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
+  
+  param_local$future <- c(202109)
+  
+  param_local$final_train$undersampling <- 0.20
+  param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+  param_local$final_train$training <- c(
+    202107, 202106, 202105, 202104, 202103, 202102, 202101, 
+    202012, 202011, 202010, 202009, 202008, 202007, 
+    # 202006  Excluyo por variables rotas
+    202005, 202004, 202003, 202002, 202001,
+    201912, 201911,
+    # 201910 Excluyo por variables rotas
+    201909, 201908, 201907, 201906,
+    # 201905  Excluyo por variables rotas
+    201904, 201903
+  )
+  
+  
+  param_local$train$testing <- c(202107)
+  param_local$train$validation <- c(202106)
+  
+  param_local$train$training <- c(
+    202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008, 202007, 202006,
+    202005, 202004, 202003, 202002, 202001, 201912, 201911, 201910, 201909, 201908, 201907, 201906, 
+    201905, 201904, 201903
+  )
+  
+  # 0.1 undersampling
+  param_local$train$undersampling <- 0.1
+  param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+  
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+
+#------------------------------------------------------------------------------
+# Training Strategy  Meses 2: utiliza los primeros meses para crear el dataset_training
+#  azaroso, utiliza semilla
+#------------------------------------------------------------------------------
+# Atencion, el undersampling es de 0.10
+#  tanto para entrenamineto como para  Final train$clase01_valor1
+
+TS_strategy_meses2 <- function( pinputexps, ruta )
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+  
+  param_local$ds_dir <-ruta
+  
+  param_local$meta$script <- "/src/wf-etapas/2101_TS_training_strategy.r"
+
+  param_local$future <- c(202109)
+  
+  param_local$final_train$undersampling <- 1
+  param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+  param_local$final_train$training <- c(
+    202107, 202106, 202105, 202104, 202103, 202102, 202101, 
+    202012, 202011, 202010, 202009, 202008, 202007, 
+    # 202006  Excluyo por variables rotas
+    202005, 202004, 202003, 202002, 202001,
+    201912, 201911,
+    # 201910 Excluyo por variables rotas
+    201909, 201908, 201907, 201906,
+    # 201905  Excluyo por variables rotas
+    201904, 201903
+  )
+  
+  
+  param_local$train$testing <- c(202107)
+  param_local$train$validation <- c(202106)
+  
+  param_local$train$training <- c(
+    202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008, 202007, 202006
+    #202004, 202003, 202002, 202001, 201912, 201911, 201909, 201908, 201907, 201906, 201904, 201903
+  )
+  
+  
+  # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
+  # 1.0 significa NO undersampling
+  param_local$train$undersampling <- 0.2
+  param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+  
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+
+
+
+#------------------------------------------------------------------------------
+# Hyperparamteter Tuning continua con optimizacion
+#  donde la Bayuesian Optimization solo considera 4 hiperparámetros
+#  azaroso, utiliza semilla
+#  puede llegar a recibir  bypass, que por default esta en false
+
+HT_tuning_semillerio_continua <- function( pinputexps, semillerio, bo_iteraciones, ruta, bypass=FALSE)
+{
+  if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
+  
+  param_local$meta$script <- "/src/wf-etapas/2212_HT_lightgbm_SEMI_continua_002.r"
+
+  param_local$bo_dir <-ruta
+  
+  # En caso que se haga cross validation, se usa esta cantidad de folds
+  param_local$lgb_crossvalidation_folds <- 5
+  
+  param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
+  param_local$train$positivos <- c( "BAJA+2")
+  param_local$train$gan1 <- 117000
+  param_local$train$gan0 <-  -3000
+  param_local$train$meseta <-  401
+  param_local$train$repeticiones_exp <- 1
+  param_local$train$semillerio <- semillerio  # 1 es no usar semillerio en la Bayesian Optim
+  param_local$train$timeout <- 20000
+  
+  # Hiperparametros  del LightGBM
+  #  los que tienen un solo valor son los que van fijos
+  #  los que tienen un vector,  son los que participan de la Bayesian Optimization
+  
+  param_local$lgb_param <- list(
+    boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
+    objective = "binary",
+    metric = "custom",
+    first_metric_only = TRUE,
+    boost_from_average = TRUE,
+    feature_pre_filter = FALSE,
+    force_row_wise = TRUE, # para reducir warnings
+    verbosity = -100,
+    max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
+    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
+    min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
+    lambda_l1 = 0.0, # lambda_l1 >= 0.0
+    lambda_l2 = 0.0, # lambda_l2 >= 0.0
+    max_bin = 31L, # lo debo dejar fijo, no participa de la BO
+    
+    num_iterations = 9999L, # un numero muy grande
+    early_stopping_base = 200L,
+    
+    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
+    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    is_unbalance = FALSE, #
+    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
+    
+    drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
+    max_drop = 50, # <=0 means no limit
+    skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
+    
+    extra_trees = FALSE,
+    # Parte variable
+    learning_rate = c( 0.3, 0.8 ),
+    feature_fraction = c( 0.05, 0.95 ),
+    
+    leaf_size_log = c( -10, -5),   # deriva en min_data_in_leaf
+    coverage_log = c( -8, 0 )      # deriva en num_leaves
+  )
+  
+  
+  # una Bayesian humilde
+  param_local$bo_iteraciones <- bo_iteraciones # iteraciones de la Optimizacion Bayesiana
+  
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+
 #------------------------------------------------------------------------------
 # Hyperparamteter Tuning Baseline
 #  donde la Bayuesian Optimization solo considera 4 hiperparámetros
@@ -458,7 +629,6 @@ wf_SEMI_sep <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-
   CA_catastrophe_base( metodo="MICE")
   FEintra_manual_base()
   DR_drifting_base(metodo="deflacion")
@@ -466,26 +636,37 @@ wf_SEMI_sep <- function( pnombrewf )
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
-  ts9 <- TS_strategy_base9()
+  ds_dir <- paste0(envg$EXPENV$exp_dir, param_local$lastexp)
+  envg$EXPENV$ds_dir <- ds_dir
 
-  # la Bayesian Optimization con el semillerio dentro
-  ht <- HT_tuning_semillerio(
-    semillerio = 50, # 50 semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 50  # iteraciones inteligentes, apenas 10
+  #ts9 <- TS_strategy_base9()
+  
+  ts_1 <- TS_strategy_meses1() #todos los meses en la primera OB
+  ht0 <- HT_tuning_semillerio(
+    semillerio = 20, # semillerio dentro de la Bayesian Optim inicial
+    bo_iteraciones = 30  # iteraciones inteligentes 
   )
+ 
+  #bo_dir <- paste0(envg$EXPENV$exp_dir, param_local$lastexp)
+  #envg$EXPENV$bo_dir <- bo_dir
 
+  #ts_2 <- TS_strategy_meses2(ruta = envg$EXPENV$ds_dir)# 12 meses mas recientes en la OB final
+  #htcont <- HT_tuning_semillerio_continua(
+  #  semillerio = 30, # semillerio dentro de la Bayesian Optim final
+  #  bo_iteraciones = 30,  # iteraciones inteligentes
+  #  ruta = envg$EXPENV$bo_dir # ruta donde encuentra Bayesian.rdta para continuar
+  #)
 
   fm <- FM_final_models_lightgbm_semillerio( 
-    c(ht, ts9), # los inputs
+    c(ht0, ts_1), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
     semillerio = 50,   # cantidad de semillas finales
     repeticiones_exp = 1  # cantidad de repeticiones del semillerio
   )
 
-  SC_scoring_semillerio( c(fm, ts9) )
+  SC_scoring_semillerio( c(fm, ts_1) )
   KA_evaluate_kaggle_semillerio()
   
-
   return( exp_wf_end() ) # linea fija
 }
 #------------------------------------------------------------------------------

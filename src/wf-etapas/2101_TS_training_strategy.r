@@ -33,12 +33,6 @@ source( paste0( args[1] , "/src/lib/action_lib.r" ) )
 cat( "ETAPA  2101_TS_training_strategy.r  START\n" )
 action_inicializar() 
 
-cat( "-------------\n" )
-cat( "PRIMERA LINEA, envg$PARAM$experimento_largo\n" )
-print(envg$PARAM$experimento_largo)
-#ejemplo "/home/joaquindebrida/buckets/b1/expw-SEMI-2/TS-0003"
-
-
 # genero las semillas con las que voy a trabajar
 #  ninguna de ellas es exactamente la original del alumno
 primos <- generate_primes(min = 100000, max = 1000000)
@@ -49,45 +43,36 @@ envg$PARAM$semillas <- sample(primos)[1:2]
 
 envg$PARAM$train$semilla <- envg$PARAM$semillas[1]
 envg$PARAM$final_train$semilla <- envg$PARAM$semillas[2]
-
-cat("------------------\n")
-env_list <- as.list(envg)
- #Iterar y mostrar el nombre de cada variable y su valor
-for (var_name in names(env_list)) {
-  var_value <- env_list[[var_name]]
-  # Usamos print() para manejar cualquier tipo de objeto
-  cat("Variable:", var_name, "\n")
-  print(var_value)  # Utiliza print() para manejar listas u objetos complejos
-  cat("\n")
-}
-cat("------------------\n")
-
-
   
 # cargo el dataset donde voy a entrenar
 # esta en la carpeta del exp_input y siempre se llama  dataset.csv.gz
 # cargo el dataset
 
+#cargo ruta para el dataset
+ds <- paste0(envg$PARAM$ds_dir, "/dataset.csv.gz")
 
-exp_dir <- "~/buckets/b1/expw-SEMI-2/"
+
+#exp_dir <- "~/buckets/b1/expw-SEMI-2/"
 # Sobreescribir solo la parte de la carpeta
-if (!startsWith(envg$PARAM$input, "FErf")) {
+#if (!startsWith(envg$PARAM$input, "FErf")) {
   # Divide el valor en partes usando el separador "-"
-  partes <- strsplit(envg$PARAM$input, "-")[[1]]
+#  partes <- strsplit(envg$PARAM$input, "-")[[1]]
   
   # Sobrescribe la parte de la carpeta con "FErf" y conserva el número
-  if (length(partes) == 2) {
-    envg$PARAM$input <- paste0("FErf-", partes[2])
-    message(paste("Se corrigió envg$PARAM$input a:", envg$PARAM$input))
-  } else {
-    stop("El formato de envg$PARAM$input no es válido. Debe ser 'carpeta-Numero'.")
-  }
-}
+  #if (length(partes) == 2) {
+  #  envg$PARAM$input <- paste0("FErf-", partes[2])
+  #  message(paste("Se corrigió envg$PARAM$input a:", envg$PARAM$input))
+  #} else {
+  #  stop("El formato de envg$PARAM$input no es válido. Debe ser 'carpeta-Numero'.")
+  #}
+#}
 
 
-cat("Ruta: ",paste0( exp_dir, envg$PARAM$input, "/dataset.csv.gz" ))
-envg$PARAM$dataset <- paste0( exp_dir, envg$PARAM$input, "/dataset.csv.gz" )
-envg$PARAM$dataset_metadata <- read_yaml( paste0( exp_dir, envg$PARAM$input, "/dataset_metadata.yml" ) )
+cat("Ruta: ",ds)
+#envg$PARAM$dataset <- paste0( exp_dir, envg$PARAM$input, "/dataset.csv.gz" )
+envg$PARAM$dataset <- paste0(envg$PARAM$ds_dir, "/dataset.csv.gz")
+#envg$PARAM$dataset_metadata <- read_yaml( paste0( exp_dir, envg$PARAM$input, "/dataset_metadata.yml" ) )
+envg$PARAM$dataset_metadata <- read_yaml( paste0(envg$PARAM$ds_dir, "/dataset_metadata.yml"))
 
 cat( "lectura del dataset\n")
 action_verificar_archivo( envg$PARAM$dataset )
@@ -243,22 +228,7 @@ envg$OUTPUT$dataset_finaltrain$ncol <- ncol(dataset[get(envg$PARAM$dataset_metad
 envg$OUTPUT$dataset_finaltrain$nrow <- nrow(dataset[get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$final_train, ])
 envg$OUTPUT$dataset_finaltrain$periodos <- dataset[get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$final_train, length(unique(get(envg$PARAM$dataset_metadata$periodo)))]
 
-
-
 envg$OUTPUT$time$end <- format(Sys.time(), "%Y%m%d %H%M%S")
-cat("------------------\n")
-env_list <- as.list(envg)
-#Iterar y mostrar el nombre de cada variable y su valor
-for (var_name in names(env_list)) {
-  var_value <- env_list[[var_name]]
-  # Usamos print() para manejar cualquier tipo de objeto
-  cat("Variable:", var_name, "\n")
-  print(var_value)  # Utiliza print() para manejar listas u objetos complejos
-  cat("\n")
-}
-cat("------------------\n")
-
-
 
 GrabarOutput()
 

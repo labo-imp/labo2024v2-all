@@ -1,7 +1,7 @@
 require("rlang")
 
-# workflow que voy a correr
-PARAM <- "src/workflows/991_workflow_SEMI_conceptual_001.r"
+# workflow que voy a correrR
+PARAM <- "src/workflows/991_workflow_SEMI_conceptual_003.r"
 
 envg <- env()
 
@@ -45,16 +45,7 @@ correr_workflow( PARAM )
 Tiempo_fin <- Sys.time()
 Tiempo_total <- difftime(Tiempo_fin, Tiempo_inicio, units = "hours")
 cat("\n-----------------------------------------------------------------------------------")
-cat("\n     Training strategy 2: grupos de meses")
-cat("\n-----------------------------------------------------------------------------------")
-cat("\n     Catastrophe Analysis. Metodo: MICE")
-cat("\n-----------------------------------------------------------------------------------")
-cat("\n     Feature Engineering Historico: Todos los LAG TRUE y todas las tendencias TRUE")
-cat("\n-----------------------------------------------------------------------------------")
-cat("\n     Data Drifting. metodo: deflacion")
-cat("\n-----------------------------------------------------------------------------------")
-cat("\n     Feature Engineering, Variables creadas con RF:")
-cat("\n     Iteraciones:100 - Hojas:25 - mtry:0.2 - Datos_Hoja:1000")
+cat("\n     Training strategy 2 meses")
 cat("\n-----------------------------------------------------------------------------------\n")
 cat("\n     El tiempo total fue de", round(Tiempo_total, 2), "horas\n")
 cat("\n-----------------------------------------------------------------------------------\n")

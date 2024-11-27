@@ -16,7 +16,7 @@ gc(full = TRUE, verbose=FALSE) # garbage collection
 require("data.table", quietly=TRUE) 
 require("rlist", quietly=TRUE) 
 require("yaml", quietly=TRUE) 
-require("primes", quietly=TRUE) 
+require("primes", quietly=TRUE)
 
 require("lightgbm", quietly=TRUE) 
 
@@ -761,11 +761,18 @@ if (kcrossvalidation) {
 
 
 configureMlr(show.learner.output = FALSE)
+
 # cargo la bayesiana ya iniciada para extraer su diseño
 load(bayesiana)
 diseño_existente <- as.data.frame(opt.state$opt.path)
 rm(opt.state)
-diseño_param <- diseño_existente[, c("learning_rate", "feature_fraction", "leaf_size_log", "coverage_log")]
+
+#extraigo los mejores 10 parametros de la bayesiana anteior para retomar como diseño
+diseño_param <- diseño_existente[, c("learning_rate", "feature_fraction", "leaf_size_log", "coverage_log", "ganancia")]
+diseño_sorted <- diseño_param[order(-diseño_param$ganancia), ]
+diseño_sorted_top <- diseño_sorted[1:10, ]
+diseño_input <- diseño_sorted_top[, !names(diseño_sorted_top) %in% "ganancia"]
+
 
 
 # configuro la busqueda bayesiana,  los hiperparametros que se van a optimizar
@@ -824,7 +831,7 @@ surr.km <- makeLearner("regr.km",
 # Aqui inicio la optimizacion bayesiana
 set.seed(envg$PARAM$lgb_semilla, kind = "L'Ecuyer-CMRG")
 if (!file.exists("bayesiana.RDATA")) {
-  run <- mbo(obj.fun, design = diseño_param, learner = surr.km, control = ctrl)
+  run <- mbo(obj.fun, design = diseño_input, learner = surr.km, control = ctrl) #ingreso el diseño
 } else {
   # si ya existe el archivo RDATA,
   # debo continuar desde el punto hasta donde llegue

@@ -369,25 +369,16 @@ TS_strategy_meses1 <- function( pinputexps )
 # Atencion, el undersampling es de 0.10
 #  tanto para entrenamineto como para  Final train$clase01_valor1
 
-TS_strategy_meses2 <- function( pinputexps )
+TS_strategy_meses2 <- function( pinputexps, ruta )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
   
   cat("\n-------------  LLAMADO A TS_MES2 -------------------------------------------\n")
   
-  param_local$meta$script <- "/src/wf-etapas/2101_TS_training_strategy.r"
-  cat("---------contenido de param_local en TS2---------\n")
-  env_list <- as.list(param_local)
-  #Iterar y mostrar el nombre de cada variable y su valor
-  for (var_name in names(env_list)) {
-    var_value <- env_list[[var_name]]
-    # Usamos print() para manejar cualquier tipo de objeto
-    cat("Variable:", var_name, "\n")
-    print(var_value)  # Utiliza print() para manejar listas u objetos complejos
-    cat("\n")
-  }
-  cat("------------------\n")
+  param_local$ds_dir <-ruta
   
+  param_local$meta$script <- "/src/wf-etapas/2101_TS_training_strategy.r"
+
   param_local$future <- c(202109)
   
   param_local$final_train$undersampling <- 0.20
@@ -433,17 +424,6 @@ HT_tuning_semillerio_inicial <- function( pinputexps, semillerio, bo_iteraciones
   if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
   
   param_local$meta$script <- "/src/wf-etapas/2212_HT_lightgbm_SEMI_inicial.r"
-  cat("---------contenido de param_local en HT_inicial---------\n")
-  env_list <- as.list(param_local)
-  #Iterar y mostrar el nombre de cada variable y su valor
-  for (var_name in names(env_list)) {
-    var_value <- env_list[[var_name]]
-    # Usamos print() para manejar cualquier tipo de objeto
-    cat("Variable:", var_name, "\n")
-    print(var_value)  # Utiliza print() para manejar listas u objetos complejos
-    cat("\n")
-  }
-  cat("------------------\n")
   
   # En caso que se haga cross validation, se usa esta cantidad de folds
   param_local$lgb_crossvalidation_folds <- 5
@@ -512,12 +492,13 @@ HT_tuning_semillerio_inicial <- function( pinputexps, semillerio, bo_iteraciones
 #  azaroso, utiliza semilla
 #  puede llegar a recibir  bypass, que por default esta en false
 
-HT_tuning_semillerio_continua <- function( pinputexps, semillerio, bo_iteraciones, bypass=FALSE)
+HT_tuning_semillerio_continua <- function( pinputexps, semillerio, bo_iteraciones, ruta, bypass=FALSE)
 {
   if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
   
   param_local$meta$script <- "/src/wf-etapas/2212_HT_lightgbm_SEMI_continua.r"
 
+  param_local$bo_dir <-ruta
   
   # En caso que se haga cross validation, se usa esta cantidad de folds
   param_local$lgb_crossvalidation_folds <- 5
@@ -726,48 +707,40 @@ wf_SEMI_sep <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-
   CA_catastrophe_base( metodo="MICE")
   FEintra_manual_base()
   DR_drifting_base(metodo="deflacion")
   FEhist_base()
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  #------aca deberia incluir definicion de la direccion del metadata
+  #"~/buckets/b1/expw-SEMI-2/"
+  #Ferf-0001
+  ds_dir <- paste0(envg$EXPENV$exp_dir, param_local$lastexp)
+  envg$EXPENV$ds_dir <- ds_dir
 
   #ts9 <- TS_strategy_base9()
   
   ts_1 <- TS_strategy_meses1() #Creacion de dataset_training con grupo 1 de meses
-  
-
- 
-  
-  cat("------------------------------\n")
-
-  cat("Ruta: ",envg$EXPENV$exp_dir[1],"\n")
-  cat("ultimo experimento: ",param_local$lastexp,"\n") # = TS-0001
-  cat("RUTA COMPLETA: ")
-  print(paste0(envg$EXPENV$exp_dir[1],,param_local$lastexp))
-  cat("-")
-  envg$EXPENV$BO_dir <-paste0(envg$EXPENV$exp_dir[1],param_local$lastexp)
-  
-  print(envg$EXPENV$BO_dir)
-  cat("-")
-  cat("------------------------------\n")
-  ht0 <- HT_tuning_semillerio_inicial(
+  ht0 <- HT_tuning_semillerio(
     semillerio = 3, # semillerio dentro de la Bayesian Optim
     bo_iteraciones = 3  # iteraciones inteligentes, apenas 10
   )
+ 
+  bo_dir <- paste0(envg$EXPENV$exp_dir, param_local$lastexp)
+  envg$EXPENV$bo_dir <- bo_dir
 
 
-  ts_2 <- TS_strategy_meses2()#Creacion de dataset_training con grupo 2 de meses
+  ts_2 <- TS_strategy_meses2(ruta = envg$EXPENV$ds_dir)#Creacion de dataset_training con grupo 2 de meses
   htcont <- HT_tuning_semillerio_continua(
     semillerio = 3, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 3  # iteraciones inteligentes, apenas 10
+    bo_iteraciones = 3,  # iteraciones inteligentes, apenas 10
+    ruta = envg$EXPENV$bo_dir # ruta donde encuentra Bayesian.rdta para continuar
   )
 
 
   fm <- FM_final_models_lightgbm_semillerio( 
-    c(ht, ts_2), # los inputs
+    c(htcont, ts_2), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
     semillerio = 50,   # cantidad de semillas finales
     repeticiones_exp = 1  # cantidad de repeticiones del semillerio
