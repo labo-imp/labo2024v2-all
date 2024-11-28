@@ -7,13 +7,13 @@ require("yaml")
 
 PARAM <- list()
 
-PARAM$modalidad <- "vivencial"  # "conceptual"
+PARAM$modalidad <- "conceptual"  # "conceptual"
 
 PARAM$rpart <- list (
-  "cp" = -1,
-  "minsplit" = 170,
-  "minbucket" = 70,
-  "maxdepth" = 7
+  "cp" = -0.5,
+  "minsplit" = 50,
+  "minbucket" = 32,
+  "maxdepth" = 6
 )
 
 #------------------------------------------------------------------------------
